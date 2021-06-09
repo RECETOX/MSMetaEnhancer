@@ -19,7 +19,7 @@ class TestConverter(unittest.TestCase):
         self.assertEqual(len(json), 1)
         self.assertIn('results', json[0])
         self.assertEqual(len(json[0]['results']), 1)
-        self.assertEqual(json[0]['results'][0], "XQLMNMQWVCXIKR-UHFFFAOYSA-M")
+        self.assertEqual(json[0]['results'][0], 'XQLMNMQWVCXIKR-UHFFFAOYSA-M')
 
         # incorrect CAS number
         cas_number = '7783893'
@@ -38,7 +38,7 @@ class TestConverter(unittest.TestCase):
         response = self.converter.connect_to_service('CIR', args)
         self.assertEqual(response.status_code, 200)
         self.assertTrue(type(response.text) == str)
-        self.assertEqual(response.text, "[Ag+].[O-][Br](=O)=O")
+        self.assertEqual(response.text, '[Ag+].[O-][Br](=O)=O')
 
         # incorrect CAS number
         cas_number = '7783893'
@@ -54,7 +54,7 @@ class TestConverter(unittest.TestCase):
         self.assertEqual(self.converter.fix_cas_number('7783893'), '7783-89-3')
 
     def test_cas_to_inchikey(self):
-        inchikey = "XQLMNMQWVCXIKR-UHFFFAOYSA-M"
+        inchikey = 'XQLMNMQWVCXIKR-UHFFFAOYSA-M'
         fake_result = mock.Mock()
         fake_result.status_code = 200
 
@@ -69,7 +69,7 @@ class TestConverter(unittest.TestCase):
         self.assertIsNone(self.converter.cas_to_inchikey(cas_number))
 
     def test_cas_to_smiles(self):
-        smiles = "[Ag+].[O-][Br](=O)=O"
+        smiles = '[Ag+].[O-][Br](=O)=O'
         fake_result = mock.Mock()
         fake_result.text = smiles
 

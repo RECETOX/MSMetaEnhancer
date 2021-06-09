@@ -4,6 +4,7 @@ from libs import converter
 class Annotator:
     def __init__(self, annotations):
         self.annotations = annotations
+        self.converter = converter
 
     def add_possible_annotations(self, metadata):
         """
@@ -21,7 +22,6 @@ class Annotator:
                     result = getattr(self, "add_" + annotation)(metadata)
                     if result:
                         metadata[annotation] = result
-                        print(result)
                 except AttributeError:
                     pass
         return metadata
@@ -39,8 +39,8 @@ class Annotator:
         cas_number = metadata.get('casno', None)
         if cas_number:
             if "-" not in cas_number:
-                cas_number = converter.fix_cas_number(cas_number)
-            return converter.cas_to_inchikey(cas_number)
+                cas_number = self.converter.fix_cas_number(cas_number)
+            return self.converter.cas_to_inchikey(cas_number)
 
     def add_smiles(self, metadata):
         """
@@ -55,5 +55,5 @@ class Annotator:
         cas_number = metadata.get('casno', None)
         if cas_number:
             if "-" not in cas_number:
-                cas_number = converter.fix_cas_number(cas_number)
-            return converter.cas_to_smiles(cas_number)
+                cas_number = self.converter.fix_cas_number(cas_number)
+            return self.converter.cas_to_smiles(cas_number)
