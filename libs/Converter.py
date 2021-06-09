@@ -5,7 +5,8 @@ class Converter:
     def __init__(self):
         # service URLs
         self.services = {'CTS': 'https://cts.fiehnlab.ucdavis.edu/rest/convert/',
-                         'CIR': 'https://cactus.nci.nih.gov/chemical/structure/'
+                         'CIR': 'https://cactus.nci.nih.gov/chemical/structure/',
+                         'CTS_compound': 'http://cts.fiehnlab.ucdavis.edu/service/compound/'
                          }
 
     @staticmethod
@@ -60,4 +61,18 @@ class Converter:
         response = self.connect_to_service('CIR', args)
         if response.status_code == 200:
             return response.text
+        return None
+
+    def inchikey_to_inchi(self, inchikey):
+        """
+        Convert InChiKey to InChi using CTS compound service
+        More info: http://cts.fiehnlab.ucdavis.edu/services
+
+        :param inchikey: given InChiKey number
+        :return: obtained InChi
+        """
+        args = inchikey
+        response = self.connect_to_service('CTS_compound', args)
+        if response.status_code == 200:
+            return response.json()["inchicode"]
         return None

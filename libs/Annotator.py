@@ -66,3 +66,17 @@ class Annotator:
             if "-" not in cas_number:
                 cas_number = self.converter.fix_cas_number(cas_number)
             return self.converter.cas_to_smiles(cas_number)
+
+    def add_inchi(self, metadata):
+        """
+        Tries to find an InChi based on specified metadata.
+
+        Currently implemented strategies:
+        - CTS compound service based on CAS InChiKey
+
+        :param metadata: specified metadata dictionary
+        :return: found InChi (return None if not found)
+        """
+        inchikey = metadata.get('inchikey', None)
+        if inchikey:
+            return self.converter.inchikey_to_inchi(inchikey)
