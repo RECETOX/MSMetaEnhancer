@@ -13,17 +13,26 @@ class Annotator:
         The method goes through specified annotations and tries to invoke
         a particular method able to add required annotation.
 
+        Since some metadata might depend on other metadata which might be added
+        in the process, the method iterates over the annotations until a fixpoint
+        is reached.
+
         :param metadata: given spectra metadata
         :return: annotated dictionary
         """
-        for annotation in self.annotations:
-            if annotation not in metadata:
-                try:
-                    result = getattr(self, "add_" + annotation)(metadata)
-                    if result:
-                        metadata[annotation] = result
-                except AttributeError:
-                    pass
+        added_metadata = True
+        while added_metadata:
+            added_metadata = False
+            for annotation in self.annotations:
+                if annotation not in metadata:
+                    # make sure an add method for this annotation exists
+                    try:
+                        result = getattr(self, "add_" + annotation)(metadata)
+                        if result:
+                            metadata[annotation] = result
+                            added_metadata = True
+                    except AttributeError:
+                        pass
         return metadata
 
     def add_inchikey(self, metadata):
