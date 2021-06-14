@@ -12,7 +12,7 @@ class TestAnnotator(unittest.TestCase):
         self.annotator.add_inchi.side_effect = [None, 'a InChi value']
         self.annotator.add_inchikey = mock.Mock(return_value='a InChiKey value')
         self.annotator.add_smiles = mock.Mock(return_value='a SMILES value')
-        
+
         metadata = {'casno': 'a CAS number'}
         self.assertEqual(self.annotator.add_possible_annotations(metadata),
                          {'casno': 'a CAS number', 'inchikey': 'a InChiKey value',

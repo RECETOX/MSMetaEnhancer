@@ -1,7 +1,7 @@
 from io import StringIO
 import pandas as pd
 
-from libs import Converter
+from libs.services.Converter import Converter
 
 
 class NLM(Converter):

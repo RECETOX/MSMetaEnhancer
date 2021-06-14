@@ -1,4 +1,4 @@
-from libs import Converter
+from libs.services.Converter import Converter
 
 
 class CTS(Converter):
