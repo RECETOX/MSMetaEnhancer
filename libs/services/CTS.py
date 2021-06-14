@@ -59,10 +59,11 @@ class CTS(Converter):
         """
         args = inchikey
         response = self.connect_to_service('CTS_compound', args)
-        synonyms = response.json()['synonyms']
-        names = [item['name'] for item in synonyms if item['type'] == 'Synonym']
-        if names:
-            return names[0]
+        if response.status_code == 200:
+            synonyms = response.json()['synonyms']
+            names = [item['name'] for item in synonyms if item['type'] == 'Synonym']
+            if names:
+                return names[0]
 
     def inchikey_to_IUPAC_name(self, inchikey):
         """
@@ -74,7 +75,8 @@ class CTS(Converter):
         """
         args = inchikey
         response = self.connect_to_service('CTS_compound', args)
-        synonyms = response.json()['synonyms']
-        names = [item['name'] for item in synonyms if item['type'] == 'IUPAC Name (Preferred)']
-        if names:
-            return names[0]
+        if response.status_code == 200:
+            synonyms = response.json()['synonyms']
+            names = [item['name'] for item in synonyms if item['type'] == 'IUPAC Name (Preferred)']
+            if names:
+                return names[0]

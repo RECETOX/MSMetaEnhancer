@@ -50,17 +50,29 @@ class TestCTS(unittest.TestCase):
         inchi = '1S/Ag.BrHO3/c;2-1(3)4/h;(H,2,3,4)/q+1;/p-1'
         self.assertEqual(self.converter.inchikey_to_inchi(inchikey), inchi)
 
+        inchikey = 'XQLMNMQIKR-UHFFFAOYSA-M'
+        self.assertIsNone(self.converter.inchikey_to_inchi(inchikey))
+
     def test_name_to_inchikey(self):
         name = 'L-Alanine'
         inchikey = 'QNAYBMKLOCPYGJ-REOHCLBHSA-N'
         self.assertEqual(self.converter.name_to_inchikey(name), inchikey)
+
+        name = 'L-Alalalalanine'
+        self.assertIsNone(self.converter.name_to_inchikey(name))
 
     def test_inchikey_to_name(self):
         inchikey = 'QNAYBMKLOCPYGJ-REOHCLBHSA-N'
         name = 'L-2-Aminopropanoic acid'
         self.assertEqual(self.converter.inchikey_to_name(inchikey), name)
 
+        inchikey = 'XQLMNMQIKR-UHFFFAOYSA-M'
+        self.assertIsNone(self.converter.inchikey_to_name(inchikey))
+
     def test_inchikey_to_IUPAC_name(self):
         inchikey = 'QNAYBMKLOCPYGJ-REOHCLBHSA-N'
         uipac_name = '(2S)-2-aminopropanoic acid'
         self.assertEqual(self.converter.inchikey_to_IUPAC_name(inchikey), uipac_name)
+
+        inchikey = 'XQLMNMQIKR-UHFFFAOYSA-M'
+        self.assertIsNone(self.converter.inchikey_to_IUPAC_name(inchikey))
