@@ -39,6 +39,28 @@ class Annotator:
                         pass
         return metadata
 
+    @staticmethod
+    def execute_conversions(conversions, metadata):
+        """
+        General method to execute provided alternative ways how to obtain specific metadata.
+
+        Parameter conversions has format {metadata_key: [methods], ...}.
+        Provided methods require metadata_key as an input argument and
+        are used to obtain target metadata.
+        TODO: generalise to multiple input metadata keys
+
+        :param conversions: given methods to execute
+        :param metadata: specified metadata dictionary
+        :return: obtained target attribute (None if not found)
+        """
+        for metadata_key in conversions:
+            metadata_value = metadata.get(metadata_key, None)
+            if metadata_value:
+                for method in conversions[metadata_key]:
+                    result = method(metadata_value)
+                    if result:
+                        return result
+
     def add_inchikey(self, metadata):
         """
         Tries to find an InChiKey based on specified metadata.
@@ -52,25 +74,10 @@ class Annotator:
         :param metadata: specified metadata dictionary
         :return: found InChiKey (return None if not found)
         """
-        cas_number = metadata.get('casno', None)
-        if cas_number:
-            inchikey = self.CTS.cas_to_inchikey(cas_number)
-            if inchikey:
-                return inchikey
-        name = metadata.get('name', None)
-        if name:
-            # TODO - this is ugly
-            inchikey = self.CTS.name_to_inchikey(name)
-            if inchikey:
-                return inchikey
-            inchikey = self.NLM.name_to_inchikey(name)
-            if inchikey:
-                return inchikey
-        smiles = metadata.get('smiles', None)
-        if smiles:
-            inchikey = self.CIR.smiles_to_inchikey(smiles)
-            if inchikey:
-                return inchikey
+        conversions = {'casno': [self.CTS.cas_to_inchikey],
+                       'name': [self.CTS.name_to_inchikey, self.NLM.name_to_inchikey],
+                       'smiles': [self.CIR.smiles_to_inchikey]}
+        return self.execute_conversions(conversions, metadata)
 
     def add_smiles(self, metadata):
         """
@@ -83,16 +90,9 @@ class Annotator:
         :param metadata: specified metadata dictionary
         :return: found SMILES (return None if not found)
         """
-        cas_number = metadata.get('casno', None)
-        if cas_number:
-            smiles = self.CIR.cas_to_smiles(cas_number)
-            if smiles:
-                return smiles
-        inchikey = metadata.get('inchikey', None)
-        if inchikey:
-            smiles = self.CIR.inchikey_to_smiles(inchikey)
-            if smiles:
-                return smiles
+        conversions = {'casno': [self.CIR.cas_to_smiles],
+                       'inchikey': [self.CIR.inchikey_to_smiles]}
+        return self.execute_conversions(conversions, metadata)
 
     def add_inchi(self, metadata):
         """
@@ -105,14 +105,8 @@ class Annotator:
         :param metadata: specified metadata dictionary
         :return: found InChi (return None if not found)
         """
-        inchikey = metadata.get('inchikey', None)
-        if inchikey:
-            inchi = self.CTS.inchikey_to_inchi(inchikey)
-            if inchi:
-                return inchi
-            inchi = self.CIR.inchikey_to_inchi(inchikey)
-            if inchi:
-                return inchi
+        conversions = {'inchikey': [self.CTS.inchikey_to_inchi, self.CIR.inchikey_to_inchi]}
+        return self.execute_conversions(conversions, metadata)
 
     def add_name(self, metadata):
         """
@@ -125,14 +119,8 @@ class Annotator:
         :param metadata: specified metadata dictionary
         :return: found Chemical name (return None if not found)
         """
-        inchikey = metadata.get('inchikey', None)
-        if inchikey:
-            name = self.CTS.inchikey_to_name(inchikey)
-            if name:
-                return name
-            name = self.NLM.inchikey_to_name(inchikey)
-            if name:
-                return name
+        conversions = {'inchikey': [self.CTS.inchikey_to_name, self.NLM.inchikey_to_name]}
+        return self.execute_conversions(conversions, metadata)
 
     def add_IUPAC(self, metadata):
         """
@@ -144,8 +132,5 @@ class Annotator:
         :param metadata: specified metadata dictionary
         :return: found IUPAC name (return None if not found)
         """
-        inchikey = metadata.get('inchikey', None)
-        if inchikey:
-            iupac_name = self.CTS.inchikey_to_IUPAC_name(inchikey)
-            if iupac_name:
-                return iupac_name
+        conversions = {'inchikey': [self.CTS.inchikey_to_IUPAC_name, self.NLM.inchikey_to_name]}
+        return self.execute_conversions(conversions, metadata)
