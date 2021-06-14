@@ -3,6 +3,7 @@ from libs import Converter
 
 class CTS(Converter):
     def __init__(self):
+        super().__init__()
         # service URLs
         self.services = {'CTS': 'https://cts.fiehnlab.ucdavis.edu/rest/convert/',
                          'CTS_compound': 'http://cts.fiehnlab.ucdavis.edu/service/compound/'

@@ -3,6 +3,7 @@ from libs import Converter
 
 class CIR(Converter):
     def __init__(self):
+        super().__init__()
         # service URLs
         self.services = {'CIR': 'https://cactus.nci.nih.gov/chemical/structure/'}
 

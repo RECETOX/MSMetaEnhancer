@@ -73,3 +73,15 @@ class TestCTS(unittest.TestCase):
 
         inchikey = 'XQLMNMQIKR-UHFFFAOYSA-M'
         self.assertIsNone(self.converter.inchikey_to_IUPAC_name(inchikey))
+
+    def test_cache(self):
+        inchikey = 'XQLMNMQWVCXIKR-UHFFFAOYSA-M'
+        identification = 'CTS_compound:' + inchikey
+        _ = self.converter.inchikey_to_inchi(inchikey)
+
+        self.assertIn(identification, self.converter.cache)
+
+        _ = self.converter.inchikey_to_name(inchikey)
+        _ = self.converter.inchikey_to_IUPAC_name(inchikey)
+
+        self.assertIn(identification, self.converter.cache)
