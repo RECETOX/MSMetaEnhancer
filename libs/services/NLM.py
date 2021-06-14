@@ -4,7 +4,7 @@ import pandas as pd
 from libs import Converter
 
 
-class NIH(Converter):
+class NLM(Converter):
     def __init__(self):
         # service URLs
         self.services = {'NLM': 'https://chem.nlm.nih.gov/api/data/'}

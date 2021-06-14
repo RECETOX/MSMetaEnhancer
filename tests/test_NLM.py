@@ -2,15 +2,15 @@ import unittest
 from io import StringIO
 import pandas as pd
 
-from libs.services.NIH import NIH
+from libs.services.NLM import NLM
 
 
-class TestNIH(unittest.TestCase):
+class TestNLM(unittest.TestCase):
     def setUp(self):
-        self.converter = NIH()
+        self.converter = NLM()
 
     def test_connect_to_service(self):
-        # test basic NIH service
+        # test basic NLM service
         inchikey = 'QNAYBMKLOCPYGJ-REOHCLBHSA-N'
         args = 'inchikey/equals/{}?data=summary&format=tsv'.format(inchikey)
         response = self.converter.connect_to_service('NLM', args)
