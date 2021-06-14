@@ -1,10 +1,12 @@
-from libs import converter
+from libs.services.CIR import CIR
+from libs.services.CTS import CTS
 
 
 class Annotator:
     def __init__(self, annotations):
         self.annotations = annotations
-        self.converter = converter
+        self.CTS = CTS()
+        self.CIR = CIR()
 
     def add_possible_annotations(self, metadata):
         """
@@ -48,8 +50,8 @@ class Annotator:
         cas_number = metadata.get('casno', None)
         if cas_number:
             if "-" not in cas_number:
-                cas_number = self.converter.fix_cas_number(cas_number)
-            return self.converter.cas_to_inchikey(cas_number)
+                cas_number = self.CTS.fix_cas_number(cas_number)
+            return self.CTS.cas_to_inchikey(cas_number)
 
     def add_smiles(self, metadata):
         """
@@ -64,8 +66,8 @@ class Annotator:
         cas_number = metadata.get('casno', None)
         if cas_number:
             if "-" not in cas_number:
-                cas_number = self.converter.fix_cas_number(cas_number)
-            return self.converter.cas_to_smiles(cas_number)
+                cas_number = self.CIR.fix_cas_number(cas_number)
+            return self.CIR.cas_to_smiles(cas_number)
 
     def add_inchi(self, metadata):
         """
@@ -79,4 +81,4 @@ class Annotator:
         """
         inchikey = metadata.get('inchikey', None)
         if inchikey:
-            return self.converter.inchikey_to_inchi(inchikey)
+            return self.CTS.inchikey_to_inchi(inchikey)

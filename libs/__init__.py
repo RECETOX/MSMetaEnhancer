@@ -1,3 +1,1 @@
-from libs.Converter import Converter
-
-converter = Converter()
+from libs.services.Converter import Converter
