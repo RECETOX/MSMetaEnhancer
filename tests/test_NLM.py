@@ -24,7 +24,16 @@ class TestNLM(unittest.TestCase):
         name = 'Alanine [USAN:INN]'
         self.assertEqual(self.converter.inchikey_to_name(inchikey), name)
 
+        inchikey = 'QNAYBMLOXXXXGJ-REOHCLBHSA-N'
+        self.assertIsNone(self.converter.inchikey_to_name(inchikey))
+
+        inchikey = 'QNAYMLGJ-REOLBHSA-N'
+        self.assertIsNone(self.converter.inchikey_to_name(inchikey))
+
     def test_name_to_inchikey(self):
         name = 'L-Alanine'
         inchikey = 'QNAYBMKLOCPYGJ-REOHCLBHSA-N'
         self.assertEqual(self.converter.name_to_inchikey(name), inchikey)
+
+        name = 'L-Alanne'
+        self.assertIsNone(self.converter.name_to_inchikey(name))

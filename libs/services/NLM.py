@@ -19,9 +19,10 @@ class NLM(Converter):
         """
         args = 'inchikey/equals/{}?data=summary&format=tsv'.format(inchikey)
         response = self.connect_to_service('NLM', args)
-        table = pd.read_csv(StringIO(response.text), sep='\t')
-        if not table.empty:
-            return table['Name'][0]
+        if response.status_code == 200 and response.text != 'EXPRESSION_INVALID':
+            table = pd.read_csv(StringIO(response.text), sep='\t')
+            if not table.empty:
+                return table['Name'][0]
 
     def name_to_inchikey(self, name):
         """
@@ -33,6 +34,7 @@ class NLM(Converter):
         """
         args = 'name/equals/{}?data=summary&format=tsv'.format(name)
         response = self.connect_to_service('NLM', args)
-        table = pd.read_csv(StringIO(response.text), sep='\t')
-        if not table.empty:
-            return table['InChIKey'][0]
+        if response.status_code == 200:
+            table = pd.read_csv(StringIO(response.text), sep='\t')
+            if not table.empty:
+                return table['InChIKey'][0]

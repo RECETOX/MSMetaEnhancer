@@ -1,6 +1,7 @@
 from matchms.importing import load_from_msp
 from matchms.exporting import save_as_msp
 
+from libs import curator
 from libs.Annotator import Annotator
 
 
@@ -36,4 +37,5 @@ class MSP:
         """
         annotator = Annotator(required_annotations)
         for spectrum in self.spectrums:
-            spectrum.metadata = annotator.add_possible_annotations(spectrum.metadata)
+            metadata = curator.curate_metadata(spectrum.metadata)
+            spectrum.metadata = annotator.add_possible_annotations(metadata)

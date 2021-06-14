@@ -34,9 +34,6 @@ class TestCTS(unittest.TestCase):
         self.converter.services['random'] = 'https://random_strange_url.com'
         self.assertRaises(ConnectionError, self.converter.connect_to_service, 'random', '')
 
-    def test_fix_cas_number(self):
-        self.assertEqual(self.converter.fix_cas_number('7783893'), '7783-89-3')
-
     def test_cas_to_inchikey(self):
         inchikey = 'XQLMNMQWVCXIKR-UHFFFAOYSA-M'
         cas_number = '7783-89-3'
