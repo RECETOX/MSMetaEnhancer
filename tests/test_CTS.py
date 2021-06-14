@@ -47,12 +47,12 @@ class TestCTS(unittest.TestCase):
 
     def test_inchikey_to_inchi(self):
         inchikey = 'XQLMNMQWVCXIKR-UHFFFAOYSA-M'
-        inchi = "1S/Ag.BrHO3/c;2-1(3)4/h;(H,2,3,4)/q+1;/p-1"
+        inchi = '1S/Ag.BrHO3/c;2-1(3)4/h;(H,2,3,4)/q+1;/p-1'
         self.assertEqual(self.converter.inchikey_to_inchi(inchikey), inchi)
 
     def test_name_to_inchikey(self):
-        name = "L-Alanine"
-        inchikey = "QNAYBMKLOCPYGJ-REOHCLBHSA-N"
+        name = 'L-Alanine'
+        inchikey = 'QNAYBMKLOCPYGJ-REOHCLBHSA-N'
         self.assertEqual(self.converter.name_to_inchikey(name), inchikey)
 
     def test_inchikey_to_name(self):
