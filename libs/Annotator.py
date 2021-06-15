@@ -15,7 +15,8 @@ class Annotator:
         Adds additional annotations to given dictionary containing metadata
 
         The method goes through specified annotations and tries to invoke
-        a particular method able to add required annotation.
+        a particular method able to add required annotation (keyword is skipped
+        if such method does not exist).
 
         Since some metadata might depend on other metadata which might be added
         in the process, the method iterates over the annotations until a fixpoint
@@ -47,7 +48,6 @@ class Annotator:
         Parameter conversions has format {metadata_key: [methods], ...}.
         Provided methods require metadata_key as an input argument and
         are used to obtain target metadata.
-        TODO: generalise to multiple input metadata keys
 
         :param conversions: given methods to execute
         :param metadata: specified metadata dictionary

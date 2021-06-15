@@ -30,8 +30,9 @@ class MSP:
     def annotate_spectrums(self, required_annotations):
         """
         Adds additional metadata to all Spectra objects.
-        Required metadata are specified in required_annotations attribute and have to
-        match format of Annotator object.
+
+        Required metadata are specified in required_annotations attribute and
+        have to be defined in and add_ method of Annotator class (otherwise ignored).
 
         :param required_annotations: target annotations
         """
