@@ -7,7 +7,7 @@ class Converter:
         # the same query multiple times in single session
         self.cache = dict()
 
-    def connect_to_service(self, service, args, method='GET'):
+    def connect_to_service(self, service, args, method='GET', data=None):
         """
         Make get request to given service with arguments.
         Raises ConnectionError if service is not available.
@@ -15,29 +15,30 @@ class Converter:
         :param service: requested service to be queried
         :param args: additional query arguments
         :param method: GET (default) or POST
+        :param data: data for POST request
         :return: obtained response
         """
         try:
-            identification = service + ":" + str(args)
+            identification = service + ":" + args
             cached_result = self.cache.get(identification, None)
             if cached_result:
                 return cached_result
-            result = self.execute_request(self.services[service], args, method)
+            result = self.execute_request(self.services[service] + args, method, data)
             self.cache[identification] = result
             return result
         except requests.exceptions.ConnectionError:
             raise ConnectionError('Service {} is not available'.format(service))
 
-    def execute_request(self, url, args, method):
+    def execute_request(self, url, method, data=None):
         """
         Execute request with type depending on specified method.
 
         :param url: service URL
-        :param args: given args - either url args for GET or dict for POST
         :param method: GET/POST
+        :param data: given arguments for POST request
         :return: obtained response
         """
         if method == 'GET':
-            return requests.get(url + args)
+            return requests.get(url)
         else:
-            return requests.post(url, data=args)
+            return requests.post(url, data=data)
