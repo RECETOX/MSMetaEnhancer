@@ -32,7 +32,7 @@ class Annotator:
                 if annotation not in metadata:
                     # make sure an add method for this annotation exists
                     try:
-                        result = getattr(self, "add_" + annotation)(metadata)
+                        result = getattr(self, f"add_{annotation}")(metadata)
                         if result:
                             metadata[annotation] = result
                             added_metadata = True

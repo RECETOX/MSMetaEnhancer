@@ -13,5 +13,5 @@ class Curator:
         :return: CAS number enriched by dashes (if needed)
         """
         if "-" not in cas_number:
-            return cas_number[:-3] + "-" + cas_number[-3:-1] + "-" + cas_number[-1]
+            return f'{cas_number[:-3]}-{cas_number[-3:-1]}-{cas_number[-1]}'
         return cas_number

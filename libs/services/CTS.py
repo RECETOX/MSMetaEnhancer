@@ -19,7 +19,7 @@ class CTS(Converter):
         :param cas_number: given CAS number
         :return: obtained InChiKey
         """
-        args = "CAS/InChIKey/{}".format(cas_number)
+        args = f'CAS/InChIKey/{cas_number}'
         response = self.connect_to_service('CTS', args)
         if len(response.json()[0]['results']) != 0:
             return response.json()[0]['results'][0]
@@ -45,7 +45,7 @@ class CTS(Converter):
         :param name: given Chemical name
         :return: obtained InChiKey
         """
-        args = "Chemical%20Name/InChIKey/{}".format(name)
+        args = f'Chemical%20Name/InChIKey/{name}'
         response = self.connect_to_service('CTS', args)
         if len(response.json()[0]['results']) != 0:
             return response.json()[0]['results'][0]

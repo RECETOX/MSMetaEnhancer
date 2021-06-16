@@ -15,7 +15,7 @@ class CIR(Converter):
         :param cas_number: given CAS number
         :return: obtained SMILES
         """
-        args = "{}/smiles?resolver=cas_number".format(cas_number)
+        args = f"{cas_number}/smiles?resolver=cas_number"
         response = self.connect_to_service('CIR', args)
         if response.status_code == 200:
             return response.text
@@ -28,7 +28,7 @@ class CIR(Converter):
         :param inchikey: given InChiKey
         :return: obtained SMILES
         """
-        args = '{}/smiles'.format(inchikey)
+        args = f'{inchikey}/smiles'
         response = self.connect_to_service('CIR', args)
         if response.status_code == 200:
             return response.text.split('\n')[0]
@@ -41,7 +41,7 @@ class CIR(Converter):
         :param inchikey: given InChiKey
         :return: obtained InCHi
         """
-        args = '{}/stdinchi'.format(inchikey)
+        args = f'{inchikey}/stdinchi'
         response = self.connect_to_service('CIR', args)
         if response.status_code == 200:
             return response.text[6:]
@@ -54,7 +54,7 @@ class CIR(Converter):
         :param inchikey: given InChiKey
         :return: obtained CAS number
         """
-        args = '{}/cas'.format(inchikey)
+        args = f'{inchikey}/cas'
         response = self.connect_to_service('CIR', args)
         if response.status_code == 200:
             return response.text
@@ -67,7 +67,7 @@ class CIR(Converter):
         :param inchikey: given InChiKey
         :return: obtained chemical formula
         """
-        args = '{}/formula'.format(inchikey)
+        args = f'{inchikey}/formula'
         response = self.connect_to_service('CIR', args)
         if response.status_code == 200:
             return response.text
@@ -80,7 +80,7 @@ class CIR(Converter):
         :param smiles: given SMILES
         :return: obtained InChiKey
         """
-        args = '{}/stdinchikey'.format(smiles)
+        args = f'{smiles}/stdinchikey'
         response = self.connect_to_service('CIR', args)
         if response.status_code == 200:
             return response.text[9:]

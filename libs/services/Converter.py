@@ -17,7 +17,7 @@ class Converter:
         :return: obtained response
         """
         try:
-            identification = service + ":" + args
+            identification = f'{service}:{args}'
             cached_result = self.cache.get(identification, None)
             if cached_result:
                 return cached_result
