@@ -44,7 +44,7 @@ class CIR(Converter):
         args = '{}/stdinchi'.format(inchikey)
         response = self.connect_to_service('CIR', args)
         if response.status_code == 200:
-            return response.text[6:]
+            return response.text
 
     def inchikey_to_cas(self, inchikey):
         """

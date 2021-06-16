@@ -44,7 +44,7 @@ class TestCTS(unittest.TestCase):
 
     def test_inchikey_to_inchi(self):
         inchikey = 'XQLMNMQWVCXIKR-UHFFFAOYSA-M'
-        inchi = '1S/Ag.BrHO3/c;2-1(3)4/h;(H,2,3,4)/q+1;/p-1'
+        inchi = 'InChI=1S/Ag.BrHO3/c;2-1(3)4/h;(H,2,3,4)/q+1;/p-1'
         self.assertEqual(self.converter.inchikey_to_inchi(inchikey), inchi)
 
         inchikey = 'XQLMNMQIKR-UHFFFAOYSA-M'
