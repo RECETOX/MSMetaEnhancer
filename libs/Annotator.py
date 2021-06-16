@@ -1,6 +1,7 @@
 from libs.services.CIR import CIR
 from libs.services.CTS import CTS
 from libs.services.NLM import NLM
+from libs.services.PubChem import PubChem
 
 
 class Annotator:
@@ -9,6 +10,7 @@ class Annotator:
         self.CTS = CTS()
         self.CIR = CIR()
         self.NLM = NLM()
+        self.PubChem = PubChem()
 
     def add_possible_annotations(self, metadata):
         """
@@ -70,13 +72,15 @@ class Annotator:
         - CTS service based chemical name
         - NLM service based chemical name
         - CIR service based on SMILES
+        - PubChem service based on InChi
 
         :param metadata: specified metadata dictionary
         :return: found InChiKey (return None if not found)
         """
         conversions = {'casno': [self.CTS.cas_to_inchikey],
                        'name': [self.CTS.name_to_inchikey, self.NLM.name_to_inchikey],
-                       'smiles': [self.CIR.smiles_to_inchikey]}
+                       'smiles': [self.CIR.smiles_to_inchikey],
+                       'inchi': [self.PubChem.inchi_to_inchikey]}
         return self.execute_conversions(conversions, metadata)
 
     def add_smiles(self, metadata):
@@ -86,12 +90,14 @@ class Annotator:
         Currently implemented strategies:
         - CIR service based on CAS number
         - CIR service based on InChiKey
+        - PubChem service based on InChi
 
         :param metadata: specified metadata dictionary
         :return: found SMILES (return None if not found)
         """
         conversions = {'casno': [self.CIR.cas_to_smiles],
-                       'inchikey': [self.CIR.inchikey_to_smiles]}
+                       'inchikey': [self.CIR.inchikey_to_smiles],
+                       'inchi': [self.PubChem.inchi_to_smiles]}
         return self.execute_conversions(conversions, metadata)
 
     def add_inchi(self, metadata):
@@ -101,11 +107,13 @@ class Annotator:
         Currently implemented strategies:
         - CTS compound service based on CAS InChiKey
         - CIR service based on CAS InChiKey
+        - PubChem service based on chemical name
 
         :param metadata: specified metadata dictionary
         :return: found InChi (return None if not found)
         """
-        conversions = {'inchikey': [self.CTS.inchikey_to_inchi, self.CIR.inchikey_to_inchi]}
+        conversions = {'inchikey': [self.CTS.inchikey_to_inchi, self.CIR.inchikey_to_inchi],
+                       'name': [self.PubChem.name_to_inchi]}
         return self.execute_conversions(conversions, metadata)
 
     def add_name(self, metadata):
@@ -128,9 +136,25 @@ class Annotator:
 
         Currently implemented strategies:
         - CTS service based on InChiKey
+        - NLM service based on InChiKey
+        - PubChem service based on InChi
 
         :param metadata: specified metadata dictionary
         :return: found IUPAC name (return None if not found)
         """
-        conversions = {'inchikey': [self.CTS.inchikey_to_IUPAC_name, self.NLM.inchikey_to_name]}
+        conversions = {'inchikey': [self.CTS.inchikey_to_IUPAC_name, self.NLM.inchikey_to_name],
+                       'inchi': [self.PubChem.inchi_to_IUPAC_name]}
+        return self.execute_conversions(conversions, metadata)
+
+    def add_formula(self, metadata):
+        """
+        Tries to find chemical formula name based on specified metadata.
+
+        Currently implemented strategies:
+        - PubChem service based on InChi
+
+        :param metadata: specified metadata dictionary
+        :return: found chemical formula (return None if not found)
+        """
+        conversions = {'inchi': [self.PubChem.inchi_to_formula]}
         return self.execute_conversions(conversions, metadata)
