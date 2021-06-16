@@ -1,3 +1,3 @@
-from libs.Converter import Converter
+from libs.Curator import Curator
 
-converter = Converter()
+curator = Curator()

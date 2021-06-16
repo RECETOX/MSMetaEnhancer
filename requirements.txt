@@ -1,0 +1,4 @@
+matchms~=0.9.0
+pandas~=1.2.4
+requests~=2.25.1
+mock~=4.0.3

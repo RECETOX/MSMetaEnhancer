@@ -1,6 +1,7 @@
 from matchms.importing import load_from_msp
 from matchms.exporting import save_as_msp
 
+from libs import curator
 from libs.Annotator import Annotator
 
 
@@ -29,11 +30,13 @@ class MSP:
     def annotate_spectrums(self, required_annotations):
         """
         Adds additional metadata to all Spectra objects.
-        Required metadata are specified in required_annotations attribute and have to
-        match format of Annotator object.
+
+        Required metadata are specified in required_annotations attribute and
+        have to be defined in and add_ method of Annotator class (otherwise ignored).
 
         :param required_annotations: target annotations
         """
         annotator = Annotator(required_annotations)
         for spectrum in self.spectrums:
-            spectrum.metadata = annotator.add_possible_annotations(spectrum.metadata)
+            metadata = curator.curate_metadata(spectrum.metadata)
+            spectrum.metadata = annotator.add_possible_annotations(metadata)
