@@ -8,7 +8,15 @@ class TestCTS(unittest.TestCase):
         self.converter = PubChem()
 
     def test_connect_to_service(self):
-        pass
+        inchi = 'InChI=1S/C9H10O4/c10-7-3-1-6(2-4-7)5-8(11)9(12)13/h1-4,8,10-11H,5H2,(H,12,13)'
+        args = "inchi/JSON"
+        response = self.converter.connect_to_service('PubChem', args, method='POST', data={'inchi': inchi})
+        self.assertEqual(response.status_code, 200)
+        json = response.json()
+        self.assertIn('PC_Compounds', json)
+        self.assertTrue(len(json['PC_Compounds']) == 1)
+        self.assertIn('props', json['PC_Compounds'][0])
+        self.assertTrue(type(json['PC_Compounds'][0]['props']) == list)
 
     def test_inchi_to_inchikey(self):
         inchi = 'InChI=1S/C9H10O4/c10-7-3-1-6(2-4-7)5-8(11)9(12)13/h1-4,8,10-11H,5H2,(H,12,13)'
