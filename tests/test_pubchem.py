@@ -3,7 +3,7 @@ import unittest
 from libs.services.PubChem import PubChem
 
 
-class TestCTS(unittest.TestCase):
+class TestPubChem(unittest.TestCase):
     def setUp(self):
         self.converter = PubChem()
 

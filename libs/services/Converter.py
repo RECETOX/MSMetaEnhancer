@@ -27,7 +27,7 @@ class Converter:
             self.cache[identification] = result
             return result
         except requests.exceptions.ConnectionError:
-            raise ConnectionError('Service {} is not available'.format(service))
+            raise ConnectionError(f'Service {service} is not available')
 
     def execute_request(self, url, method, data=None):
         """

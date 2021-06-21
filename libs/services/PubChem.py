@@ -15,7 +15,7 @@ class PubChem(Converter):
         :param name: given Chemical name
         :return: found InChi
         """
-        args = 'name/{}/JSON'.format(name)
+        args = f'name/{name}/JSON'
         response = self.connect_to_service('PubChem', args)
         if response.status_code == 200:
             for prop in response.json()['PC_Compounds'][0]['props']:
