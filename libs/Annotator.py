@@ -10,7 +10,7 @@ class Annotator:
     def __init__(self):
         self.services = {'CTS': CTS(), 'CIR': CIR(), 'NLM': NLM(), 'PubChem': PubChem()}
 
-    def annotate(self, metadata, jobs, all=False):
+    def annotate(self, metadata, jobs, all=False, repeat=False):
         """
         Runs all jobs to add annotations to given dictionary containing metadata
 
@@ -18,11 +18,10 @@ class Annotator:
         and tries to obtain 'Target' attribute based on 'Source' attribute using
         'Service' service.
 
-         TODO: run only once or until fixpoint is reached?
-
         :param metadata: given spectra metadata
         :param jobs: specified list of jobs to be executed
         :param all: specifies if all possible jobs should be executed instead of given ones
+        :param repeat: if some metadata was added, all jobs are executed again
         :return: annotated dictionary
         """
         if all:
@@ -30,24 +29,29 @@ class Annotator:
 
         jobs = convert_to_jobs(jobs)
 
-        for job in jobs:
-            service = self.services.get(job.service, None)
-            if service:
+        added_metadata = True
+        while added_metadata:
+            added_metadata = False
+            for job in jobs:
+                service = self.services.get(job.service, None)
                 data = metadata.get(job.source, None)
-                if data:
+
+                if job.target in metadata:
+                    pass  # TODO: log - data already present
+                elif service is None:
+                    pass  # TODO: log - unknown service
+                elif data is None:
+                    pass  # TODO: log - source data not available for conversion
+                else:
                     try:
                         result = service.convert(job.source, job.target, data)
                         metadata[job.target] = result
+                        if repeat:
+                            added_metadata = True
                     except ConversionNotSupported:
                         pass  # TODO log this type of conversion is not supported by the service
                     except DataNotRetrieved:
                         pass  # TODO log no data were retrieved
-                else:
-                    pass
-                    # TODO: log data not available for conversion
-            else:
-                pass
-                # TODO: log unknown service
         return metadata
 
     def get_all_conversions(self):
