@@ -3,7 +3,6 @@ from matchms.exporting import save_as_msp
 
 from libs import curator
 from libs.Annotator import Annotator
-from libs.utils.Job import Job
 
 
 class MSP:
@@ -37,8 +36,16 @@ class MSP:
 
         :param jobs: target annotation jobs
         """
-        jobs = [Job(data) for data in jobs]
-        annotator = Annotator(jobs)
+        annotator = Annotator()
         for i, spectrum in enumerate(self.spectrums):
             metadata = curator.curate_metadata(spectrum.metadata)
-            spectrum.metadata = annotator.annotate(metadata)
+            spectrum.metadata = annotator.annotate(metadata, jobs)
+
+    def annotate_spectrums_all_attributes(self):
+        """
+        Adds all implemented metadata to all Spectra objects.
+        """
+        annotator = Annotator()
+        for i, spectrum in enumerate(self.spectrums):
+            metadata = curator.curate_metadata(spectrum.metadata)
+            spectrum.metadata = annotator.annotate(metadata, [], all=True)
