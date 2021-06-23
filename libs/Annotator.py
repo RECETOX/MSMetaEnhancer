@@ -10,7 +10,7 @@ class Annotator:
     def __init__(self):
         self.services = {'CTS': CTS(), 'CIR': CIR(), 'NLM': NLM(), 'PubChem': PubChem()}
 
-    def annotate(self, metadata, jobs, all=False, repeat=False):
+    def annotate(self, metadata, jobs, repeat=False):
         """
         Runs all jobs to add annotations to given dictionary containing metadata
 
@@ -20,13 +20,9 @@ class Annotator:
 
         :param metadata: given spectra metadata
         :param jobs: specified list of jobs to be executed
-        :param all: specifies if all possible jobs should be executed instead of given ones
         :param repeat: if some metadata was added, all jobs are executed again
         :return: annotated dictionary
         """
-        if all:
-            jobs = self.get_all_conversions()
-
         jobs = convert_to_jobs(jobs)
 
         added_metadata = True

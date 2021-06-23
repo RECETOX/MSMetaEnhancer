@@ -21,8 +21,9 @@ class CTS(Converter):
         """
         args = f'CAS/InChIKey/{cas_number}'
         response = self.query_the_service('CTS', args)
-        if len(response.json()[0]['results']) != 0:
-            return response.json()[0]['results'][0]
+        if response.status_code == 200:
+            if len(response.json()[0]['results']) != 0:
+                return response.json()[0]['results'][0]
 
     def inchikey_to_inchi(self, inchikey):
         """
@@ -47,8 +48,9 @@ class CTS(Converter):
         """
         args = f'Chemical%20Name/InChIKey/{name}'
         response = self.query_the_service('CTS', args)
-        if len(response.json()[0]['results']) != 0:
-            return response.json()[0]['results'][0]
+        if response.status_code == 200:
+            if len(response.json()[0]['results']) != 0:
+                return response.json()[0]['results'][0]
 
     def inchikey_to_name(self, inchikey):
         """

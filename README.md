@@ -21,6 +21,9 @@ jobs = [('name', 'inchi', 'PubChem'),
         ('casno', 'inchikey', 'CTS')]
 msp.annotate_spectrums(jobs)
 
+# to get available jobs
+available_jobs = msp.get_available_jobs()
+
 # export file 
 msp.save_msp_file('path_to_a_new_file.msp')
 ```
