@@ -35,7 +35,7 @@ class CTS(Converter):
         args = inchikey
         response = self.connect_to_service('CTS_compound', args)
         if response.status_code == 200:
-            return response.json()["inchicode"][6:]
+            return response.json()["inchicode"]
 
     def name_to_inchikey(self, name):
         """
