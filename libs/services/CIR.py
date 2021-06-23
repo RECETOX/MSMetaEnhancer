@@ -16,7 +16,7 @@ class CIR(Converter):
         :return: obtained SMILES
         """
         args = f"{cas_number}/smiles?resolver=cas_number"
-        response = self.connect_to_service('CIR', args)
+        response = self.query_the_service('CIR', args)
         if response.status_code == 200:
             return response.text
 
@@ -29,7 +29,7 @@ class CIR(Converter):
         :return: obtained SMILES
         """
         args = f'{inchikey}/smiles'
-        response = self.connect_to_service('CIR', args)
+        response = self.query_the_service('CIR', args)
         if response.status_code == 200:
             return response.text.split('\n')[0]
 
@@ -42,7 +42,7 @@ class CIR(Converter):
         :return: obtained InCHi
         """
         args = f'{inchikey}/stdinchi'
-        response = self.connect_to_service('CIR', args)
+        response = self.query_the_service('CIR', args)
         if response.status_code == 200:
             return response.text
 
@@ -55,7 +55,7 @@ class CIR(Converter):
         :return: obtained CAS number
         """
         args = f'{inchikey}/cas'
-        response = self.connect_to_service('CIR', args)
+        response = self.query_the_service('CIR', args)
         if response.status_code == 200:
             return response.text
 
@@ -68,7 +68,7 @@ class CIR(Converter):
         :return: obtained chemical formula
         """
         args = f'{inchikey}/formula'
-        response = self.connect_to_service('CIR', args)
+        response = self.query_the_service('CIR', args)
         if response.status_code == 200:
             return response.text
 
@@ -81,6 +81,6 @@ class CIR(Converter):
         :return: obtained InChiKey
         """
         args = f'{smiles}/stdinchikey'
-        response = self.connect_to_service('CIR', args)
+        response = self.query_the_service('CIR', args)
         if response.status_code == 200:
             return response.text[9:]

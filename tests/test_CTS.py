@@ -11,7 +11,7 @@ class TestCTS(unittest.TestCase):
         # test basic CTS service
         cas_number = '7783-89-3'
         args = 'CAS/InChIKey/{}'.format(cas_number)
-        response = self.converter.connect_to_service('CTS', args)
+        response = self.converter.query_the_service('CTS', args)
         self.assertEqual(response.status_code, 200)
         json = response.json()
         self.assertTrue(type(json == list))
@@ -22,7 +22,7 @@ class TestCTS(unittest.TestCase):
         # incorrect CAS number
         cas_number = '7783893'
         args = 'CAS/InChIKey/{}'.format(cas_number)
-        response = self.converter.connect_to_service('CTS', args)
+        response = self.converter.query_the_service('CTS', args)
         self.assertEqual(response.status_code, 200)
         json = response.json()
         self.assertTrue(type(json == list))
@@ -32,7 +32,7 @@ class TestCTS(unittest.TestCase):
 
         # test incorrect service (simulates unavailable service)
         self.converter.services['random'] = 'https://random_strange_url.com'
-        self.assertRaises(ConnectionError, self.converter.connect_to_service, 'random', '')
+        self.assertRaises(ConnectionError, self.converter.query_the_service, 'random', '')
 
     def test_cas_to_inchikey(self):
         inchikey = 'XQLMNMQWVCXIKR-UHFFFAOYSA-M'
@@ -69,10 +69,10 @@ class TestCTS(unittest.TestCase):
     def test_inchikey_to_IUPAC_name(self):
         inchikey = 'QNAYBMKLOCPYGJ-REOHCLBHSA-N'
         uipac_name = '(2S)-2-aminopropanoic acid'
-        self.assertEqual(self.converter.inchikey_to_IUPAC_name(inchikey), uipac_name)
+        self.assertEqual(self.converter.inchikey_to_iupac_name(inchikey), uipac_name)
 
         inchikey = 'XQLMNMQIKR-UHFFFAOYSA-M'
-        self.assertIsNone(self.converter.inchikey_to_IUPAC_name(inchikey))
+        self.assertIsNone(self.converter.inchikey_to_iupac_name(inchikey))
 
     def test_cache(self):
         inchikey = 'XQLMNMQWVCXIKR-UHFFFAOYSA-M'
@@ -82,6 +82,6 @@ class TestCTS(unittest.TestCase):
         self.assertIn(identification, self.converter.cache)
 
         _ = self.converter.inchikey_to_name(inchikey)
-        _ = self.converter.inchikey_to_IUPAC_name(inchikey)
+        _ = self.converter.inchikey_to_iupac_name(inchikey)
 
         self.assertIn(identification, self.converter.cache)

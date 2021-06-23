@@ -10,7 +10,7 @@ class TestPubChem(unittest.TestCase):
     def test_connect_to_service(self):
         inchi = 'InChI=1S/C9H10O4/c10-7-3-1-6(2-4-7)5-8(11)9(12)13/h1-4,8,10-11H,5H2,(H,12,13)'
         args = "inchi/JSON"
-        response = self.converter.connect_to_service('PubChem', args, method='POST', data={'inchi': inchi})
+        response = self.converter.query_the_service('PubChem', args, method='POST', data={'inchi': inchi})
         self.assertEqual(response.status_code, 200)
         json = response.json()
         self.assertIn('PC_Compounds', json)
@@ -40,13 +40,13 @@ class TestPubChem(unittest.TestCase):
     def test_inchi_to_IUPAC_name(self):
         inchi = 'InChI=1S/C11H8FNO3/c1-13-6-9(10(14)16-11(13)15)7-2-4-8(12)5-3-7/h2-6H,1H3'
         IUPAC_name = '5-(4-fluorophenyl)-3-methyl-1,3-oxazine-2,6-dione'
-        self.assertEqual(self.converter.inchi_to_IUPAC_name(inchi), IUPAC_name)
+        self.assertEqual(self.converter.inchi_to_iupac_name(inchi), IUPAC_name)
 
         # clear the cache
         self.converter.cache = dict()
 
         wrong_inchi = 'InChI=1S/C9H10O4/c102-4-7)5-8(11)93/1-4,8,10-11H,5H2,(H,12,13)'
-        self.assertIsNone(self.converter.inchi_to_IUPAC_name(wrong_inchi))
+        self.assertIsNone(self.converter.inchi_to_iupac_name(wrong_inchi))
 
     def test_inchi_to_formula(self):
         inchi = 'InChI=1S/C11H8FNO3/c1-13-6-9(10(14)16-11(13)15)7-2-4-8(12)5-3-7/h2-6H,1H3'
