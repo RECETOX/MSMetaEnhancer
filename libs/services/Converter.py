@@ -1,5 +1,4 @@
 from aiohttp.client_exceptions import ServerDisconnectedError
-import requests
 from libs.utils.Errors import DataNotRetrieved, ConversionNotSupported
 
 
@@ -11,6 +10,7 @@ class Converter:
 
         :param service: requested service to be queried
         :param args: additional query arguments
+        :param session: current aiohttp session
         :param method: GET (default) or POST
         :param data: data for POST request
         :return: obtained response
@@ -18,8 +18,8 @@ class Converter:
         try:
             result = await self.execute_request(self.services[service] + args, method, data, session)
             return result
-        except requests.exceptions.ConnectionError:
-            raise ConnectionError(f'Service {service} is not available')
+        except TypeError:
+            pass  # TODO: log - probably given argument is incorrect
 
     async def execute_request(self, url, method, data, session, depth=10):
         """
@@ -28,6 +28,8 @@ class Converter:
         :param url: service URL
         :param method: GET/POST
         :param data: given arguments for POST request
+        :param session: current aiohttp session
+        :param depth: allowed recursion depth for unsuccessful requests
         :return: obtained response
         """
         try:
