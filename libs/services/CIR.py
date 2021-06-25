@@ -7,7 +7,7 @@ class CIR(Converter):
         # service URLs
         self.services = {'CIR': 'https://cactus.nci.nih.gov/chemical/structure/'}
 
-    def cas_to_smiles(self, cas_number):
+    async def cas_to_smiles(self, cas_number, session):
         """
         Convert CAS number to SMILES using CIR web service
         More info: https://cactus.nci.nih.gov/chemical/structure_documentation
@@ -16,11 +16,11 @@ class CIR(Converter):
         :return: obtained SMILES
         """
         args = f"{cas_number}/smiles?resolver=cas_number"
-        response = self.query_the_service('CIR', args)
-        if response.status_code == 200:
-            return response.text
+        response = await self.query_the_service('CIR', args, session)
+        if response:
+            return response
 
-    def inchikey_to_smiles(self, inchikey):
+    async def inchikey_to_smiles(self, inchikey, session):
         """
         Convert InChiKey to SMILES using CIR web service
         More info: https://cactus.nci.nih.gov/chemical/structure_documentation
@@ -29,11 +29,11 @@ class CIR(Converter):
         :return: obtained SMILES
         """
         args = f'{inchikey}/smiles'
-        response = self.query_the_service('CIR', args)
-        if response.status_code == 200:
-            return response.text.split('\n')[0]
+        response = await self.query_the_service('CIR', args, session)
+        if response:
+            return response.split('\n')[0]
 
-    def inchikey_to_inchi(self, inchikey):
+    async def inchikey_to_inchi(self, inchikey, session):
         """
         Convert InChiKey to InCHi using CIR web service
         More info: https://cactus.nci.nih.gov/chemical/structure_documentation
@@ -42,11 +42,11 @@ class CIR(Converter):
         :return: obtained InCHi
         """
         args = f'{inchikey}/stdinchi'
-        response = self.query_the_service('CIR', args)
-        if response.status_code == 200:
-            return response.text
+        response = await self.query_the_service('CIR', args, session)
+        if response:
+            return response
 
-    def inchikey_to_cas(self, inchikey):
+    async def inchikey_to_cas(self, inchikey, session):
         """
         Convert InChiKey to CAS number using CIR web service
         More info: https://cactus.nci.nih.gov/chemical/structure_documentation
@@ -55,11 +55,11 @@ class CIR(Converter):
         :return: obtained CAS number
         """
         args = f'{inchikey}/cas'
-        response = self.query_the_service('CIR', args)
-        if response.status_code == 200:
-            return response.text
+        response = await self.query_the_service('CIR', args, session)
+        if response:
+            return response
 
-    def inchikey_to_formula(self, inchikey):
+    async def inchikey_to_formula(self, inchikey, session):
         """
         Convert InChiKey to chemical formula using CIR web service
         More info: https://cactus.nci.nih.gov/chemical/structure_documentation
@@ -68,11 +68,11 @@ class CIR(Converter):
         :return: obtained chemical formula
         """
         args = f'{inchikey}/formula'
-        response = self.query_the_service('CIR', args)
-        if response.status_code == 200:
-            return response.text
+        response = await self.query_the_service('CIR', args, session)
+        if response:
+            return response
 
-    def smiles_to_inchikey(self, smiles):
+    async def smiles_to_inchikey(self, smiles, session):
         """
         Convert SMILES to InChiKey using CIR web service
         More info: https://cactus.nci.nih.gov/chemical/structure_documentation
@@ -81,6 +81,6 @@ class CIR(Converter):
         :return: obtained InChiKey
         """
         args = f'{smiles}/stdinchikey'
-        response = self.query_the_service('CIR', args)
-        if response.status_code == 200:
-            return response.text[9:]
+        response = await self.query_the_service('CIR', args, session)
+        if response:
+            return response[9:]
