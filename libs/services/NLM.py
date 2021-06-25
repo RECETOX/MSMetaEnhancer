@@ -19,7 +19,7 @@ class NLM(Converter):
         :return: obtained Chemical name
         """
         args = f'inchikey/equals/{inchikey}?data=summary&format=tsv'
-        response = self.connect_to_service('NLM', args)
+        response = self.query_the_service('NLM', args)
         if response.status_code == 200 and response.text != 'EXPRESSION_INVALID':
             table = pd.read_csv(StringIO(response.text), sep='\t')
             if not table.empty:
@@ -34,7 +34,7 @@ class NLM(Converter):
         :return: obtained InChiKey
         """
         args = f'name/equals/{name}?data=summary&format=tsv'
-        response = self.connect_to_service('NLM', args)
+        response = self.query_the_service('NLM', args)
         if response.status_code == 200:
             table = pd.read_csv(StringIO(response.text), sep='\t')
             if not table.empty:

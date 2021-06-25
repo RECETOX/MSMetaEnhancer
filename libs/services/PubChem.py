@@ -16,7 +16,7 @@ class PubChem(Converter):
         :return: found InChi
         """
         args = f'name/{name}/JSON'
-        response = self.connect_to_service('PubChem', args)
+        response = self.query_the_service('PubChem', args)
         if response.status_code == 200:
             for prop in response.json()['PC_Compounds'][0]['props']:
                 if prop['urn']['label'] == 'InChI':
@@ -36,7 +36,7 @@ class PubChem(Converter):
                 if prop['urn']['label'] == 'InChIKey':
                     return prop['value']['sval']
 
-    def inchi_to_IUPAC_name(self, inchi):
+    def inchi_to_iupac_name(self, inchi):
         """
         Convert InChi to IUPAC name using PubChem service
         More info: https://pubchemdocs.ncbi.nlm.nih.gov/pug-rest
@@ -86,6 +86,6 @@ class PubChem(Converter):
         :return: obtained properties associated to the given InChi
         """
         args = "inchi/JSON"
-        response = self.connect_to_service('PubChem', args, method='POST', data={'inchi': inchi})
+        response = self.query_the_service('PubChem', args, method='POST', data={'inchi': inchi})
         if response.status_code == 200:
             return response.json()['PC_Compounds'][0]['props']

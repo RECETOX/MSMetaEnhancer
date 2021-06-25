@@ -1,4 +1,5 @@
 import requests
+from libs.utils.Errors import DataNotRetrieved, ConversionNotSupported
 
 
 class Converter:
@@ -7,7 +8,7 @@ class Converter:
         # the same query multiple times in single session
         self.cache = dict()
 
-    def connect_to_service(self, service, args, method='GET', data=None):
+    def query_the_service(self, service, args, method='GET', data=None):
         """
         Make get request to given service with arguments.
         Raises ConnectionError if service is not available.
@@ -42,3 +43,20 @@ class Converter:
             return requests.get(url)
         else:
             return requests.post(url, data=data)
+
+    def convert(self, source, target, data):
+        """
+        Converts specified {source} attribute (provided in {data}) to {target} attribute.
+
+        :param source: given attribute name
+        :param target: required attribute name
+        :param data: given attribute value
+        :return: obtained value of target attribute
+        """
+        try:
+            result = getattr(self, f'{source}_to_{target}')(data)
+            if result:
+                return result
+            raise DataNotRetrieved(f'Target attribute {target} not available.')
+        except AttributeError:
+            raise ConversionNotSupported(f'Target attribute {target} is not supported.')

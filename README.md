@@ -13,10 +13,16 @@ from libs.MSP import MSP
 msp = MSP()
 msp.load_msp_file('path_to_my_file.msp')
 
-# specify required annotations to be added to the MSP file (possible a subset of these)
-required_annotations = ['inchikey', 'smiles', 'inchi', 'name', 'IUPAC', 'formula']
-# main function to annotate the fule
-msp.annotate_spectrums(required_annotations)
+# main function to annotate the MSP file using all available approaches
+msp.annotate_spectrums_all_attributes()
+
+# alternatively, it is possible to specify just particular jobs to do
+jobs = [('name', 'inchi', 'PubChem'),
+        ('casno', 'inchikey', 'CTS')]
+msp.annotate_spectrums(jobs)
+
+# to get available jobs
+available_jobs = msp.get_available_jobs()
 
 # export file 
 msp.save_msp_file('path_to_a_new_file.msp')

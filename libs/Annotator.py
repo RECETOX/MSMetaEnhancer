@@ -1,160 +1,66 @@
+from libs.utils.Errors import ConversionNotSupported, DataNotRetrieved
 from libs.services.CIR import CIR
 from libs.services.CTS import CTS
 from libs.services.NLM import NLM
 from libs.services.PubChem import PubChem
+from libs.utils.Job import convert_to_jobs
 
 
 class Annotator:
-    def __init__(self, annotations):
-        self.annotations = annotations
-        self.CTS = CTS()
-        self.CIR = CIR()
-        self.NLM = NLM()
-        self.PubChem = PubChem()
+    def __init__(self):
+        self.services = {'CTS': CTS(), 'CIR': CIR(), 'NLM': NLM(), 'PubChem': PubChem()}
 
-    def add_possible_annotations(self, metadata):
+    def annotate(self, metadata, jobs, repeat=False):
         """
-        Adds additional annotations to given dictionary containing metadata
+        Runs all jobs to add annotations to given dictionary containing metadata
 
-        The method goes through specified annotations and tries to invoke
-        a particular method able to add required annotation (keyword is skipped
-        if such method does not exist).
-
-        Since some metadata might depend on other metadata which might be added
-        in the process, the method iterates over the annotations until a fixpoint
-        is reached.
+        The method goes through specified jobs of form (Source, Target, Service)
+        and tries to obtain 'Target' attribute based on 'Source' attribute using
+        'Service' service.
 
         :param metadata: given spectra metadata
+        :param jobs: specified list of jobs to be executed
+        :param repeat: if some metadata was added, all jobs are executed again
         :return: annotated dictionary
         """
+        jobs = convert_to_jobs(jobs)
+
         added_metadata = True
         while added_metadata:
             added_metadata = False
-            for annotation in self.annotations:
-                if annotation not in metadata:
-                    # make sure an add method for this annotation exists
+            for job in jobs:
+                service = self.services.get(job.service, None)
+                data = metadata.get(job.source, None)
+
+                if job.target in metadata:
+                    pass  # TODO: log - data already present
+                elif service is None:
+                    pass  # TODO: log - unknown service
+                elif data is None:
+                    pass  # TODO: log - source data not available for conversion
+                else:
                     try:
-                        result = getattr(self, f"add_{annotation}")(metadata)
-                        if result:
-                            metadata[annotation] = result
+                        result = service.convert(job.source, job.target, data)
+                        metadata[job.target] = result
+                        if repeat:
                             added_metadata = True
-                    except AttributeError:
-                        pass
+                    except ConversionNotSupported:
+                        pass  # TODO log this type of conversion is not supported by the service
+                    except DataNotRetrieved:
+                        pass  # TODO log no data were retrieved
         return metadata
 
-    @staticmethod
-    def execute_conversions(conversions, metadata):
+    def get_all_conversions(self):
         """
-        General method to execute provided alternative ways how to obtain specific metadata.
+        Method to compute all available conversion functions of all available Services.
 
-        Parameter conversions has format {metadata_key: [methods], ...}.
-        Provided methods require metadata_key as an input argument and
-        are used to obtain target metadata.
+        Assumes that the functions always have from {source}_to_{target}
 
-        :param conversions: given methods to execute
-        :param metadata: specified metadata dictionary
-        :return: obtained target attribute (None if not found)
+        :return: a list of available conversion functions
         """
-        for metadata_key in conversions:
-            metadata_value = metadata.get(metadata_key, None)
-            if metadata_value:
-                for method in conversions[metadata_key]:
-                    result = method(metadata_value)
-                    if result:
-                        return result
-
-    def add_inchikey(self, metadata):
-        """
-        Tries to find an InChiKey based on specified metadata.
-
-        Currently implemented strategies:
-        - CTS service based on CAS number
-        - CTS service based chemical name
-        - NLM service based chemical name
-        - CIR service based on SMILES
-        - PubChem service based on InChi
-
-        :param metadata: specified metadata dictionary
-        :return: found InChiKey (return None if not found)
-        """
-        conversions = {'casno': [self.CTS.cas_to_inchikey],
-                       'name': [self.CTS.name_to_inchikey, self.NLM.name_to_inchikey],
-                       'smiles': [self.CIR.smiles_to_inchikey],
-                       'inchi': [self.PubChem.inchi_to_inchikey]}
-        return self.execute_conversions(conversions, metadata)
-
-    def add_smiles(self, metadata):
-        """
-        Tries to find an SMILES based on specified metadata.
-
-        Currently implemented strategies:
-        - CIR service based on CAS number
-        - CIR service based on InChiKey
-        - PubChem service based on InChi
-
-        :param metadata: specified metadata dictionary
-        :return: found SMILES (return None if not found)
-        """
-        conversions = {'casno': [self.CIR.cas_to_smiles],
-                       'inchikey': [self.CIR.inchikey_to_smiles],
-                       'inchi': [self.PubChem.inchi_to_smiles]}
-        return self.execute_conversions(conversions, metadata)
-
-    def add_inchi(self, metadata):
-        """
-        Tries to find an InChi based on specified metadata.
-
-        Currently implemented strategies:
-        - CTS compound service based on CAS InChiKey
-        - CIR service based on CAS InChiKey
-        - PubChem service based on chemical name
-
-        :param metadata: specified metadata dictionary
-        :return: found InChi (return None if not found)
-        """
-        conversions = {'inchikey': [self.CTS.inchikey_to_inchi, self.CIR.inchikey_to_inchi],
-                       'name': [self.PubChem.name_to_inchi]}
-        return self.execute_conversions(conversions, metadata)
-
-    def add_name(self, metadata):
-        """
-        Tries to find an Chemical name based on specified metadata.
-
-        Currently implemented strategies:
-        - CTS service based on InChiKey
-        - NLM service based on InChiKey
-
-        :param metadata: specified metadata dictionary
-        :return: found Chemical name (return None if not found)
-        """
-        conversions = {'inchikey': [self.CTS.inchikey_to_name, self.NLM.inchikey_to_name]}
-        return self.execute_conversions(conversions, metadata)
-
-    def add_IUPAC(self, metadata):
-        """
-        Tries to find an IUPAC name based on specified metadata.
-
-        Currently implemented strategies:
-        - CTS service based on InChiKey
-        - NLM service based on InChiKey
-        - PubChem service based on InChi
-
-        :param metadata: specified metadata dictionary
-        :return: found IUPAC name (return None if not found)
-        """
-        conversions = {'inchikey': [self.CTS.inchikey_to_IUPAC_name, self.NLM.inchikey_to_name],
-                       'inchi': [self.PubChem.inchi_to_IUPAC_name]}
-        return self.execute_conversions(conversions, metadata)
-
-    def add_formula(self, metadata):
-        """
-        Tries to find chemical formula name based on specified metadata.
-
-        Currently implemented strategies:
-        - PubChem service based on InChi
-
-        :param metadata: specified metadata dictionary
-        :return: found chemical formula (return None if not found)
-        """
-        conversions = {'inchi': [self.PubChem.inchi_to_formula]}
-        return self.execute_conversions(conversions, metadata)
+        jobs = []
+        for service in self.services:
+            methods = [method_name for method_name in dir(self.services[service]) if '_to_' in method_name]
+            for method in methods:
+                jobs.append((*method.split('_to_'), service))
+        return jobs

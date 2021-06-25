@@ -20,9 +20,10 @@ class CTS(Converter):
         :return: obtained InChiKey
         """
         args = f'CAS/InChIKey/{cas_number}'
-        response = self.connect_to_service('CTS', args)
-        if len(response.json()[0]['results']) != 0:
-            return response.json()[0]['results'][0]
+        response = self.query_the_service('CTS', args)
+        if response.status_code == 200:
+            if len(response.json()[0]['results']) != 0:
+                return response.json()[0]['results'][0]
 
     def inchikey_to_inchi(self, inchikey):
         """
@@ -33,7 +34,7 @@ class CTS(Converter):
         :return: obtained InChi
         """
         args = inchikey
-        response = self.connect_to_service('CTS_compound', args)
+        response = self.query_the_service('CTS_compound', args)
         if response.status_code == 200:
             return response.json()["inchicode"]
 
@@ -46,9 +47,10 @@ class CTS(Converter):
         :return: obtained InChiKey
         """
         args = f'Chemical%20Name/InChIKey/{name}'
-        response = self.connect_to_service('CTS', args)
-        if len(response.json()[0]['results']) != 0:
-            return response.json()[0]['results'][0]
+        response = self.query_the_service('CTS', args)
+        if response.status_code == 200:
+            if len(response.json()[0]['results']) != 0:
+                return response.json()[0]['results'][0]
 
     def inchikey_to_name(self, inchikey):
         """
@@ -59,14 +61,14 @@ class CTS(Converter):
         :return: obtained Chemical name
         """
         args = inchikey
-        response = self.connect_to_service('CTS_compound', args)
+        response = self.query_the_service('CTS_compound', args)
         if response.status_code == 200:
             synonyms = response.json()['synonyms']
             names = [item['name'] for item in synonyms if item['type'] == 'Synonym']
             if names:
                 return names[0]
 
-    def inchikey_to_IUPAC_name(self, inchikey):
+    def inchikey_to_iupac_name(self, inchikey):
         """
         Convert InChiKey to IUPAC name using CTS compound service
         More info: http://cts.fiehnlab.ucdavis.edu/services
@@ -75,7 +77,7 @@ class CTS(Converter):
         :return: obtained IUPAC name
         """
         args = inchikey
-        response = self.connect_to_service('CTS_compound', args)
+        response = self.query_the_service('CTS_compound', args)
         if response.status_code == 200:
             synonyms = response.json()['synonyms']
             names = [item['name'] for item in synonyms if item['type'] == 'IUPAC Name (Preferred)']

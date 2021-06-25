@@ -11,14 +11,14 @@ class TestCIR(unittest.TestCase):
         # test basic CIR service
         cas_number = '7783-89-3'
         args = '{}/smiles?resolver=cas_number'.format(cas_number)
-        response = self.converter.connect_to_service('CIR', args)
+        response = self.converter.query_the_service('CIR', args)
         self.assertEqual(response.status_code, 200)
         self.assertTrue(type(response.text) == str)
 
         # incorrect CAS number
         cas_number = '7783893'
         args = '{}/smiles?resolver=cas_number'.format(cas_number)
-        response = self.converter.connect_to_service('CIR', args)
+        response = self.converter.query_the_service('CIR', args)
         self.assertEqual(response.status_code, 500)
 
     def test_cas_to_smiles(self):

@@ -13,7 +13,7 @@ class TestNLM(unittest.TestCase):
         # test basic NLM service
         inchikey = 'QNAYBMKLOCPYGJ-REOHCLBHSA-N'
         args = 'inchikey/equals/{}?data=summary&format=tsv'.format(inchikey)
-        response = self.converter.connect_to_service('NLM', args)
+        response = self.converter.query_the_service('NLM', args)
         self.assertEqual(response.status_code, 200)
 
         table = pd.read_csv(StringIO(response.text), sep='\t')

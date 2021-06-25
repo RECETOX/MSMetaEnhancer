@@ -7,6 +7,7 @@ from libs.Annotator import Annotator
 
 class MSP:
     def __init__(self):
+        self.annotator = Annotator()
         self.spectrums = []
 
     def load_msp_file(self, filename):
@@ -27,16 +28,32 @@ class MSP:
         """
         save_as_msp(self.spectrums, filename)
 
-    def annotate_spectrums(self, required_annotations):
+    def get_available_jobs(self):
+        """
+        Method to compute all available conversion services of Annotator class.
+
+        :return: a list of available conversion services
+        """
+        return self.annotator.get_all_conversions()
+
+    def annotate_spectrums(self, jobs):
         """
         Adds additional metadata to all Spectra objects.
 
         Required metadata are specified in required_annotations attribute and
         have to be defined in and add_ method of Annotator class (otherwise ignored).
 
-        :param required_annotations: target annotations
+        :param jobs: target annotation jobs
         """
-        annotator = Annotator(required_annotations)
-        for spectrum in self.spectrums:
+        for i, spectrum in enumerate(self.spectrums):
             metadata = curator.curate_metadata(spectrum.metadata)
-            spectrum.metadata = annotator.add_possible_annotations(metadata)
+            spectrum.metadata = self.annotator.annotate(metadata, jobs)
+
+    def annotate_spectrums_all_attributes(self):
+        """
+        Adds all implemented metadata to all Spectra objects.
+        """
+        jobs = self.get_available_jobs()
+        for i, spectrum in enumerate(self.spectrums):
+            metadata = curator.curate_metadata(spectrum.metadata)
+            spectrum.metadata = self.annotator.annotate(metadata, jobs)
