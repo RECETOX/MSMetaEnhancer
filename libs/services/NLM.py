@@ -1,6 +1,5 @@
 from io import StringIO
 
-import math
 import pandas as pd
 
 from libs.services.Converter import Converter
@@ -42,5 +41,5 @@ class NLM(Converter):
             table = pd.read_csv(StringIO(response), sep='\t')
             if not table.empty:
                 inchikey = table['InChIKey'][0]
-                if not math.isnan(inchikey):
+                if type(inchikey) == str:
                     return inchikey
