@@ -7,23 +7,23 @@ Repository for tool that adds more annotations (e.g. SMILES, InChI, CAS number) 
 
 ```python
 # import MSP class
-from libs.MSP import MSP
+from libs.Spectra import Spectra
 
 # create MSP object and import your .msp file
-msp = MSP()
-msp.load_msp_file('path_to_my_file.msp')
+spectra = Spectra()
+spectra.load_msp_file('path_to_my_file.msp')
 
 # main function to annotate the MSP file using all available approaches
-msp.annotate_spectrums_all_attributes()
+spectra.annotate_spectrums_all_attributes()
 
 # alternatively, it is possible to specify just particular jobs to do
 jobs = [('name', 'inchi', 'PubChem'),
         ('casno', 'inchikey', 'CTS')]
-msp.annotate_spectrums(jobs)
+spectra.annotate_spectrums(jobs)
 
 # to get available jobs
-available_jobs = msp.get_available_jobs()
+available_jobs = spectra.get_available_jobs()
 
 # export file 
-msp.save_msp_file('path_to_a_new_file.msp')
+spectra.save_msp_file('path_to_a_new_file.msp')
 ```

@@ -5,7 +5,7 @@ from libs import curator
 from libs.Annotator import Annotator
 
 
-class MSP:
+class Spectra:
     def __init__(self):
         self.annotator = Annotator()
         self.spectrums = []
