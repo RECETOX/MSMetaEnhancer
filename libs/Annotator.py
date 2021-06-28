@@ -9,8 +9,9 @@ from libs.utils.Job import convert_to_jobs
 class Annotator:
     def __init__(self):
         self.services = {'CTS': CTS(), 'CIR': CIR(), 'NLM': NLM(), 'PubChem': PubChem()}
+        self.session = None
 
-    async def annotate(self, spectra, jobs, session, repeat=False):
+    async def annotate(self, spectra, jobs, repeat=False):
         """
         Runs all jobs to add annotations to given dictionary containing metadata
 
@@ -21,9 +22,12 @@ class Annotator:
         :param spectra: given spectra metadata
         :param jobs: specified list of jobs to be executed
         :param repeat: if some metadata was added, all jobs are executed again
-        :param session: current aiohttp session
         :return: annotated dictionary
         """
+        # set session to every service
+        for service in self.services.values():
+            service.session = self.session
+
         jobs = convert_to_jobs(jobs)
         metadata = spectra.metadata
 
@@ -42,7 +46,7 @@ class Annotator:
                     pass  # TODO: log - source data not available for conversion
                 else:
                     try:
-                        result = await service.convert(job.source, job.target, data, session)
+                        result = await service.convert(job.source, job.target, data)
                         metadata[job.target] = result
                         if repeat:
                             added_metadata = True

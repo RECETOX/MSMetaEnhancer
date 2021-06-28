@@ -48,9 +48,10 @@ class Spectra:
         :param repeat: if some metadata was added, all jobs are executed again
         """
         async with aiohttp.ClientSession() as session:
+            self.annotator.session = session
             results = []
             for size in range(len(self.spectrums) // batch_size + 1):
-                results += await asyncio.gather(*[self.annotator.annotate(spectra, jobs, session, repeat) for spectra in
+                results += await asyncio.gather(*[self.annotator.annotate(spectra, jobs, repeat) for spectra in
                                                   self.spectrums[size * batch_size:(size + 1) * batch_size]])
         self.spectrums = results
 
