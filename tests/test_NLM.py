@@ -4,7 +4,7 @@ from io import StringIO
 import pandas as pd
 
 from libs.services.NLM import NLM
-from tests.utils import run_in_session
+from tests.utils import wrap_with_session
 
 
 class TestNLM(unittest.TestCase):
@@ -15,7 +15,7 @@ class TestNLM(unittest.TestCase):
         # test basic NLM service
         inchikey = 'QNAYBMKLOCPYGJ-REOHCLBHSA-N'
         args = 'inchikey/equals/{}?data=summary&format=tsv'.format(inchikey)
-        response = asyncio.run(run_in_session(self.converter, 'query_the_service', ['NLM', args]))
+        response = asyncio.run(wrap_with_session(self.converter, 'query_the_service', ['NLM', args]))
 
         table = pd.read_csv(StringIO(response), sep='\t')
         self.assertFalse(table.empty)
@@ -24,19 +24,19 @@ class TestNLM(unittest.TestCase):
         inchikey = 'QNAYBMKLOCPYGJ-REOHCLBHSA-N'
         name = 'Alanine [USAN:INN]'
 
-        self.assertEqual(asyncio.run(run_in_session(self.converter, 'inchikey_to_name', [inchikey])), name)
+        self.assertEqual(asyncio.run(wrap_with_session(self.converter, 'inchikey_to_name', [inchikey])), name)
 
         inchikey = 'QNAYBMLOXXXXGJ-REOHCLBHSA-N'
-        self.assertIsNone(asyncio.run(run_in_session(self.converter, 'inchikey_to_name', [inchikey])))
+        self.assertIsNone(asyncio.run(wrap_with_session(self.converter, 'inchikey_to_name', [inchikey])))
 
         inchikey = 'QNAYMLGJ-REOLBHSA-N'
-        self.assertIsNone(asyncio.run(run_in_session(self.converter, 'inchikey_to_name', [inchikey])))
+        self.assertIsNone(asyncio.run(wrap_with_session(self.converter, 'inchikey_to_name', [inchikey])))
 
     def test_name_to_inchikey(self):
         name = 'L-Alanine'
         inchikey = 'QNAYBMKLOCPYGJ-REOHCLBHSA-N'
 
-        self.assertEqual(asyncio.run(run_in_session(self.converter, 'name_to_inchikey', [name])), inchikey)
+        self.assertEqual(asyncio.run(wrap_with_session(self.converter, 'name_to_inchikey', [name])), inchikey)
 
         name = 'L-Alanne'
-        self.assertIsNone(asyncio.run(run_in_session(self.converter, 'name_to_inchikey', [name])))
+        self.assertIsNone(asyncio.run(wrap_with_session(self.converter, 'name_to_inchikey', [name])))
