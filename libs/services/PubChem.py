@@ -1,3 +1,5 @@
+import json
+
 from libs.services.Converter import Converter
 
 
@@ -7,7 +9,7 @@ class PubChem(Converter):
         # service URLs
         self.services = {'PubChem': 'https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/'}
 
-    def name_to_inchi(self, name):
+    async def name_to_inchi(self, name):
         """
         Convert Chemical name to InChi using PubChem service
         More info: https://pubchemdocs.ncbi.nlm.nih.gov/pug-rest
@@ -16,13 +18,14 @@ class PubChem(Converter):
         :return: found InChi
         """
         args = f'name/{name}/JSON'
-        response = self.query_the_service('PubChem', args)
-        if response.status_code == 200:
-            for prop in response.json()['PC_Compounds'][0]['props']:
+        response = await self.query_the_service('PubChem', args)
+        if response:
+            response_json = json.loads(response)
+            for prop in response_json['PC_Compounds'][0]['props']:
                 if prop['urn']['label'] == 'InChI':
                     return prop['value']['sval']
 
-    def inchi_to_inchikey(self, inchi):
+    async def inchi_to_inchikey(self, inchi):
         """
         Convert InChi to InChiKey using PubChem service
         More info: https://pubchemdocs.ncbi.nlm.nih.gov/pug-rest
@@ -30,13 +33,13 @@ class PubChem(Converter):
         :param inchi: given InChi
         :return: found InChiKey
         """
-        props = self.get_props_from_inchi(inchi)
+        props = await self.get_props_from_inchi(inchi)
         if props:
             for prop in props:
                 if prop['urn']['label'] == 'InChIKey':
                     return prop['value']['sval']
 
-    def inchi_to_iupac_name(self, inchi):
+    async def inchi_to_iupac_name(self, inchi):
         """
         Convert InChi to IUPAC name using PubChem service
         More info: https://pubchemdocs.ncbi.nlm.nih.gov/pug-rest
@@ -44,13 +47,13 @@ class PubChem(Converter):
         :param inchi: given InChi
         :return: found IUPAC name
         """
-        props = self.get_props_from_inchi(inchi)
+        props = await self.get_props_from_inchi(inchi)
         if props:
             for prop in props:
                 if prop['urn']['label'] == 'IUPAC Name' and prop['urn']['name'] == 'Preferred':
                     return prop['value']['sval']
 
-    def inchi_to_formula(self, inchi):
+    async def inchi_to_formula(self, inchi):
         """
         Convert InChi to chemical formula using PubChem service
         More info: https://pubchemdocs.ncbi.nlm.nih.gov/pug-rest
@@ -58,13 +61,13 @@ class PubChem(Converter):
         :param inchi: given InChi
         :return: found chemical formula
         """
-        props = self.get_props_from_inchi(inchi)
+        props = await self.get_props_from_inchi(inchi)
         if props:
             for prop in props:
                 if prop['urn']['label'] == 'Molecular Formula':
                     return prop['value']['sval']
 
-    def inchi_to_smiles(self, inchi):
+    async def inchi_to_smiles(self, inchi):
         """
         Convert InChi to SMILES using PubChem service
         More info: https://pubchemdocs.ncbi.nlm.nih.gov/pug-rest
@@ -72,13 +75,13 @@ class PubChem(Converter):
         :param inchi: given InChi
         :return: found SMILES
         """
-        props = self.get_props_from_inchi(inchi)
+        props = await self.get_props_from_inchi(inchi)
         if props:
             for prop in props:
                 if prop['urn']['label'] == 'SMILES' and prop['urn']['name'] == 'Canonical':
                     return prop['value']['sval']
 
-    def get_props_from_inchi(self, inchi):
+    async def get_props_from_inchi(self, inchi):
         """
         General methods to obtain all possible data based on InChi.
 
@@ -86,6 +89,7 @@ class PubChem(Converter):
         :return: obtained properties associated to the given InChi
         """
         args = "inchi/JSON"
-        response = self.query_the_service('PubChem', args, method='POST', data={'inchi': inchi})
-        if response.status_code == 200:
-            return response.json()['PC_Compounds'][0]['props']
+        response = await self.query_the_service('PubChem', args, method='POST', data={'inchi': inchi})
+        if response:
+            response_json = json.loads(response)
+            return response_json['PC_Compounds'][0]['props']

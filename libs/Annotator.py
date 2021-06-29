@@ -9,8 +9,9 @@ from libs.utils.Job import convert_to_jobs
 class Annotator:
     def __init__(self):
         self.services = {'CTS': CTS(), 'CIR': CIR(), 'NLM': NLM(), 'PubChem': PubChem()}
+        self.session = None
 
-    def annotate(self, metadata, jobs, repeat=False):
+    async def annotate(self, spectra, jobs, repeat=False):
         """
         Runs all jobs to add annotations to given dictionary containing metadata
 
@@ -18,12 +19,17 @@ class Annotator:
         and tries to obtain 'Target' attribute based on 'Source' attribute using
         'Service' service.
 
-        :param metadata: given spectra metadata
+        :param spectra: given spectra metadata
         :param jobs: specified list of jobs to be executed
         :param repeat: if some metadata was added, all jobs are executed again
         :return: annotated dictionary
         """
+        # set session to every service
+        for service in self.services.values():
+            service.session = self.session
+
         jobs = convert_to_jobs(jobs)
+        metadata = spectra.metadata
 
         added_metadata = True
         while added_metadata:
@@ -40,7 +46,7 @@ class Annotator:
                     pass  # TODO: log - source data not available for conversion
                 else:
                     try:
-                        result = service.convert(job.source, job.target, data)
+                        result = await service.convert(job.source, job.target, data)
                         metadata[job.target] = result
                         if repeat:
                             added_metadata = True
@@ -48,7 +54,8 @@ class Annotator:
                         pass  # TODO log this type of conversion is not supported by the service
                     except DataNotRetrieved:
                         pass  # TODO log no data were retrieved
-        return metadata
+        spectra.metadata = metadata
+        return spectra
 
     def get_all_conversions(self):
         """

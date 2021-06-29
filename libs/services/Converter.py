@@ -1,14 +1,12 @@
-import requests
+from aiohttp.client_exceptions import ServerDisconnectedError
 from libs.utils.Errors import DataNotRetrieved, ConversionNotSupported
 
 
 class Converter:
     def __init__(self):
-        # used to store individual API calls to avoid executing
-        # the same query multiple times in single session
-        self.cache = dict()
+        self.session = None
 
-    def query_the_service(self, service, args, method='GET', data=None):
+    async def query_the_service(self, service, args, method='GET', data=None):
         """
         Make get request to given service with arguments.
         Raises ConnectionError if service is not available.
@@ -20,31 +18,53 @@ class Converter:
         :return: obtained response
         """
         try:
-            identification = f'{service}:{args}'
-            cached_result = self.cache.get(identification, None)
-            if cached_result:
-                return cached_result
-            result = self.execute_request(self.services[service] + args, method, data)
-            self.cache[identification] = result
+            result = await self.loop_request(self.services[service] + args, method, data)
             return result
-        except requests.exceptions.ConnectionError:
-            raise ConnectionError(f'Service {service} is not available')
+        except TypeError:
+            pass  # TODO: log - probably given argument is incorrect
 
-    def execute_request(self, url, method, data=None):
+    async def loop_request(self, url, method, data, depth=10):
         """
         Execute request with type depending on specified method.
 
         :param url: service URL
         :param method: GET/POST
         :param data: given arguments for POST request
+        :param depth: allowed recursion depth for unsuccessful requests
         :return: obtained response
         """
-        if method == 'GET':
-            return requests.get(url)
-        else:
-            return requests.post(url, data=data)
+        try:
+            if method == 'GET':
+                async with self.session.get(url=url) as response:
+                    return await self.process_request(response, url, method, data, depth)
+            else:
+                async with self.session.post(url=url, data=data) as response:
+                    return await self.process_request(response, url, method, data, depth)
+        except ServerDisconnectedError:
+            if depth > 0:
+                return await self.loop_request(url, method, data, depth - 1)
 
-    def convert(self, source, target, data):
+    async def process_request(self, response, url, method, data, depth):
+        """
+        Method to wrap response handling (same for POST and GET requests).
+
+        :param response: given async response
+        :param url: service URL
+        :param method: GET/POST
+        :param data: given arguments for POST request
+        :param depth: allowed recursion depth for unsuccessful requests
+        :return: processed response
+        """
+        result = await response.text()
+        if response.ok:
+            return result
+        elif response.status == 503:
+            if depth > 0:
+                return await self.loop_request(url, method, data, depth - 1)
+        else:
+            pass  # TODO: log - other error responses
+
+    async def convert(self, source, target, data):
         """
         Converts specified {source} attribute (provided in {data}) to {target} attribute.
 
@@ -54,7 +74,7 @@ class Converter:
         :return: obtained value of target attribute
         """
         try:
-            result = getattr(self, f'{source}_to_{target}')(data)
+            result = await getattr(self, f'{source}_to_{target}')(data)
             if result:
                 return result
             raise DataNotRetrieved(f'Target attribute {target} not available.')
