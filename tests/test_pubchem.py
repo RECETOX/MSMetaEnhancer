@@ -8,7 +8,7 @@ from tests.utils import wrap_with_session
 
 class TestPubChem(unittest.TestCase):
     def setUp(self):
-        self.converter = PubChem()
+        self.converter = PubChem
 
     def test_connect_to_service(self):
         inchi = 'InChI=1S/C9H10O4/c10-7-3-1-6(2-4-7)5-8(11)9(12)13/h1-4,8,10-11H,5H2,(H,12,13)'
