@@ -1,5 +1,4 @@
 from libs.utils.Errors import ConversionNotSupported, DataNotRetrieved
-from libs.utils.Job import convert_to_jobs
 
 
 class Annotator:
@@ -19,7 +18,6 @@ class Annotator:
         :param repeat: if some metadata was added, all jobs are executed again
         :return: annotated dictionary
         """
-        jobs = convert_to_jobs(jobs)
         metadata = spectra.metadata
 
         added_metadata = True

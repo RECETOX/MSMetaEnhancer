@@ -9,27 +9,28 @@ Repository for tool that adds more annotations (e.g. SMILES, InChI, CAS number) 
 import asyncio
 
 from app import Application
-from libs.Spectra import Spectra
-from libs.Curator import Curator
 
-# create Spectra object and import your .msp file
-spectra = Spectra()
-spectra.load_msp_file('tests/test_data/sample.msp')
+app = Application()
+
+# import your .msp file
+app.load_spectra('tests/test_data/sample.msp', file_format='msp')
 
 # curate given metadata (e.g. fix CAS numbers)
-curator = Curator()
-spectra = curator.curate_spectra(spectra)
+app.curate_spectra()
 
-# specify requested services and create Application
+# specify requested services (these are supported)
 services = ['CTS', 'CIR', 'NLM', 'PubChem']
-app = Application(services)
 
 # specify requested jobs
-jobs = [('name', 'inchi', 'PubChem'), ('inchi', 'formula', 'PubChem'), 
-        ('inchi', 'inchikey', 'PubChem'), ('inchi', 'smiles', 'PubChem')]
+jobs = [('name', 'inchi', 'PubChem'), ('inchi', 'formula', 'PubChem'), ('inchi', 'inchikey', 'PubChem'),
+        ('inchi', 'iupac_name', 'PubChem'), ('inchi', 'smiles', 'PubChem')]
+
 # run asynchronous annotations of spectra data
-spectra.spectrums = asyncio.run(app.annotate_spectra(spectra, jobs))
+asyncio.run(app.annotate_spectra(services, jobs))
+
+# execute without jobs parameter to run all possible jobs
+asyncio.run(app.annotate_spectra(services))
 
 # export .msp file 
-spectra.save_msp_file('tests/test_data/sample_out.msp')
+app.save_spectra('tests/test_data/sample_out.msp', file_format='msp')
 ```

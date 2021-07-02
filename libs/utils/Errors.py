@@ -8,3 +8,7 @@ class DataNotRetrieved(Exception):
 
 class UnknownService(Exception):
     pass
+
+
+class UnknownSpectraFormat(Exception):
+    pass
