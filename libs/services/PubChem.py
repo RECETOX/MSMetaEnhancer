@@ -9,87 +9,65 @@ class PubChem(Converter):
         # service URLs
         self.services = {'PubChem': 'https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/'}
 
-    async def name_to_inchi(self, name):
+        self.attributes = [{'code': 'inchi', 'label': 'InChI', 'extra': None},
+                           {'code': 'inchikey', 'label': 'InChIKey', 'extra': None},
+                           {'code': 'iupac_name', 'label': 'IUPAC Name', 'extra': 'Preferred'},
+                           {'code': 'formula', 'label': 'Molecular Formula', 'extra': None},
+                           {'code': 'smiles', 'label': 'SMILES', 'extra': 'Canonical'}]
+
+        # generate top level methods defining allowed conversions
+        conversions = [('name', 'inchi', 'from_name'),
+                       ('inchi', 'inchikey', 'from_inchi'),
+                       ('inchi', 'iupac_name', 'from_name'),
+                       ('inchi', 'formula', 'from_name'),
+                       ('inchi', 'smiles', 'from_name')]
+        self.create_top_level_conversion_methods(conversions)
+
+    async def from_name(self, name):
         """
-        Convert Chemical name to InChi using PubChem service
+        Convert Chemical name to all possible attributes using PubChem service
         More info: https://pubchemdocs.ncbi.nlm.nih.gov/pug-rest
 
         :param name: given Chemical name
-        :return: found InChi
+        :return: all found data
         """
         args = f'name/{name}/JSON'
         response = await self.query_the_service('PubChem', args)
         if response:
-            response_json = json.loads(response)
-            for prop in response_json['PC_Compounds'][0]['props']:
-                if prop['urn']['label'] == 'InChI':
-                    return prop['value']['sval']
+            return self.parse_attributes(response)
 
-    async def inchi_to_inchikey(self, inchi):
+    async def from_inchi(self, inchi):
         """
-        Convert InChi to InChiKey using PubChem service
+        Convert InChi to to all possible attributes using PubChem service
         More info: https://pubchemdocs.ncbi.nlm.nih.gov/pug-rest
 
         :param inchi: given InChi
-        :return: found InChiKey
-        """
-        props = await self.get_props_from_inchi(inchi)
-        if props:
-            for prop in props:
-                if prop['urn']['label'] == 'InChIKey':
-                    return prop['value']['sval']
-
-    async def inchi_to_iupac_name(self, inchi):
-        """
-        Convert InChi to IUPAC name using PubChem service
-        More info: https://pubchemdocs.ncbi.nlm.nih.gov/pug-rest
-
-        :param inchi: given InChi
-        :return: found IUPAC name
-        """
-        props = await self.get_props_from_inchi(inchi)
-        if props:
-            for prop in props:
-                if prop['urn']['label'] == 'IUPAC Name' and prop['urn']['name'] == 'Preferred':
-                    return prop['value']['sval']
-
-    async def inchi_to_formula(self, inchi):
-        """
-        Convert InChi to chemical formula using PubChem service
-        More info: https://pubchemdocs.ncbi.nlm.nih.gov/pug-rest
-
-        :param inchi: given InChi
-        :return: found chemical formula
-        """
-        props = await self.get_props_from_inchi(inchi)
-        if props:
-            for prop in props:
-                if prop['urn']['label'] == 'Molecular Formula':
-                    return prop['value']['sval']
-
-    async def inchi_to_smiles(self, inchi):
-        """
-        Convert InChi to SMILES using PubChem service
-        More info: https://pubchemdocs.ncbi.nlm.nih.gov/pug-rest
-
-        :param inchi: given InChi
-        :return: found SMILES
-        """
-        props = await self.get_props_from_inchi(inchi)
-        if props:
-            for prop in props:
-                if prop['urn']['label'] == 'SMILES' and prop['urn']['name'] == 'Canonical':
-                    return prop['value']['sval']
-
-    async def get_props_from_inchi(self, inchi):
-        """
-        General methods to obtain all possible data based on InChi.
-
-        :param inchi: given InChi
-        :return: obtained properties associated to the given InChi
+        :return: all found data
         """
         args = "inchi/JSON"
         response = await self.query_the_service('PubChem', args, method='POST', data={'inchi': inchi})
         if response:
-            response_json = json.loads(response)
-            return response_json['PC_Compounds'][0]['props']
+            return self.parse_attributes(response)
+
+    def parse_attributes(self, response):
+        """
+        Parse all available attributes (specified in self.attributes) from given response.
+
+        Method does not return anything, instead stores data in local cache.
+
+        :param response: given JSON
+        :return: all parsed data
+        """
+        response_json = json.loads(response)
+        result = dict()
+
+        for prop in response_json['PC_Compounds'][0]['props']:
+            label = prop['urn']['label']
+            for att in self.attributes:
+                if label == att['label']:
+                    if att['extra']:
+                        if prop['urn']['name'] == att['extra']:
+                            result[att['code']] = prop['value']['sval']
+                    else:
+                        result[att['code']] = prop['value']['sval']
+        return result

@@ -79,8 +79,7 @@ class Annotator:
         """
         jobs = []
         for service in self.services:
-            methods = [method_name for method_name in dir(self.services[service]) if 'from_' in method_name]
+            methods = [method_name for method_name in dir(self.services[service]) if '_to_' in method_name]
             for method in methods:
-                for attribute in self.services[service].supported_attributes:
-                    jobs.append((method[5:], attribute, service))
+                jobs.append((*method.split('_to_'), service))
         return jobs
