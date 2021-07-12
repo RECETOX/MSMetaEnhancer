@@ -2,8 +2,8 @@ from libs.services.Converter import Converter
 
 
 class CIR(Converter):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, session):
+        super().__init__(session)
         # service URLs
         self.services = {'CIR': 'https://cactus.nci.nih.gov/chemical/structure/'}
 

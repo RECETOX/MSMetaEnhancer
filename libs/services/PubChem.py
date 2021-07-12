@@ -4,8 +4,8 @@ from libs.services.Converter import Converter
 
 
 class PubChem(Converter):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, session):
+        super().__init__(session)
         # service URLs
         self.services = {'PubChem': 'https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/'}
 

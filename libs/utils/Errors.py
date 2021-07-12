@@ -4,3 +4,11 @@ class ConversionNotSupported(Exception):
 
 class DataNotRetrieved(Exception):
     pass
+
+
+class UnknownService(Exception):
+    pass
+
+
+class UnknownSpectraFormat(Exception):
+    pass

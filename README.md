@@ -6,24 +6,31 @@ Repository for tool that adds more annotations (e.g. SMILES, InChI, CAS number) 
 ### How to use this tool
 
 ```python
-# import MSP class
-from libs.Spectra import Spectra
+import asyncio
 
-# create MSP object and import your .msp file
-spectra = Spectra()
-spectra.load_msp_file('path_to_my_file.msp')
+from app import Application
 
-# main function to annotate the MSP file using all available approaches
-spectra.annotate_spectrums_all_attributes()
+app = Application()
 
-# alternatively, it is possible to specify just particular jobs to do
-jobs = [('name', 'inchi', 'PubChem'),
-        ('casno', 'inchikey', 'CTS')]
-spectra.annotate_spectrums(jobs)
+# import your .msp file
+app.load_spectra('tests/test_data/sample.msp', file_format='msp')
 
-# to get available jobs
-available_jobs = spectra.get_available_jobs()
+# curate given metadata (e.g. fix CAS numbers)
+app.curate_spectra()
 
-# export file 
-spectra.save_msp_file('path_to_a_new_file.msp')
+# specify requested services (these are supported)
+services = ['CTS', 'CIR', 'NLM', 'PubChem']
+
+# specify requested jobs
+jobs = [('name', 'inchi', 'PubChem'), ('inchi', 'formula', 'PubChem'), ('inchi', 'inchikey', 'PubChem'),
+        ('inchi', 'iupac_name', 'PubChem'), ('inchi', 'smiles', 'PubChem')]
+
+# run asynchronous annotations of spectra data
+asyncio.run(app.annotate_spectra(services, jobs))
+
+# execute without jobs parameter to run all possible jobs
+asyncio.run(app.annotate_spectra(services))
+
+# export .msp file 
+app.save_spectra('tests/test_data/sample_out.msp', file_format='msp')
 ```

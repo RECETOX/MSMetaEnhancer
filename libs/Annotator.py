@@ -1,15 +1,9 @@
 from libs.utils.Errors import ConversionNotSupported, DataNotRetrieved
-from libs.services.CIR import CIR
-from libs.services.CTS import CTS
-from libs.services.NLM import NLM
-from libs.services.PubChem import PubChem
-from libs.utils.Job import convert_to_jobs
 
 
 class Annotator:
-    def __init__(self):
-        self.services = {'CTS': CTS(), 'CIR': CIR(), 'NLM': NLM(), 'PubChem': PubChem()}
-        self.session = None
+    def __init__(self, services):
+        self.services = services
 
     async def annotate(self, spectra, jobs, repeat=False):
         """
@@ -24,11 +18,6 @@ class Annotator:
         :param repeat: if some metadata was added, all jobs are executed again
         :return: annotated dictionary
         """
-        # set session to every service
-        for service in self.services.values():
-            service.session = self.session
-
-        jobs = convert_to_jobs(jobs)
         metadata = spectra.metadata
 
         added_metadata = True

@@ -7,7 +7,7 @@ from tests.utils import wrap_with_session
 
 class TestCIR(unittest.TestCase):
     def setUp(self):
-        self.converter = CIR()
+        self.converter = CIR
 
     def test_connect_to_service(self):
         # test basic CIR service

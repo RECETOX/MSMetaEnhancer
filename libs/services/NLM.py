@@ -6,8 +6,8 @@ from libs.services.Converter import Converter
 
 
 class NLM(Converter):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, session):
+        super().__init__(session)
         # service URLs
         self.services = {'NLM': 'https://chem.nlm.nih.gov/api/data/'}
 

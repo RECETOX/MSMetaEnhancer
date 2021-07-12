@@ -9,7 +9,7 @@ from tests.utils import wrap_with_session
 
 class TestNLM(unittest.TestCase):
     def setUp(self):
-        self.converter = NLM()
+        self.converter = NLM
 
     def test_connect_to_service(self):
         # test basic NLM service

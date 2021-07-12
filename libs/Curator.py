@@ -1,4 +1,9 @@
 class Curator:
+    def curate_spectra(self, spectra):
+        for spectrum in spectra.spectrums:
+            spectrum.metadata = self.curate_metadata(spectrum.metadata)
+        return spectra
+
     def curate_metadata(self, metadata):
         if 'casno' in metadata:
             metadata['casno'] = self.fix_cas_number(metadata['casno'])

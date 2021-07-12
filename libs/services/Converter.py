@@ -3,8 +3,8 @@ from libs.utils.Errors import DataNotRetrieved, ConversionNotSupported
 
 
 class Converter:
-    def __init__(self):
-        self.session = None
+    def __init__(self, session):
+        self.session = session
 
     async def query_the_service(self, service, args, method='GET', data=None):
         """

@@ -1,7 +1,6 @@
 import asyncio
 import unittest
 import json
-from aiohttp.client_exceptions import ClientConnectorError
 
 from libs.services.CTS import CTS
 from tests.utils import wrap_with_session
@@ -9,7 +8,7 @@ from tests.utils import wrap_with_session
 
 class TestCTS(unittest.TestCase):
     def setUp(self):
-        self.converter = CTS()
+        self.converter = CTS
 
     def test_connect_to_service(self):
         # test basic CTS service
@@ -31,15 +30,6 @@ class TestCTS(unittest.TestCase):
         self.assertEqual(len(response_json), 1)
         self.assertIn('results', response_json[0])
         self.assertEqual(len(response_json[0]['results']), 0)
-
-        # test incorrect service (simulates unavailable service)
-        self.converter.services['random'] = 'https://random_strange_url.com'
-        try:
-            asyncio.run(wrap_with_session(self.converter, 'query_the_service', ['random', '']))
-        except ClientConnectorError:
-            pass
-        else:
-            self.fail('ConnectionError not raised')
 
     def test_cas_to_inchikey(self):
         inchikey = 'XQLMNMQWVCXIKR-UHFFFAOYSA-M'
