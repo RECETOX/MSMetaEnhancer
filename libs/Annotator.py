@@ -19,6 +19,7 @@ class Annotator:
         :return: annotated dictionary
         """
         metadata = spectra.metadata
+        cache = dict()
 
         added_metadata = True
         while added_metadata:
@@ -35,10 +36,17 @@ class Annotator:
                     pass  # TODO: log - source data not available for conversion
                 else:
                     try:
-                        result = await service.convert(job.source, job.target, data)
-                        metadata[job.target] = result
-                        if repeat:
-                            added_metadata = True
+                        if job.target in cache:
+                            metadata[job.target] = cache[job.target]
+                        else:
+                            result = await service.convert(job.source, job.target, data)
+                            cache.update(result)
+                            if job.target in cache:
+                                metadata[job.target] = cache[job.target]
+                                if repeat:
+                                    added_metadata = True
+                            else:
+                                pass  # TODO log no data were retrieved
                     except ConversionNotSupported:
                         pass  # TODO log this type of conversion is not supported by the service
                     except DataNotRetrieved:

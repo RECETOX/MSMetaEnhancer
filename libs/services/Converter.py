@@ -73,10 +73,12 @@ class Converter:
         :param data: given attribute value
         :return: obtained value of target attribute
         """
+        if target not in self.supported_attributes:
+            raise ConversionNotSupported(f'Target attribute {target} is not supported.')
         try:
-            result = await getattr(self, f'{source}_to_{target}')(data)
+            result = await getattr(self, f'from_{source}')(data)
             if result:
                 return result
-            raise DataNotRetrieved(f'Target attribute {target} not available.')
+            raise DataNotRetrieved(f'Target attribute {target} not retrieved.')
         except AttributeError:
-            raise ConversionNotSupported(f'Target attribute {target} is not supported.')
+            raise ConversionNotSupported(f'Source attribute {source} is not supported.')
