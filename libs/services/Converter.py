@@ -1,3 +1,6 @@
+from asyncstdlib import lru_cache
+
+
 from aiohttp.client_exceptions import ServerDisconnectedError
 from libs.utils.Errors import DataNotRetrieved, ConversionNotSupported
 
@@ -6,6 +9,7 @@ class Converter:
     def __init__(self, session):
         self.session = session
 
+    @lru_cache
     async def query_the_service(self, service, args, method='GET', data=None):
         """
         Make get request to given service with arguments.

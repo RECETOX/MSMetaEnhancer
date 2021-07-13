@@ -1,6 +1,7 @@
 import json
 
 from libs.services.Converter import Converter
+from libs.utils.HashableDict import HashableDict
 
 
 class PubChem(Converter):
@@ -17,10 +18,14 @@ class PubChem(Converter):
 
         # generate top level methods defining allowed conversions
         conversions = [('name', 'inchi', 'from_name'),
+                       ('name', 'inchikey', 'from_name'),
+                       ('name', 'iupac_name', 'from_name'),
+                       ('name', 'formula', 'from_name'),
+                       ('name', 'smiles', 'from_name'),
                        ('inchi', 'inchikey', 'from_inchi'),
-                       ('inchi', 'iupac_name', 'from_name'),
-                       ('inchi', 'formula', 'from_name'),
-                       ('inchi', 'smiles', 'from_name')]
+                       ('inchi', 'iupac_name', 'from_inchi'),
+                       ('inchi', 'formula', 'from_inchi'),
+                       ('inchi', 'smiles', 'from_inchi')]
         self.create_top_level_conversion_methods(conversions)
 
     async def from_name(self, name):
@@ -45,7 +50,7 @@ class PubChem(Converter):
         :return: all found data
         """
         args = "inchi/JSON"
-        response = await self.query_the_service('PubChem', args, method='POST', data={'inchi': inchi})
+        response = await self.query_the_service('PubChem', args, method='POST', data=HashableDict({'inchi': inchi}))
         if response:
             return self.parse_attributes(response)
 
