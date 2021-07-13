@@ -10,7 +10,7 @@ class TestAnnotator(unittest.TestCase):
     def test_annotate(self):
         jobs = [Job(('name', 'inchi', 'PubChem'))]
         pubchem = mock.AsyncMock()
-        pubchem.convert = mock.AsyncMock(return_value='a InChi value')
+        pubchem.convert = mock.AsyncMock(return_value={'inchi': 'a InChi value'})
 
         services = {'PubChem': pubchem}
         annotator = Annotator(services)

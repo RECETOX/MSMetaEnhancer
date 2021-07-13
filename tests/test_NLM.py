@@ -24,7 +24,7 @@ class TestNLM(unittest.TestCase):
         inchikey = 'QNAYBMKLOCPYGJ-REOHCLBHSA-N'
         name = 'Alanine [USAN:INN]'
 
-        self.assertEqual(asyncio.run(wrap_with_session(self.converter, 'inchikey_to_name', [inchikey])), name)
+        self.assertEqual(asyncio.run(wrap_with_session(self.converter, 'inchikey_to_name', [inchikey]))['name'], name)
 
         inchikey = 'QNAYBMLOXXXXGJ-REOHCLBHSA-N'
         self.assertIsNone(asyncio.run(wrap_with_session(self.converter, 'inchikey_to_name', [inchikey])))
@@ -36,7 +36,8 @@ class TestNLM(unittest.TestCase):
         name = 'L-Alanine'
         inchikey = 'QNAYBMKLOCPYGJ-REOHCLBHSA-N'
 
-        self.assertEqual(asyncio.run(wrap_with_session(self.converter, 'name_to_inchikey', [name])), inchikey)
+        self.assertEqual(asyncio.run(wrap_with_session(self.converter, 'name_to_inchikey', [name]))['inchikey'],
+                         inchikey)
 
         name = 'L-Alanne'
         self.assertIsNone(asyncio.run(wrap_with_session(self.converter, 'name_to_inchikey', [name])))

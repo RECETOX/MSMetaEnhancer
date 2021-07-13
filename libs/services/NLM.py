@@ -67,4 +67,4 @@ class NLM(Converter):
                     value = table[att['label']][0]
                     if type(value) == str:
                         result[att['code']] = value
-        return result
+            return result
