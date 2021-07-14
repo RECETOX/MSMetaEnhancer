@@ -1,7 +1,7 @@
 import json
 
 from libs.services.Converter import Converter
-from libs.utils.HashableDict import HashableDict
+from frozendict import frozendict
 
 
 class PubChem(Converter):
@@ -50,7 +50,7 @@ class PubChem(Converter):
         :return: all found data
         """
         args = "inchi/JSON"
-        response = await self.query_the_service('PubChem', args, method='POST', data=HashableDict({'inchi': inchi}))
+        response = await self.query_the_service('PubChem', args, method='POST', data=frozendict({'inchi': inchi}))
         if response:
             return self.parse_attributes(response)
 

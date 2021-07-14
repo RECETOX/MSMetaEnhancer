@@ -3,7 +3,7 @@ import unittest
 import json
 
 from libs.services.PubChem import PubChem
-from libs.utils.HashableDict import HashableDict
+from frozendict import frozendict
 from tests.utils import wrap_with_session
 
 
@@ -15,7 +15,7 @@ class TestPubChem(unittest.TestCase):
         inchi = 'InChI=1S/C9H10O4/c10-7-3-1-6(2-4-7)5-8(11)9(12)13/h1-4,8,10-11H,5H2,(H,12,13)'
         args = "inchi/JSON"
         response = asyncio.run(wrap_with_session(self.converter, 'query_the_service',
-                                                 ['PubChem', args, 'POST', HashableDict({'inchi': inchi})]))
+                                                 ['PubChem', args, 'POST', frozendict({'inchi': inchi})]))
         response_json = json.loads(response)
         self.assertIn('PC_Compounds', response_json)
         self.assertTrue(len(response_json['PC_Compounds']) == 1)
