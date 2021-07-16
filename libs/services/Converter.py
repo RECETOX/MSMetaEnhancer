@@ -1,3 +1,6 @@
+from asyncstdlib import lru_cache
+
+
 from aiohttp.client_exceptions import ServerDisconnectedError
 from libs.utils.Errors import DataNotRetrieved, ConversionNotSupported
 
@@ -6,6 +9,7 @@ class Converter:
     def __init__(self, session):
         self.session = session
 
+    @lru_cache
     async def query_the_service(self, service, args, method='GET', data=None):
         """
         Make get request to given service with arguments.
@@ -79,4 +83,31 @@ class Converter:
                 return result
             raise DataNotRetrieved(f'Target attribute {target} not available.')
         except AttributeError:
-            raise ConversionNotSupported(f'Target attribute {target} is not supported.')
+            raise ConversionNotSupported(f'Conversion from {source} to {target} is not supported.')
+
+    def create_top_level_conversion_methods(self, conversions):
+        """
+        Method to create and set dynamic methods defined in conversions
+
+        :param conversions: triples of form (from, to, method)
+        """
+        for conversion in conversions:
+            create_top_level_method(self, *conversion)
+
+
+def create_top_level_method(obj, source, target, method):
+    """
+    Assign a new method to {obj} called {source}_to_{target} which calls {method}.
+
+    :param obj: given object (typically a Converter)
+    :param source: attribute name used as source of data
+    :param target: attribute name obtained using this dynamic method
+    :param method: method which is called in the object with single argument
+    """
+    async def conversion(key):
+        return await getattr(obj, str(method))(key)
+
+    conversion.__doc__ = f'Convert {source} to {target} using {obj.__class__.__name__} service'
+    conversion.__name__ = f'{source}_to_{target}'
+
+    setattr(obj, conversion.__name__, conversion)

@@ -3,3 +3,5 @@ pandas~=1.2.4
 requests~=2.25.1
 mock~=4.0.3
 aiohttp~=3.7.4.post0
+asyncstdlib~=3.9.2
+frozendict~=2.0.3

@@ -11,82 +11,89 @@ class CTS(Converter):
                          'CTS_compound': 'http://cts.fiehnlab.ucdavis.edu/service/compound/'
                          }
 
+        # generate top level methods defining allowed conversions
+        conversions = [('inchikey', 'inchi', 'from_inchikey'),
+                       ('inchikey', 'name', 'from_inchikey'),
+                       ('inchikey', 'iupac_name', 'from_inchikey')]
+        self.create_top_level_conversion_methods(conversions)
+
+    ### top level methods defining allowed conversions
+
     async def cas_to_inchikey(self, cas_number):
         """
         Convert CAS number to InChiKey using CTS web service
         More info: http://cts.fiehnlab.ucdavis.edu/services
-
         The method returns first found hit.
-
         :param cas_number: given CAS number
         :return: obtained InChiKey
         """
         args = f'CAS/InChIKey/{cas_number}'
         response = await self.query_the_service('CTS', args)
         if response:
-            response_json = json.loads(response)
-            if len(response_json[0]['results']) != 0:
-                return response_json[0]['results'][0]
-
-    async def inchikey_to_inchi(self, inchikey):
-        """
-        Convert InChiKey to InChi using CTS compound service
-        More info: http://cts.fiehnlab.ucdavis.edu/services
-
-        :param inchikey: given InChiKey value
-        :return: obtained InChi
-        """
-        args = inchikey
-        response = await self.query_the_service('CTS_compound', args)
-        if response:
-            response_json = json.loads(response)
-            return response_json["inchicode"]
+            return self.parse_inchikey(response)
 
     async def name_to_inchikey(self, name):
         """
         Convert Chemical name to InChiKey using CTS service
         More info: http://cts.fiehnlab.ucdavis.edu/services
-
         :param name: given Chemical name
         :return: obtained InChiKey
         """
         args = f'Chemical%20Name/InChIKey/{name}'
         response = await self.query_the_service('CTS', args)
         if response:
-            response_json = json.loads(response)
-            if len(response_json[0]['results']) != 0:
-                return response_json[0]['results'][0]
+            return self.parse_inchikey(response)
 
-    async def inchikey_to_name(self, inchikey):
+    ###
+
+    async def from_inchikey(self, inchikey):
         """
-        Convert InChiKey to Chemical name using CTS compound service
+        Convert InChiKey to all possible attributes using CTS compound service
         More info: http://cts.fiehnlab.ucdavis.edu/services
 
         :param inchikey: given InChiKey value
-        :return: obtained Chemical name
+        :return: all found data
         """
         args = inchikey
         response = await self.query_the_service('CTS_compound', args)
         if response:
-            response_json = json.loads(response)
+            return self.parse_attributes(response)
+
+    def parse_inchikey(self, response):
+        """
+        Parse InChiKey attribute obtained from given key.
+
+        :param response: CTS conversion response to given key
+        :return: parsed InChiKey
+        """
+        response_json = json.loads(response)
+        if len(response_json[0]['results']) != 0:
+            return {'inchikey': response_json[0]['results'][0]}
+
+    def parse_attributes(self, response):
+        """
+        Parse all available attributes obtained from InChiKey.
+
+        :param response: CTS compound response to given InChiKey
+        :return: all parsed data
+        """
+        response_json = json.loads(response)
+        result = dict()
+
+        if 'inchicode' in response_json:
+            result['inchi'] = response_json['inchicode']
+
+        if 'formula' in response_json:
+            result['formula'] = response_json['formula']
+
+        if 'synonyms' in response_json:
             synonyms = response_json['synonyms']
+
             names = [item['name'] for item in synonyms if item['type'] == 'Synonym']
             if names:
-                return names[0]
+                result['name'] = names[0]
 
-    async def inchikey_to_iupac_name(self, inchikey):
-        """
-        Convert InChiKey to IUPAC name using CTS compound service
-        More info: http://cts.fiehnlab.ucdavis.edu/services
-
-        :param inchikey: given InChiKey value
-        :return: obtained IUPAC name
-        """
-        args = inchikey
-        response = await self.query_the_service('CTS_compound', args)
-        if response:
-            response_json = json.loads(response)
-            synonyms = response_json['synonyms']
             names = [item['name'] for item in synonyms if item['type'] == 'IUPAC Name (Preferred)']
             if names:
-                return names[0]
+                result['iupac_name'] = names[0]
+        return result

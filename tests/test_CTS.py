@@ -34,7 +34,8 @@ class TestCTS(unittest.TestCase):
     def test_cas_to_inchikey(self):
         inchikey = 'XQLMNMQWVCXIKR-UHFFFAOYSA-M'
         cas_number = '7783-89-3'
-        self.assertEqual(asyncio.run(wrap_with_session(self.converter, 'cas_to_inchikey', [cas_number])), inchikey)
+        self.assertEqual(asyncio.run(wrap_with_session(self.converter, 'cas_to_inchikey', [cas_number]))['inchikey'],
+                         inchikey)
 
         cas_number = '7783893'
         self.assertIsNone(asyncio.run(wrap_with_session(self.converter, 'cas_to_inchikey', [cas_number])))
@@ -43,7 +44,8 @@ class TestCTS(unittest.TestCase):
         inchikey = 'XQLMNMQWVCXIKR-UHFFFAOYSA-M'
         inchi = 'InChI=1S/Ag.BrHO3/c;2-1(3)4/h;(H,2,3,4)/q+1;/p-1'
 
-        self.assertEqual(asyncio.run(wrap_with_session(self.converter, 'inchikey_to_inchi', [inchikey])), inchi)
+        self.assertEqual(asyncio.run(wrap_with_session(self.converter, 'inchikey_to_inchi', [inchikey]))['inchi'],
+                         inchi)
 
         inchikey = 'XQLMNMQIKR-UHFFFAOYSA-M'
         self.assertIsNone(asyncio.run(wrap_with_session(self.converter, 'inchikey_to_inchi', [inchikey])))
@@ -51,7 +53,8 @@ class TestCTS(unittest.TestCase):
     def test_name_to_inchikey(self):
         name = 'L-Alanine'
         inchikey = 'QNAYBMKLOCPYGJ-REOHCLBHSA-N'
-        self.assertEqual(asyncio.run(wrap_with_session(self.converter, 'name_to_inchikey', [name])), inchikey)
+        self.assertEqual(asyncio.run(wrap_with_session(self.converter, 'name_to_inchikey', [name]))['inchikey'],
+                         inchikey)
 
         name = 'L-Alalalalanine'
         self.assertIsNone(asyncio.run(wrap_with_session(self.converter, 'name_to_inchikey', [name])))
@@ -60,16 +63,17 @@ class TestCTS(unittest.TestCase):
         inchikey = 'QNAYBMKLOCPYGJ-REOHCLBHSA-N'
         name = 'L-2-Aminopropanoic acid'
 
-        self.assertEqual(asyncio.run(wrap_with_session(self.converter, 'inchikey_to_name', [inchikey])), name)
+        self.assertEqual(asyncio.run(wrap_with_session(self.converter, 'inchikey_to_name', [inchikey]))['name'], name)
 
         inchikey = 'XQLMNMQIKR-UHFFFAOYSA-M'
         self.assertIsNone(asyncio.run(wrap_with_session(self.converter, 'inchikey_to_name', [inchikey])))
 
     def test_inchikey_to_IUPAC_name(self):
         inchikey = 'QNAYBMKLOCPYGJ-REOHCLBHSA-N'
-        uipac_name = '(2S)-2-aminopropanoic acid'
+        iupac_name = '(2S)-2-aminopropanoic acid'
         asyncio.run(wrap_with_session(self.converter, 'inchikey_to_iupac_name', [inchikey]))
-        self.assertEqual(asyncio.run(wrap_with_session(self.converter, 'inchikey_to_iupac_name', [inchikey])), uipac_name)
+        self.assertEqual(asyncio.run(wrap_with_session(self.converter, 'inchikey_to_iupac_name',
+                                                       [inchikey]))['iupac_name'], iupac_name)
 
         inchikey = 'XQLMNMQIKR-UHFFFAOYSA-M'
         self.assertIsNone(asyncio.run(wrap_with_session(self.converter, 'inchikey_to_iupac_name', [inchikey])))

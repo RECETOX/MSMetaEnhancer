@@ -12,3 +12,7 @@ class UnknownService(Exception):
 
 class UnknownSpectraFormat(Exception):
     pass
+
+
+class DataNotAvailable(Exception):
+    pass

@@ -18,7 +18,7 @@ class CIR(Converter):
         args = f"{cas_number}/smiles?resolver=cas_number"
         response = await self.query_the_service('CIR', args)
         if response:
-            return response
+            return {'smiles': response}
 
     async def inchikey_to_smiles(self, inchikey):
         """
@@ -31,7 +31,7 @@ class CIR(Converter):
         args = f'{inchikey}/smiles'
         response = await self.query_the_service('CIR', args)
         if response:
-            return response.split('\n')[0]
+            return {'smiles': response.split('\n')[0]}
 
     async def inchikey_to_inchi(self, inchikey):
         """
@@ -44,7 +44,7 @@ class CIR(Converter):
         args = f'{inchikey}/stdinchi'
         response = await self.query_the_service('CIR', args)
         if response:
-            return response
+            return {'inchi': response}
 
     async def inchikey_to_cas(self, inchikey):
         """
@@ -57,7 +57,7 @@ class CIR(Converter):
         args = f'{inchikey}/cas'
         response = await self.query_the_service('CIR', args)
         if response:
-            return response
+            return {'casno': response}
 
     async def inchikey_to_formula(self, inchikey):
         """
@@ -70,7 +70,7 @@ class CIR(Converter):
         args = f'{inchikey}/formula'
         response = await self.query_the_service('CIR', args)
         if response:
-            return response
+            return {'formula': response}
 
     async def smiles_to_inchikey(self, smiles):
         """
@@ -83,4 +83,4 @@ class CIR(Converter):
         args = f'{smiles}/stdinchikey'
         response = await self.query_the_service('CIR', args)
         if response:
-            return response[9:]
+            return {'inchikey': response[9:]}

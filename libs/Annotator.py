@@ -1,4 +1,4 @@
-from libs.utils.Errors import ConversionNotSupported, DataNotRetrieved
+from libs.utils.Errors import ConversionNotSupported, DataNotRetrieved, DataNotAvailable
 
 
 class Annotator:
@@ -19,32 +19,55 @@ class Annotator:
         :return: annotated dictionary
         """
         metadata = spectra.metadata
+        cache = dict()
 
         added_metadata = True
         while added_metadata:
             added_metadata = False
             for job in jobs:
-                service = self.services.get(job.service, None)
-                data = metadata.get(job.source, None)
-
-                if job.target in metadata:
-                    pass  # TODO: log - data already present
-                elif service is None:
-                    pass  # TODO: log - unknown service
-                elif data is None:
-                    pass  # TODO: log - source data not available for conversion
-                else:
+                if job.target not in metadata:
                     try:
-                        result = await service.convert(job.source, job.target, data)
-                        metadata[job.target] = result
+                        metadata, cache = await self.execute_job_with_cache(job, metadata, cache)
                         if repeat:
                             added_metadata = True
+                    except DataNotAvailable:
+                        pass  # TODO log data for conversing missing in given metadata
                     except ConversionNotSupported:
-                        pass  # TODO log this type of conversion is not supported by the service
+                        pass  # TODO log this type of conversion is not supported by the service or service unknown
                     except DataNotRetrieved:
                         pass  # TODO log no data were retrieved
+                else:
+                    pass  # TODO: log - data already present
+
         spectra.metadata = metadata
         return spectra
+
+    async def execute_job_with_cache(self, job, metadata, cache):
+        """
+        Execute given job in cached mode. Cache is service specific
+        and spectra specific.
+
+        Raises DataNotRetrieved
+
+        :param job: given job to be executed
+        :param metadata: data to be annotated by the job
+        :param cache: given cache for this spectra
+        :return: updated metadata and cache
+        """
+        # make sure the job makes sense
+        service, data = job.validate(self.services, metadata)
+
+        cache[job.service] = cache.get(job.service, dict())
+        if job.target in cache[job.service]:
+            metadata[job.target] = cache[job.service][job.target]
+        else:
+            result = await service.convert(job.source, job.target, data)
+            cache[job.service].update(result)
+            if job.target in cache[job.service]:
+                metadata[job.target] = cache[job.service][job.target]
+            else:
+                raise DataNotRetrieved('No data obtained from the specified job.')
+        return metadata, cache
 
     def get_all_conversions(self):
         """
