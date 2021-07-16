@@ -5,7 +5,7 @@ from asyncstdlib import lru_cache
 from aiohttp.client_exceptions import ServerDisconnectedError
 
 from libs.utils import logger
-from libs.utils.Errors import DataNotRetrieved, ServiceNotAvailable
+from libs.utils.Errors import TargetAttributeDNotRetrieved, ServiceNotAvailable
 
 
 class Converter:
@@ -51,8 +51,9 @@ class Converter:
             else:
                 async with self.session.post(url=url, data=data) as response:
                     return await self.process_request(response, url, method, data, depth)
-        except (ServerDisconnectedError, aiohttp.client_exceptions.ClientConnectorError):
+        except (ServerDisconnectedError, aiohttp.client_exceptions.ClientConnectorError) as e:
             if depth > 0:
+                logger.info(f'Service {self.service_name} temporarily unavailable, trying again...')
                 return await self.loop_request(url, method, data, depth - 1)
             raise ServiceNotAvailable
 
@@ -73,6 +74,7 @@ class Converter:
         elif response.status == 503:
             # server busy, try again
             if depth > 0:
+                logger.info(f'Service {self.service_name} temporarily unavailable, trying again...')
                 return await self.loop_request(url, method, data, depth - 1)
         else:
             logger.warning(f'Unknown response {response.status}:{result} for {method} request on {url} with {data}.')
@@ -89,7 +91,7 @@ class Converter:
         result = await getattr(self, f'{source}_to_{target}')(data)
         if result:
             return result
-        raise DataNotRetrieved(f'No data were retrieved for {self.service_name}: {source} -> {target}.')
+        raise TargetAttributeDNotRetrieved(f'No data were retrieved for {self.service_name}: {source} -> {target}.')
 
     def create_top_level_conversion_methods(self, conversions):
         """

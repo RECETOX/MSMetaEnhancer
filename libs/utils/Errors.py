@@ -2,7 +2,7 @@ class ConversionNotSupported(Exception):
     pass
 
 
-class DataNotRetrieved(Exception):
+class TargetAttributeDNotRetrieved(Exception):
     pass
 
 
@@ -14,7 +14,7 @@ class UnknownSpectraFormat(Exception):
     pass
 
 
-class DataNotAvailable(Exception):
+class SourceAttributeNotAvailable(Exception):
     pass
 
 

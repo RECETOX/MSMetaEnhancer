@@ -1,5 +1,5 @@
 from libs.utils import logger
-from libs.utils.Errors import ConversionNotSupported, DataNotRetrieved, DataNotAvailable, ServiceNotAvailable
+from libs.utils.Errors import ConversionNotSupported, TargetAttributeDNotRetrieved, SourceAttributeNotAvailable, ServiceNotAvailable
 
 
 class Annotator:
@@ -29,15 +29,17 @@ class Annotator:
                 if job.target not in metadata:
                     try:
                         metadata, cache = await self.execute_job_with_cache(job, metadata, cache)
+                        logger.success()
                         if repeat:
                             added_metadata = True
-                    except (DataNotAvailable, ConversionNotSupported, DataNotRetrieved) as exc:
+                    except (SourceAttributeNotAvailable, ConversionNotSupported, TargetAttributeDNotRetrieved) as exc:
                         logger.warning(exc, metadata)
                     except ServiceNotAvailable:
                         logger.warning(ServiceNotAvailable(f'Service {job.service} not available.'))
                 else:
-                    logger.warning(Exception(f'Requested attribute {job.target} already present in given metadata'),
-                                   metadata)
+                    logger.info(f'Requested attribute {job.target} already present in given metadata.')
+
+        logger.compute_success_rate(metadata)
 
         spectra.metadata = metadata
         return spectra
@@ -47,7 +49,7 @@ class Annotator:
         Execute given job in cached mode. Cache is service specific
         and spectra specific.
 
-        Raises DataNotRetrieved
+        Raises TargetAttributeDNotRetrieved
 
         :param job: given job to be executed
         :param metadata: data to be annotated by the job
@@ -66,7 +68,7 @@ class Annotator:
             if job.target in cache[job.service]:
                 metadata[job.target] = cache[job.service][job.target]
             else:
-                raise DataNotRetrieved('No data obtained from the specified job.')
+                raise TargetAttributeDNotRetrieved('No data obtained from the specified job.')
         return metadata, cache
 
     def get_all_conversions(self):

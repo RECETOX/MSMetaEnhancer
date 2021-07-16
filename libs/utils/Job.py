@@ -1,4 +1,4 @@
-from libs.utils.Errors import ConversionNotSupported, DataNotAvailable
+from libs.utils.Errors import ConversionNotSupported, SourceAttributeNotAvailable
 
 
 class Job:
@@ -19,7 +19,7 @@ class Job:
             raise ConversionNotSupported(f'Conversion {self.source} -> {self.target} is not supported '
                                          f'by the service: {self.service}')
         elif data is None:
-            raise DataNotAvailable(f'Attribute {self.source} missing in given metadata.')
+            raise SourceAttributeNotAvailable(f'Attribute {self.source} missing in given metadata.')
         else:
             return service, data
 

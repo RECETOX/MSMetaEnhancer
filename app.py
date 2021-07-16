@@ -4,6 +4,7 @@ import aiohttp
 from libs.Annotator import Annotator
 from libs.Curator import Curator
 from libs.Spectra import Spectra
+from libs.utils import logger
 from libs.utils.Errors import UnknownService, UnknownSpectraFormat
 from libs.utils.Job import convert_to_jobs
 from libs.services import *
@@ -79,8 +80,11 @@ class Application:
                 jobs = annotator.get_all_conversions()
             jobs = convert_to_jobs(jobs)
 
+            logger.set_target_attributes(jobs)
+
             for size in range(len(self.spectra.spectrums) // batch_size + 1):
                 results += await asyncio.gather(*[annotator.annotate(spectra, jobs, repeat) for spectra in
                                                   self.spectra.spectrums[size * batch_size:(size + 1) * batch_size]])
 
         self.spectra.spectrums = results
+        logger.log_statistics()
