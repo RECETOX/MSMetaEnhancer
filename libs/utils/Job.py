@@ -6,7 +6,7 @@ class Job:
         self.source, self.target, self.service = data
 
     def __str__(self):
-        return f'{self.source} -> {self.target} : {self.service}'
+        return f'{self.service}: {self.source} -> {self.target}'
 
     def __repr__(self):
         return f'Job(({self.source}, {self.target}, {self.service}))'
@@ -16,9 +16,10 @@ class Job:
         data = metadata.get(self.source, None)
 
         if service is None:
-            raise ConversionNotSupported(f'Specified {service} not supported.')
+            raise ConversionNotSupported(f'Conversion {self.source} -> {self.target} is not supported '
+                                         f'by the service: {self.service}')
         elif data is None:
-            raise DataNotAvailable(f'Source {self.source} not available in metadata.')
+            raise DataNotAvailable(f'Attribute {self.source} missing in given metadata.')
         else:
             return service, data
 

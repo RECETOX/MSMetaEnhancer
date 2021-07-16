@@ -1,4 +1,5 @@
-from libs.utils.Errors import ConversionNotSupported, DataNotRetrieved, DataNotAvailable
+from libs.utils import logger
+from libs.utils.Errors import ConversionNotSupported, DataNotRetrieved, DataNotAvailable, ServiceNotAvailable
 
 
 class Annotator:
@@ -30,14 +31,13 @@ class Annotator:
                         metadata, cache = await self.execute_job_with_cache(job, metadata, cache)
                         if repeat:
                             added_metadata = True
-                    except DataNotAvailable:
-                        pass  # TODO log data for conversing missing in given metadata
-                    except ConversionNotSupported:
-                        pass  # TODO log this type of conversion is not supported by the service or service unknown
-                    except DataNotRetrieved:
-                        pass  # TODO log no data were retrieved
+                    except (DataNotAvailable, ConversionNotSupported, DataNotRetrieved) as exc:
+                        logger.warning(exc, metadata)
+                    except ServiceNotAvailable:
+                        logger.warning(ServiceNotAvailable(f'Service {job.service} not available.'))
                 else:
-                    pass  # TODO: log - data already present
+                    logger.warning(Exception(f'Requested attribute {job.target} already present in given metadata'),
+                                   metadata)
 
         spectra.metadata = metadata
         return spectra
