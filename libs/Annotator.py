@@ -23,7 +23,7 @@ class Annotator:
         """
         metadata = spectra.metadata
         cache = dict()
-        warning = LogWarning(metadata, logger.target_attributes)
+        warning = LogWarning(metadata, logger.attribute_discovery_rates)
 
         added_metadata = True
         while added_metadata:
@@ -44,7 +44,7 @@ class Annotator:
                     warning.add_warning(Exception(f'Conversion ({job.service}) {job.source} -> {job.target}: Requested '
                                                   f'attribute {job.target} already present in given metadata.'))
 
-        warning.compute_success_rate()
+        warning.compute_success_rate(metadata)
         logger.add_fails(warning.fails)
         logger.add_warning(warning)
 

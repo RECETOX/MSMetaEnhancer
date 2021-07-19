@@ -1,5 +1,6 @@
 import logging
 from asyncio import Queue
+from tabulate import tabulate
 
 
 class Logger:
@@ -24,8 +25,8 @@ class Logger:
         # statistical values
         self.passes = 0
         self.fails = 0
-        self.target_attributes = set()
-        self.attribute_discovery_rate = 1
+        self.attribute_discovery_rates = dict()
+        self.base_coverage = dict()
 
     def set_target_attributes(self, jobs):
         """
@@ -33,7 +34,9 @@ class Logger:
 
         :param jobs: given list of jobs
         """
-        self.target_attributes = {job.target for job in jobs}
+        target_attributes = {job.target for job in jobs}
+        self.attribute_discovery_rates = {key: 0 for key in target_attributes}
+        self.base_coverage = dict(self.attribute_discovery_rates)
 
     def error(self, exc: Exception):
         """
@@ -74,6 +77,13 @@ class Logger:
             else:
                 self.logger.error(log)
 
+    def update_discovery_rates(self, log):
+        for key in log.target_attributes_success.keys():
+            self.attribute_discovery_rates[key] = (self.attribute_discovery_rates[key] +
+                                                   log.target_attributes_success[key])/2
+            self.base_coverage[key] = (self.base_coverage[key] +
+                                       log.base_coverage[key])/2
+
     def process_log(self, log):
         """
         Pretty format single log and compute global attribute discovery rate
@@ -82,7 +92,7 @@ class Logger:
         :return: level and formatted message
         """
         if isinstance(log, LogWarning):
-            self.attribute_discovery_rate = (self.attribute_discovery_rate + log.attribute_discovery_rate) / 2
+            self.update_discovery_rates(log)
             message = f'Errors related to metadata:\n\n{log.metadata}\n\n'
             for warning in log.warnings:
                 message += f'{warning}\n'
@@ -100,17 +110,22 @@ class Logger:
             if isinstance(log, LogWarning):
                 logs.append(self.process_log(log))
 
+        table = tabulate([[key, f'{self.base_coverage[key]*100}%', f'{self.attribute_discovery_rates[key]*100}%']
+                          for key in self.attribute_discovery_rates],
+                         headers=['Target\nattribute', 'Coverage\nbefore', 'Coverage\nafter'])
+
         self.logger.info(f'Job success rate: {self.passes}/{self.passes + self.fails} '
                          f'({self.passes/(self.passes + self.fails)}%) \n'
-                         f'Attribute discovery rate: {self.attribute_discovery_rate*100}%'
-                         '\n' + '='*30 + '\n')
+                         f'Attribute discovery rates:\n\n{table}'
+                         '\n' + '='*50 + '\n')
         self.write_logs(logs)
 
 
 class LogWarning:
-    def __init__(self, metadata, target_attributes):
+    def __init__(self, metadata, attribute_discovery_rates):
         self.metadata = metadata
-        self.target_attributes = target_attributes
+        self.target_attributes_success = dict(attribute_discovery_rates)
+        self.base_coverage = {key: 1 if key in self.metadata.keys() else 0 for key in attribute_discovery_rates.keys()}
 
         self.fails = 0
         self.warnings = []
@@ -126,8 +141,9 @@ class LogWarning:
         self.fails += 1
         self.warnings.append(f'-> {exc}')
 
-    def compute_success_rate(self):
+    def compute_success_rate(self, metadata):
         """
         Compute general success rate based on ratio of found attributes to requested attributes
         """
-        self.attribute_discovery_rate = len(self.metadata.keys() & self.target_attributes)/len(self.target_attributes)
+        for key in self.target_attributes_success.keys():
+            self.target_attributes_success[key] = 1 if key in metadata.keys() else 0
