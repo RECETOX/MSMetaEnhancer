@@ -23,7 +23,7 @@ class Annotator:
         """
         metadata = spectra.metadata
         cache = dict()
-        warning = LogWarning(metadata, logger.attribute_discovery_rates)
+        warning = LogWarning(dict(metadata), logger.attribute_discovery_rates)
 
         added_metadata = True
         while added_metadata:
