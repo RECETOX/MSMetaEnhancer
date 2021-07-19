@@ -4,6 +4,7 @@ from io import StringIO
 import pandas as pd
 
 from libs.services.NLM import NLM
+from libs.utils.Errors import UnknownResponse
 from tests.utils import wrap_with_session
 
 
@@ -27,7 +28,8 @@ class TestNLM(unittest.TestCase):
         self.assertEqual(asyncio.run(wrap_with_session(self.converter, 'inchikey_to_name', [inchikey]))['name'], name)
 
         inchikey = 'QNAYBMLOXXXXGJ-REOHCLBHSA-N'
-        self.assertIsNone(asyncio.run(wrap_with_session(self.converter, 'inchikey_to_name', [inchikey])))
+        with self.assertRaises(UnknownResponse):
+            asyncio.run(wrap_with_session(self.converter, 'inchikey_to_name', [inchikey]))
 
         inchikey = 'QNAYMLGJ-REOLBHSA-N'
         self.assertIsNone(asyncio.run(wrap_with_session(self.converter, 'inchikey_to_name', [inchikey])))
@@ -40,4 +42,5 @@ class TestNLM(unittest.TestCase):
                          inchikey)
 
         name = 'L-Alanne'
-        self.assertIsNone(asyncio.run(wrap_with_session(self.converter, 'name_to_inchikey', [name])))
+        with self.assertRaises(UnknownResponse):
+            asyncio.run(wrap_with_session(self.converter, 'name_to_inchikey', [name]))

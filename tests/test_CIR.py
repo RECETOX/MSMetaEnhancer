@@ -2,6 +2,7 @@ import asyncio
 import unittest
 
 from libs.services.CIR import CIR
+from libs.utils.Errors import UnknownResponse
 from tests.utils import wrap_with_session
 
 
@@ -19,17 +20,18 @@ class TestCIR(unittest.TestCase):
         # incorrect CAS number
         cas_number = '7783893'
         args = '{}/smiles?resolver=cas_number'.format(cas_number)
-        response = asyncio.run(wrap_with_session(self.converter, 'query_the_service', ['CIR', args]))
-        self.assertIsNone(response)
+        with self.assertRaises(UnknownResponse):
+            asyncio.run(wrap_with_session(self.converter, 'query_the_service', ['CIR', args]))
 
-    def test_cas_to_smiles(self):
+    def test_casno_to_smiles(self):
         smiles = '[Ag+].[O-][Br](=O)=O'
         cas_number = '7783-89-3'
-        self.assertEqual(asyncio.run(wrap_with_session(self.converter, 'cas_to_smiles', [cas_number]))['smiles'],
+        self.assertEqual(asyncio.run(wrap_with_session(self.converter, 'casno_to_smiles', [cas_number]))['smiles'],
                          smiles)
 
         cas_number = '7783893'
-        self.assertIsNone(asyncio.run(wrap_with_session(self.converter, 'cas_to_smiles', [cas_number])))
+        with self.assertRaises(UnknownResponse):
+            asyncio.run(wrap_with_session(self.converter, 'casno_to_smiles', [cas_number]))
 
     def test_inchikey_to_smiles(self):
         inchikey = 'XQLMNMQWVCXIKR-UHFFFAOYSA-M'
@@ -38,7 +40,8 @@ class TestCIR(unittest.TestCase):
                          smiles)
 
         inchikey = 'XQLMNVCXIKR-UHFFFAOYSA-M'
-        self.assertIsNone(asyncio.run(wrap_with_session(self.converter, 'inchikey_to_smiles', [inchikey])))
+        with self.assertRaises(UnknownResponse):
+            asyncio.run(wrap_with_session(self.converter, 'inchikey_to_smiles', [inchikey]))
 
     def test_inchikey_to_inchi(self):
         inchikey = 'XQLMNMQWVCXIKR-UHFFFAOYSA-M'
@@ -48,17 +51,19 @@ class TestCIR(unittest.TestCase):
                          inchi)
 
         inchikey = 'XQLMNVCXIKR-UHFFFAOYSA-M'
-        self.assertIsNone(asyncio.run(wrap_with_session(self.converter, 'inchikey_to_inchi', [inchikey])))
+        with self.assertRaises(UnknownResponse):
+            asyncio.run(wrap_with_session(self.converter, 'inchikey_to_inchi', [inchikey]))
 
     def test_inchikey_to_cas(self):
         inchikey = 'XQLMNMQWVCXIKR-UHFFFAOYSA-M'
         cas_number = '7783-89-3'
 
-        self.assertEqual(asyncio.run(wrap_with_session(self.converter, 'inchikey_to_cas', [inchikey]))['casno'],
+        self.assertEqual(asyncio.run(wrap_with_session(self.converter, 'inchikey_to_casno', [inchikey]))['casno'],
                          cas_number)
 
         inchikey = 'XQLMNVCXIKR-UHFFFAOYSA-M'
-        self.assertIsNone(asyncio.run(wrap_with_session(self.converter, 'inchikey_to_cas', [inchikey])))
+        with self.assertRaises(UnknownResponse):
+            asyncio.run(wrap_with_session(self.converter, 'inchikey_to_casno', [inchikey]))
 
     def test_inchikey_to_formula(self):
         inchikey = 'XQLMNMQWVCXIKR-UHFFFAOYSA-M'
@@ -68,7 +73,8 @@ class TestCIR(unittest.TestCase):
                          formula)
 
         inchikey = 'XQLMNVCXIKR-UHFFFAOYSA-M'
-        self.assertIsNone(asyncio.run(wrap_with_session(self.converter, 'inchikey_to_formula', [inchikey])))
+        with self.assertRaises(UnknownResponse):
+            asyncio.run(wrap_with_session(self.converter, 'inchikey_to_formula', [inchikey]))
 
     def test_smiles_to_inchikey(self):
         inchikey = 'XQLMNMQWVCXIKR-UHFFFAOYSA-M'
@@ -78,4 +84,5 @@ class TestCIR(unittest.TestCase):
                          inchikey)
 
         smiles = '[Ag+].O-][Br](=O)=O'
-        self.assertIsNone(asyncio.run(wrap_with_session(self.converter, 'smiles_to_inchikey', [smiles])))
+        with self.assertRaises(UnknownResponse):
+            asyncio.run(wrap_with_session(self.converter, 'smiles_to_inchikey', [smiles]))
