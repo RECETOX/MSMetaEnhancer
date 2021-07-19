@@ -9,6 +9,13 @@ class Converter:
     def __init__(self, session):
         self.session = session
 
+    @property
+    def service_name(self):
+        return self.__class__.__name__
+
+    def __hash__(self):
+        return hash(self.service_name)
+
     @lru_cache
     async def query_the_service(self, service, args, method='GET', data=None):
         """
