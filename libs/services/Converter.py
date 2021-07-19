@@ -5,7 +5,7 @@ from asyncstdlib import lru_cache
 from aiohttp.client_exceptions import ServerDisconnectedError
 
 from libs.utils import logger
-from libs.utils.Errors import TargetAttributeDNotRetrieved, ServiceNotAvailable
+from libs.utils.Errors import TargetAttributeNotRetrieved, ServiceNotAvailable, UnknownResponse
 
 
 class Converter:
@@ -32,7 +32,7 @@ class Converter:
             result = await self.loop_request(self.services[service] + args, method, data)
             return result
         except TypeError:
-            logger.warning(TypeError(f'Incorrect argument {args} for service {service}.'))
+            logger.error(TypeError(f'Incorrect argument {args} for service {service}.'))
 
     async def loop_request(self, url, method, data, depth=10):
         """
@@ -51,9 +51,10 @@ class Converter:
             else:
                 async with self.session.post(url=url, data=data) as response:
                     return await self.process_request(response, url, method, data, depth)
-        except (ServerDisconnectedError, aiohttp.client_exceptions.ClientConnectorError) as e:
+        except (ServerDisconnectedError, aiohttp.client_exceptions.ClientConnectorError):
             if depth > 0:
-                logger.info(f'Service {self.service_name} temporarily unavailable, trying again...')
+                logger.error(ServiceNotAvailable(f'Service {self.service_name} '
+                                                 f'temporarily unavailable, trying again...'))
                 return await self.loop_request(url, method, data, depth - 1)
             raise ServiceNotAvailable
 
@@ -74,10 +75,11 @@ class Converter:
         elif response.status == 503:
             # server busy, try again
             if depth > 0:
-                logger.info(f'Service {self.service_name} temporarily unavailable, trying again...')
+                logger.error(ServiceNotAvailable(f'Service {self.service_name} '
+                                                 f'temporarily unavailable, trying again...'))
                 return await self.loop_request(url, method, data, depth - 1)
         else:
-            logger.warning(f'Unknown response {response.status}:{result} for {method} request on {url} with {data}.')
+            raise UnknownResponse(f'Unknown response {response.status}:{result} for {method} request on {url}.')
 
     async def convert(self, source, target, data):
         """
@@ -91,7 +93,7 @@ class Converter:
         result = await getattr(self, f'{source}_to_{target}')(data)
         if result:
             return result
-        raise TargetAttributeDNotRetrieved(f'No data were retrieved for {self.service_name}: {source} -> {target}.')
+        raise TargetAttributeNotRetrieved(f'Conversion ({self.service_name}) {source} -> {target}: no data retrieved.')
 
     def create_top_level_conversion_methods(self, conversions):
         """

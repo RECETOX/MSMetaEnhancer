@@ -1,4 +1,5 @@
 import logging
+from asyncio import Queue
 
 
 class Logger:
@@ -17,6 +18,9 @@ class Logger:
         # Add handlers to logger
         self.logger.addHandler(filehandler_dbg)
 
+        # to store logs before emitting them to a file
+        self.queue = Queue()
+
         # statistical values
         self.passes = 0
         self.fails = 0
@@ -31,46 +35,99 @@ class Logger:
         """
         self.target_attributes = {job.target for job in jobs}
 
-    def warning(self, exc: Exception, metadata=None):
+    def error(self, exc: Exception):
+        """
+        Log an error message.
+
+        :param exc: given Exception
+        """
+        self.queue.put_nowait(f'{exc}')
+
+    def add_warning(self, warning):
         """
         Logs given exception as a Warning.
         Increases number of failed jobs.
 
-        :param exc: given exception
-        :param metadata: additional metadata
+        :param warning: LogWarning
         """
-        self.fails += 1
-        self.logger.warning(f'{exc}\nMetadata: {metadata}\n' if metadata else f'{exc}\n')
+        self.queue.put_nowait(warning)
 
-    def info(self, message):
-        """
-        Logs given message as a Warning.
-
-        :param message: message to be logged
-        """
-        self.logger.warning(message + '\n')
-
-    def success(self):
+    def add_success(self):
         """
         Increase number of passed jobs.
         """
         self.passes += 1
 
-    def compute_success_rate(self, metadata):
+    def add_fails(self, number):
         """
-        Compute success rate of attribute discovery.
-
-        Based on ratio of found attributes to target attributes.
-
-        :param metadata: found metadata (includes also already present attributes)
+        Increase number of failed jobs.
         """
-        rate = len(metadata.keys() & self.target_attributes)/len(self.target_attributes)
-        self.attribute_discovery_rate = (self.attribute_discovery_rate + rate)/2
+        self.fails += number
+
+    def write_logs(self, logs):
+        """
+        Writes all logs from queue.
+        """
+        for level, log in logs:
+            if level == 'warning':
+                self.logger.warning(log)
+            else:
+                self.logger.error(log)
+
+    def process_log(self, log):
+        """
+        Pretty format single log and compute global attribute discovery rate
+
+        :param log: given log
+        :return: level and formatted message
+        """
+        if isinstance(log, LogWarning):
+            self.attribute_discovery_rate = (self.attribute_discovery_rate + log.attribute_discovery_rate) / 2
+            message = f'Errors related to metadata:\n\n{log.metadata}\n\n'
+            for warning in log.warnings:
+                message += f'{warning}\n'
+            return 'warning', f'{message}\n'
+        else:
+            return 'error', '-'*30 + f'\n{log}\n' + '-'*30
 
     def log_statistics(self):
         """
-        Log obtained statistical values as Info.
+        Preprocess all logs and write obtained statistical values.
         """
+        logs = []
+        while not self.queue.empty():
+            log = self.queue.get_nowait()
+            if isinstance(log, LogWarning):
+                logs.append(self.process_log(log))
+
         self.logger.info(f'Job success rate: {self.passes}/{self.passes + self.fails} '
-                         f'({self.passes/(self.passes + self.fails)}%)')
-        self.logger.info(f'Attribute discovery rate: {self.attribute_discovery_rate*100}%')
+                         f'({self.passes/(self.passes + self.fails)}%) \n'
+                         f'Attribute discovery rate: {self.attribute_discovery_rate*100}%'
+                         '\n' + '='*30 + '\n')
+        self.write_logs(logs)
+
+
+class LogWarning:
+    def __init__(self, metadata, target_attributes):
+        self.metadata = metadata
+        self.target_attributes = target_attributes
+
+        self.fails = 0
+        self.warnings = []
+        self.attribute_discovery_rate = 0
+
+    def add_warning(self, exc: Exception):
+        """
+        Logs given exception as a Warning.
+        Increases number of failed jobs.
+
+        :param exc: given exception
+        """
+        self.fails += 1
+        self.warnings.append(f'-> {exc}')
+
+    def compute_success_rate(self):
+        """
+        Compute general success rate based on ratio of found attributes to requested attributes
+        """
+        self.attribute_discovery_rate = len(self.metadata.keys() & self.target_attributes)/len(self.target_attributes)

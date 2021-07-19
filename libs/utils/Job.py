@@ -16,10 +16,10 @@ class Job:
         data = metadata.get(self.source, None)
 
         if service is None:
-            raise ConversionNotSupported(f'Conversion {self.source} -> {self.target} is not supported '
-                                         f'by the service: {self.service}')
+            raise ConversionNotSupported(f'Conversion ({self.service}) {self.source} -> {self.target}: is not supported')
         elif data is None:
-            raise SourceAttributeNotAvailable(f'Attribute {self.source} missing in given metadata.')
+            raise SourceAttributeNotAvailable(f'Conversion ({self.service}) {self.source} -> {self.target}: '
+                                              f'Attribute {self.source} missing in given metadata.')
         else:
             return service, data
 

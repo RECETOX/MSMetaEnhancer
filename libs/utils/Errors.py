@@ -2,7 +2,7 @@ class ConversionNotSupported(Exception):
     pass
 
 
-class TargetAttributeDNotRetrieved(Exception):
+class TargetAttributeNotRetrieved(Exception):
     pass
 
 
@@ -19,4 +19,8 @@ class SourceAttributeNotAvailable(Exception):
 
 
 class ServiceNotAvailable(Exception):
+    pass
+
+
+class UnknownResponse(Exception):
     pass
