@@ -1,5 +1,4 @@
 import asyncio
-import unittest
 import json
 import pytest
 

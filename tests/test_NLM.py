@@ -1,43 +1,41 @@
 import asyncio
-import unittest
 from io import StringIO
 import pandas as pd
+import pytest
 
 from libs.services.NLM import NLM
 from tests.utils import wrap_with_session
 
 
-class TestNLM(unittest.TestCase):
-    def setUp(self):
-        self.converter = NLM
+@pytest.mark.parametrize('arg, value, expected, method', [
+    ['name', 'QNAYBMKLOCPYGJ-REOHCLBHSA-N', 'Alanine [USAN:INN]', 'inchikey_to_name'],
+    ['inchikey', 'L-Alanine', 'QNAYBMKLOCPYGJ-REOHCLBHSA-N', 'name_to_inchikey'],
+    ['formula', 'QNAYBMKLOCPYGJ-REOHCLBHSA-N', 'C3-H7-N-O2', 'inchikey_to_formula'],
+    ['casno', 'QNAYBMKLOCPYGJ-REOHCLBHSA-N', '56-41-7', 'inchikey_to_casno'],
+    ['formula', 'L-Alanine', 'C3-H7-N-O2', 'name_to_formula'],
+    ['casno', 'L-Alanine', '56-41-7', 'name_to_casno']
+])
+def test_correct_behavior(arg, value, expected, method):
+    assert asyncio.run(wrap_with_session(NLM, method, [value]))[arg] == expected
 
-    def test_connect_to_service(self):
-        # test basic NLM service
-        inchikey = 'QNAYBMKLOCPYGJ-REOHCLBHSA-N'
-        args = 'inchikey/equals/{}?data=summary&format=tsv'.format(inchikey)
-        response = asyncio.run(wrap_with_session(self.converter, 'query_the_service', ['NLM', args]))
 
-        table = pd.read_csv(StringIO(response), sep='\t')
-        self.assertFalse(table.empty)
+@pytest.mark.parametrize('arg, value, method', [
+    ['name', 'QNAYBMLOXXXXGJ-REOHCLBHSA-N', 'inchikey_to_name'],
+    ['name', 'QNAYMLGJ-REOLBHSA-N', 'inchikey_to_name'],
+    ['inchikey', 'L-Alanne', 'name_to_inchikey'],
+    ['formula', 'QNAYMLGJ-REOLBHSA-N', 'inchikey_to_formula'],
+    ['casno', 'QNAYMLGJ-REOLBHSA-N', 'inchikey_to_casno'],
+    ['formula', 'L-Alanne', 'name_to_formula'],
+    ['casno', 'L-Alanne', 'name_to_casno']
+])
+def test_incorrect_behavior(arg, value, method):
+    assert asyncio.run(wrap_with_session(NLM, method, [value])) is None
 
-    def test_inchikey_to_name(self):
-        inchikey = 'QNAYBMKLOCPYGJ-REOHCLBHSA-N'
-        name = 'Alanine [USAN:INN]'
 
-        self.assertEqual(asyncio.run(wrap_with_session(self.converter, 'inchikey_to_name', [inchikey]))['name'], name)
+def test_format():
+    inchikey = 'QNAYBMKLOCPYGJ-REOHCLBHSA-N'
+    args = 'inchikey/equals/{}?data=summary&format=tsv'.format(inchikey)
+    response = asyncio.run(wrap_with_session(NLM, 'query_the_service', ['NLM', args]))
 
-        inchikey = 'QNAYBMLOXXXXGJ-REOHCLBHSA-N'
-        self.assertIsNone(asyncio.run(wrap_with_session(self.converter, 'inchikey_to_name', [inchikey])))
-
-        inchikey = 'QNAYMLGJ-REOLBHSA-N'
-        self.assertIsNone(asyncio.run(wrap_with_session(self.converter, 'inchikey_to_name', [inchikey])))
-
-    def test_name_to_inchikey(self):
-        name = 'L-Alanine'
-        inchikey = 'QNAYBMKLOCPYGJ-REOHCLBHSA-N'
-
-        self.assertEqual(asyncio.run(wrap_with_session(self.converter, 'name_to_inchikey', [name]))['inchikey'],
-                         inchikey)
-
-        name = 'L-Alanne'
-        self.assertIsNone(asyncio.run(wrap_with_session(self.converter, 'name_to_inchikey', [name])))
+    table = pd.read_csv(StringIO(response), sep='\t')
+    assert not table.empty
