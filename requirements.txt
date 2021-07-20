@@ -6,3 +6,4 @@ aiohttp~=3.7.4.post0
 asyncstdlib~=3.9.2
 frozendict~=2.0.3
 pytest~=6.2.4
+pytest-aiohttp~=0.3.0

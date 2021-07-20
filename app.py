@@ -36,7 +36,7 @@ class Application:
         """
         try:
             getattr(self.spectra, f'load_from_{file_format}')(filename)
-        except Exception:
+        except AttributeError:
             raise UnknownSpectraFormat(f'Format {file_format} not supported.')
 
     def save_spectra(self, filename, file_format):
