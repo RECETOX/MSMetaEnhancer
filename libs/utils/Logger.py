@@ -1,3 +1,4 @@
+from datetime import datetime
 import logging
 from asyncio import Queue
 from tabulate import tabulate
@@ -7,17 +8,6 @@ class Logger:
     def __init__(self):
         self.logger = logging.getLogger('log')
         self.logger.setLevel('INFO')
-
-        filehandler_dbg = logging.FileHandler('MSPannotator.log', mode='w')
-        filehandler_dbg.setLevel('DEBUG')
-
-        streamformatter = logging.Formatter(fmt='%(levelname)s: %(message)s')
-
-        # Apply formatters to handlers
-        filehandler_dbg.setFormatter(streamformatter)
-
-        # Add handlers to logger
-        self.logger.addHandler(filehandler_dbg)
 
         # to store logs before emitting them to a file
         self.queue = Queue()
@@ -32,6 +22,21 @@ class Logger:
 
         # to avoid stacking the same errors
         self.last_error = ''
+
+    def add_filehandler(self, file_name):
+        if file_name is None:
+            file_name = datetime.now().strftime('MSPannotator_%Y%m%d%H%M%S.log')
+
+        filehandler_dbg = logging.FileHandler(file_name, mode='w')
+        filehandler_dbg.setLevel('DEBUG')
+
+        streamformatter = logging.Formatter(fmt='%(levelname)s: %(message)s')
+
+        # Apply formatters to handlers
+        filehandler_dbg.setFormatter(streamformatter)
+
+        # Add handlers to logger
+        self.logger.addHandler(filehandler_dbg)
 
     def set_target_attributes(self, jobs):
         """
@@ -121,7 +126,7 @@ class Logger:
         else:
             return 'error', f'{log}\n'
 
-    def log_statistics(self, log_level):
+    def log_statistics(self, log_level, log_file):
         """
         Preprocess all logs and write obtained statistical values.
         """
@@ -135,6 +140,8 @@ class Logger:
         table = tabulate([[key, f'{self.base_coverage[key]*100}%', f'{self.attribute_discovery_rates[key]*100}%']
                           for key in self.attribute_discovery_rates],
                          headers=['Target\nattribute', 'Coverage\nbefore', 'Coverage\nafter'])
+
+        self.add_filehandler(log_file)
 
         self.logger.info(f'Job success rate: {self.passes}/{self.passes + self.fails} '
                          f'({self.passes/(self.passes + self.fails)}%) \n'

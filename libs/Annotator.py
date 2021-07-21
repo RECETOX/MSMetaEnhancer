@@ -57,7 +57,7 @@ class Annotator:
         Execute given job in cached mode. Cache is service specific
         and spectra specific.
 
-        Raises TargetAttributeDNotRetrieved
+        Raises TargetAttributeNotRetrieved
 
         :param job: given job to be executed
         :param metadata: data to be annotated by the job
