@@ -11,7 +11,8 @@ from libs.services import *
 
 
 class Application:
-    def __init__(self):
+    def __init__(self, log_level='warning'):
+        self.log_level = log_level
         self.spectra = Spectra()
 
     @staticmethod
@@ -87,4 +88,4 @@ class Application:
                                                   self.spectra.spectrums[size * batch_size:(size + 1) * batch_size]])
 
         self.spectra.spectrums = results
-        logger.log_statistics()
+        logger.log_statistics(self.log_level)

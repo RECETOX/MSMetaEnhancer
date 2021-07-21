@@ -35,14 +35,15 @@ class Annotator:
                         logger.add_success()
                         if repeat:
                             added_metadata = True
-                    except (SourceAttributeNotAvailable, ConversionNotSupported,
-                            TargetAttributeNotRetrieved, UnknownResponse) as exc:
+                    except (ConversionNotSupported, TargetAttributeNotRetrieved, UnknownResponse) as exc:
                         warning.add_warning(exc)
+                    except SourceAttributeNotAvailable as exc:
+                        warning.add_info(exc)
                     except ServiceNotAvailable:
                         warning.add_warning(ServiceNotAvailable(f'Service {job.service} not available.'))
                 else:
-                    warning.add_warning(Exception(f'Conversion ({job.service}) {job.source} -> {job.target}: Requested '
-                                                  f'attribute {job.target} already present in given metadata.'))
+                    warning.add_info(f'Conversion ({job.service}) {job.source} -> {job.target}: Requested '
+                                     f'attribute {job.target} already present in given metadata.')
 
         warning.compute_success_rate(metadata)
         logger.add_fails(warning.fails)

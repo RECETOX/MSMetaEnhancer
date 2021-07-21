@@ -93,7 +93,9 @@ class Converter:
         result = await getattr(self, f'{source}_to_{target}')(data)
         if result:
             return result
-        raise TargetAttributeNotRetrieved(f'Conversion ({self.service_name}) {source} -> {target}: no data retrieved.')
+        else:
+            raise TargetAttributeNotRetrieved(f'Conversion ({self.service_name}) {source} -> {target}: '
+                                              f'no data retrieved.')
 
     def create_top_level_conversion_methods(self, conversions):
         """

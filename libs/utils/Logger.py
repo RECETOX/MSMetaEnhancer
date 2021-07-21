@@ -28,6 +28,11 @@ class Logger:
         self.attribute_discovery_rates = dict()
         self.base_coverage = dict()
 
+        self.LEVELS = {'warning': 2, 'info': 1}
+
+        # to avoid stacking the same errors
+        self.last_error = ''
+
     def set_target_attributes(self, jobs):
         """
         Gather all target attributes from specified jobs
@@ -42,9 +47,13 @@ class Logger:
         """
         Log an error message.
 
+        Store the last error to avoid stacking the same errors.
+
         :param exc: given Exception
         """
-        self.queue.put_nowait(f'{exc}')
+        if str(exc) != self.last_error:
+            self.queue.put_nowait(f'{exc}')
+            self.last_error = str(exc)
 
     def add_warning(self, warning):
         """
@@ -53,6 +62,7 @@ class Logger:
 
         :param warning: LogWarning
         """
+        self.last_error = ''
         self.queue.put_nowait(warning)
 
     def add_success(self):
@@ -78,37 +88,49 @@ class Logger:
                 self.logger.error(log)
 
     def update_discovery_rates(self, log):
+        """
+        Computes global discovery rate as average with new log value
+
+        :param log: given log
+        """
         for key in log.target_attributes_success.keys():
             self.attribute_discovery_rates[key] = (self.attribute_discovery_rates[key] +
                                                    log.target_attributes_success[key])/2
             self.base_coverage[key] = (self.base_coverage[key] +
                                        log.base_coverage[key])/2
 
-    def process_log(self, log):
+    def process_log(self, log, log_level):
         """
         Pretty format single log and compute global attribute discovery rate
 
         :param log: given log
+        :param log_level: level of issues to be included in log
         :return: level and formatted message
         """
         if isinstance(log, LogWarning):
             self.update_discovery_rates(log)
             message = f'Errors related to metadata:\n\n{log.metadata}\n\n'
-            for warning in log.warnings:
-                message += f'{warning}\n'
+
+            filtered_warnings = [w['msg'] for w in log.warnings if w['level'] >= self.LEVELS[log_level]]
+            if filtered_warnings:
+                for warning in filtered_warnings:
+                    message += f'{warning}\n'
+            else:
+                return None
             return 'warning', f'{message}\n'
         else:
-            return 'error', '-'*30 + f'\n{log}\n' + '-'*30
+            return 'error', f'{log}\n'
 
-    def log_statistics(self):
+    def log_statistics(self, log_level):
         """
         Preprocess all logs and write obtained statistical values.
         """
         logs = []
         while not self.queue.empty():
             log = self.queue.get_nowait()
-            if isinstance(log, LogWarning):
-                logs.append(self.process_log(log))
+            processed_log = self.process_log(log, log_level)
+            if processed_log:
+                logs.append(processed_log)
 
         table = tabulate([[key, f'{self.base_coverage[key]*100}%', f'{self.attribute_discovery_rates[key]*100}%']
                           for key in self.attribute_discovery_rates],
@@ -139,7 +161,15 @@ class LogWarning:
         :param exc: given exception
         """
         self.fails += 1
-        self.warnings.append(f'-> {exc}')
+        self.warnings.append({'level': 2, 'msg': f'-> {exc}'})
+
+    def add_info(self, info):
+        """
+        Logs given info.
+
+        :param info: given info message
+        """
+        self.warnings.append({'level': 1, 'msg': f'-> {info}'})
 
     def compute_success_rate(self, metadata):
         """
