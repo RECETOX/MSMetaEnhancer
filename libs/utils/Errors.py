@@ -2,7 +2,7 @@ class ConversionNotSupported(Exception):
     pass
 
 
-class DataNotRetrieved(Exception):
+class TargetAttributeNotRetrieved(Exception):
     pass
 
 
@@ -14,5 +14,13 @@ class UnknownSpectraFormat(Exception):
     pass
 
 
-class DataNotAvailable(Exception):
+class SourceAttributeNotAvailable(Exception):
+    pass
+
+
+class ServiceNotAvailable(Exception):
+    pass
+
+
+class UnknownResponse(Exception):
     pass

@@ -7,7 +7,7 @@ class CIR(Converter):
         # service URLs
         self.services = {'CIR': 'https://cactus.nci.nih.gov/chemical/structure/'}
 
-    async def cas_to_smiles(self, cas_number):
+    async def casno_to_smiles(self, cas_number):
         """
         Convert CAS number to SMILES using CIR web service
         More info: https://cactus.nci.nih.gov/chemical/structure_documentation
@@ -46,7 +46,7 @@ class CIR(Converter):
         if response:
             return {'inchi': response}
 
-    async def inchikey_to_cas(self, inchikey):
+    async def inchikey_to_casno(self, inchikey):
         """
         Convert InChiKey to CAS number using CIR web service
         More info: https://cactus.nci.nih.gov/chemical/structure_documentation

@@ -1,4 +1,7 @@
-from libs.utils.Errors import ConversionNotSupported, DataNotRetrieved, DataNotAvailable
+from libs.utils import logger
+from libs.utils.Errors import ConversionNotSupported, TargetAttributeNotRetrieved, SourceAttributeNotAvailable, \
+    ServiceNotAvailable, UnknownResponse
+from libs.utils.Logger import LogWarning
 
 
 class Annotator:
@@ -20,6 +23,7 @@ class Annotator:
         """
         metadata = spectra.metadata
         cache = dict()
+        warning = LogWarning(dict(metadata), logger.attribute_discovery_rates)
 
         added_metadata = True
         while added_metadata:
@@ -28,16 +32,22 @@ class Annotator:
                 if job.target not in metadata:
                     try:
                         metadata, cache = await self.execute_job_with_cache(job, metadata, cache)
+                        logger.add_success()
                         if repeat:
                             added_metadata = True
-                    except DataNotAvailable:
-                        pass  # TODO log data for conversing missing in given metadata
-                    except ConversionNotSupported:
-                        pass  # TODO log this type of conversion is not supported by the service or service unknown
-                    except DataNotRetrieved:
-                        pass  # TODO log no data were retrieved
+                    except (ConversionNotSupported, TargetAttributeNotRetrieved, UnknownResponse) as exc:
+                        warning.add_warning(exc)
+                    except SourceAttributeNotAvailable as exc:
+                        warning.add_info(exc)
+                    except ServiceNotAvailable:
+                        warning.add_warning(ServiceNotAvailable(f'Service {job.service} not available.'))
                 else:
-                    pass  # TODO: log - data already present
+                    warning.add_info(f'Conversion ({job.service}) {job.source} -> {job.target}: Requested '
+                                     f'attribute {job.target} already present in given metadata.')
+
+        warning.compute_success_rate(metadata)
+        logger.add_fails(warning.fails)
+        logger.add_warning(warning)
 
         spectra.metadata = metadata
         return spectra
@@ -47,7 +57,7 @@ class Annotator:
         Execute given job in cached mode. Cache is service specific
         and spectra specific.
 
-        Raises DataNotRetrieved
+        Raises TargetAttributeNotRetrieved
 
         :param job: given job to be executed
         :param metadata: data to be annotated by the job
@@ -66,7 +76,7 @@ class Annotator:
             if job.target in cache[job.service]:
                 metadata[job.target] = cache[job.service][job.target]
             else:
-                raise DataNotRetrieved('No data obtained from the specified job.')
+                raise TargetAttributeNotRetrieved('No data obtained from the specified job.')
         return metadata, cache
 
     def get_all_conversions(self):

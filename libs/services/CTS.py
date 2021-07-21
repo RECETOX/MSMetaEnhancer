@@ -19,7 +19,7 @@ class CTS(Converter):
 
     ### top level methods defining allowed conversions
 
-    async def cas_to_inchikey(self, cas_number):
+    async def casno_to_inchikey(self, cas_number):
         """
         Convert CAS number to InChiKey using CTS web service
         More info: http://cts.fiehnlab.ucdavis.edu/services

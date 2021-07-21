@@ -3,6 +3,7 @@ import unittest
 import json
 
 from libs.services.CTS import CTS
+from libs.utils.Errors import UnknownResponse
 from tests.utils import wrap_with_session
 
 
@@ -34,11 +35,11 @@ class TestCTS(unittest.TestCase):
     def test_cas_to_inchikey(self):
         inchikey = 'XQLMNMQWVCXIKR-UHFFFAOYSA-M'
         cas_number = '7783-89-3'
-        self.assertEqual(asyncio.run(wrap_with_session(self.converter, 'cas_to_inchikey', [cas_number]))['inchikey'],
+        self.assertEqual(asyncio.run(wrap_with_session(self.converter, 'casno_to_inchikey', [cas_number]))['inchikey'],
                          inchikey)
 
         cas_number = '7783893'
-        self.assertIsNone(asyncio.run(wrap_with_session(self.converter, 'cas_to_inchikey', [cas_number])))
+        self.assertIsNone(asyncio.run(wrap_with_session(self.converter, 'casno_to_inchikey', [cas_number])))
 
     def test_inchikey_to_inchi(self):
         inchikey = 'XQLMNMQWVCXIKR-UHFFFAOYSA-M'
@@ -48,7 +49,8 @@ class TestCTS(unittest.TestCase):
                          inchi)
 
         inchikey = 'XQLMNMQIKR-UHFFFAOYSA-M'
-        self.assertIsNone(asyncio.run(wrap_with_session(self.converter, 'inchikey_to_inchi', [inchikey])))
+        with self.assertRaises(UnknownResponse):
+            asyncio.run(wrap_with_session(self.converter, 'inchikey_to_inchi', [inchikey]))
 
     def test_name_to_inchikey(self):
         name = 'L-Alanine'
@@ -66,7 +68,8 @@ class TestCTS(unittest.TestCase):
         self.assertEqual(asyncio.run(wrap_with_session(self.converter, 'inchikey_to_name', [inchikey]))['name'], name)
 
         inchikey = 'XQLMNMQIKR-UHFFFAOYSA-M'
-        self.assertIsNone(asyncio.run(wrap_with_session(self.converter, 'inchikey_to_name', [inchikey])))
+        with self.assertRaises(UnknownResponse):
+            asyncio.run(wrap_with_session(self.converter, 'inchikey_to_name', [inchikey]))
 
     def test_inchikey_to_IUPAC_name(self):
         inchikey = 'QNAYBMKLOCPYGJ-REOHCLBHSA-N'
@@ -76,4 +79,5 @@ class TestCTS(unittest.TestCase):
                                                        [inchikey]))['iupac_name'], iupac_name)
 
         inchikey = 'XQLMNMQIKR-UHFFFAOYSA-M'
-        self.assertIsNone(asyncio.run(wrap_with_session(self.converter, 'inchikey_to_iupac_name', [inchikey])))
+        with self.assertRaises(UnknownResponse):
+            asyncio.run(wrap_with_session(self.converter, 'inchikey_to_iupac_name', [inchikey]))
