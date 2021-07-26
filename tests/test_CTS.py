@@ -8,7 +8,7 @@ from tests.utils import wrap_with_session
 
 
 @pytest.mark.parametrize('arg, value, expected, method', [
-    ['inchikey', '7783-89-3', 'XQLMNMQWVCXIKR-UHFFFAOYSA-M', 'cas_to_inchikey'],
+    ['inchikey', '7783-89-3', 'XQLMNMQWVCXIKR-UHFFFAOYSA-M', 'casno_to_inchikey'],
     ['inchi', 'XQLMNMQWVCXIKR-UHFFFAOYSA-M', 'InChI=1S/Ag.BrHO3/c;2-1(3)4/h;(H,2,3,4)/q+1;/p-1', 'inchikey_to_inchi'],
     ['inchikey', 'L-Alanine', 'QNAYBMKLOCPYGJ-REOHCLBHSA-N', 'name_to_inchikey'],
     ['name', 'QNAYBMKLOCPYGJ-REOHCLBHSA-N', 'L-2-Aminopropanoic acid', 'inchikey_to_name'],
@@ -19,13 +19,20 @@ def test_correct_behavior(arg, value, expected, method):
 
 
 @pytest.mark.parametrize('arg, value, method', [
-    ['inchikey', '7783893', 'cas_to_inchikey'],
     ['inchi', 'XQLMNMQIKR-UHFFFAOYSA-M', 'inchikey_to_inchi'],
-    ['inchikey', 'L-Alalalalanine', 'name_to_inchikey'],
     ['name', 'XQLMNMQIKR-UHFFFAOYSA-M', 'inchikey_to_name'],
     ['iupac_name', 'XQLMNMQIKR-UHFFFAOYSA-M', 'inchikey_to_iupac_name']
 ])
-def test_incorrect_behavior(arg, value, method):
+def test_incorrect_behavior_exception(arg, value, method):
+    with pytest.raises(UnknownResponse):
+        asyncio.run(wrap_with_session(CTS, method, [value]))
+
+
+@pytest.mark.parametrize('arg, value, method', [
+    ['inchikey', '7783893', 'casno_to_inchikey'],
+    ['inchikey', 'L-Alalalalanine', 'name_to_inchikey']
+])
+def test_incorrect_behavior_none(arg, value, method):
     assert asyncio.run(wrap_with_session(CTS, method, [value])) is None
 
 

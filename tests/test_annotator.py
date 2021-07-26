@@ -3,7 +3,7 @@ import pytest
 import mock
 
 from libs.Annotator import Annotator
-from libs.utils.Errors import DataNotRetrieved
+from libs.utils.Errors import TargetAttributeNotRetrieved
 from libs.utils.Job import Job
 
 
@@ -60,7 +60,7 @@ def test_execute_job_with_cache():
 
     annotator = Annotator({'CIR': cir})
 
-    with pytest.raises(DataNotRetrieved):
+    with pytest.raises(TargetAttributeNotRetrieved):
         metadata, cache = asyncio.run(annotator.execute_job_with_cache(job, {'smiles': '$SMILES'}, dict()))
 
 

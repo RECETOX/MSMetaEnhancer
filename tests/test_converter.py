@@ -5,7 +5,7 @@ from aiohttp import ServerDisconnectedError
 from aiohttp import web
 
 from libs.services.Converter import Converter
-from libs.utils.Errors import DataNotRetrieved, ConversionNotSupported
+from libs.utils.Errors import TargetAttributeNotRetrieved, UnknownResponse
 
 
 def test_query_the_service():
@@ -61,14 +61,13 @@ async def test_loop_request_fail(test_client):
     session = await test_client(create_app)
     converter = Converter(session)
 
-    result = await converter.loop_request('/', 'GET', None)
-    assert result is None
+    with pytest.raises(UnknownResponse):
+        await converter.loop_request('/', 'GET', None)
 
 
 @pytest.mark.parametrize('ok, expected, status', [
     [True, 'this is response', 200],
-    [False, None, 503],
-    [False, None, 500]
+    [False, None, 503]
 ])
 def test_process_request(ok, expected, status):
     converter = Converter(mock.Mock())
@@ -78,8 +77,22 @@ def test_process_request(ok, expected, status):
     response.status = status
     response.text = mock.AsyncMock(return_value='this is response')
     response.ok = ok
+
     result = asyncio.run(converter.process_request(response, '/', 'GET', None, 10))
     assert result == expected
+
+
+def test_process_request_exception():
+    converter = Converter(mock.Mock())
+    converter.loop_request = mock.AsyncMock(return_value=None)
+
+    response = mock.AsyncMock()
+    response.status = 500
+    response.text = mock.AsyncMock(return_value='this is response')
+    response.ok = False
+
+    with pytest.raises(UnknownResponse):
+        asyncio.run(converter.process_request(response, '/', 'GET', None, 10))
 
 
 def test_convert():
@@ -91,8 +104,8 @@ def test_convert():
     assert result == 'value'
 
     converter.A_to_B.side_effect = [None]
-    with pytest.raises(DataNotRetrieved):
+    with pytest.raises(TargetAttributeNotRetrieved):
         _ = asyncio.run(converter.convert('A', 'B', None))
 
-    with pytest.raises(ConversionNotSupported):
+    with pytest.raises(AttributeError):
         _ = asyncio.run(converter.convert('B', 'C', None))

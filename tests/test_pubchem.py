@@ -33,7 +33,8 @@ def test_correct_behavior(arg, value, expected, method):
     ['smiles', WRONG_INCHI, 'inchi_to_smiles']
 ])
 def test_incorrect_behavior(arg, value, method):
-    assert asyncio.run(wrap_with_session(PubChem, method, [value])) is None
+    with pytest.raises(UnknownResponse):
+        asyncio.run(wrap_with_session(PubChem, method, [value]))
 
 
 def test_format():

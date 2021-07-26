@@ -22,14 +22,21 @@ def test_correct_behavior(arg, value, expected, method):
 
 @pytest.mark.parametrize('arg, value, method', [
     ['name', 'QNAYBMLOXXXXGJ-REOHCLBHSA-N', 'inchikey_to_name'],
-    ['name', 'QNAYMLGJ-REOLBHSA-N', 'inchikey_to_name'],
     ['inchikey', 'L-Alanne', 'name_to_inchikey'],
-    ['formula', 'QNAYMLGJ-REOLBHSA-N', 'inchikey_to_formula'],
-    ['casno', 'QNAYMLGJ-REOLBHSA-N', 'inchikey_to_casno'],
     ['formula', 'L-Alanne', 'name_to_formula'],
     ['casno', 'L-Alanne', 'name_to_casno']
 ])
-def test_incorrect_behavior(arg, value, method):
+def test_incorrect_behavior_exception(arg, value, method):
+    with pytest.raises(UnknownResponse):
+        asyncio.run(wrap_with_session(NLM, method, [value]))
+
+
+@pytest.mark.parametrize('arg, value, method', [
+    ['name', 'QNAYMLGJ-REOLBHSA-N', 'inchikey_to_name'],
+    ['formula', 'QNAYMLGJ-REOLBHSA-N', 'inchikey_to_formula'],
+    ['casno', 'QNAYMLGJ-REOLBHSA-N', 'inchikey_to_casno']
+])
+def test_incorrect_behavior_none(arg, value, method):
     assert asyncio.run(wrap_with_session(NLM, method, [value])) is None
 
 
