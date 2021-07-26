@@ -5,6 +5,8 @@ import pytest
 
 from libs.services.PubChem import PubChem
 from frozendict import frozendict
+
+from libs.utils.Errors import UnknownResponse
 from tests.utils import wrap_with_session
 
 

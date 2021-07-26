@@ -1,8 +1,11 @@
+import aiohttp
 from asyncstdlib import lru_cache
 
 
 from aiohttp.client_exceptions import ServerDisconnectedError
-from libs.utils.Errors import DataNotRetrieved, ConversionNotSupported
+
+from libs.utils import logger
+from libs.utils.Errors import TargetAttributeNotRetrieved, ServiceNotAvailable, UnknownResponse
 
 
 class Converter:
@@ -32,7 +35,7 @@ class Converter:
             result = await self.loop_request(self.services[service] + args, method, data)
             return result
         except TypeError:
-            pass  # TODO: log - probably given argument is incorrect
+            logger.error(TypeError(f'Incorrect argument {args} for service {service}.'))
 
     async def loop_request(self, url, method, data, depth=10):
         """
@@ -51,9 +54,12 @@ class Converter:
             else:
                 async with self.session.post(url, data=data) as response:
                     return await self.process_request(response, url, method, data, depth)
-        except ServerDisconnectedError:
+        except (ServerDisconnectedError, aiohttp.client_exceptions.ClientConnectorError):
             if depth > 0:
+                logger.error(ServiceNotAvailable(f'Service {self.service_name} '
+                                                 f'temporarily unavailable, trying again...'))
                 return await self.loop_request(url, method, data, depth - 1)
+            raise ServiceNotAvailable
 
     async def process_request(self, response, url, method, data, depth):
         """
@@ -70,10 +76,13 @@ class Converter:
         if response.ok:
             return result
         elif response.status == 503:
+            # server busy, try again
             if depth > 0:
+                logger.error(ServiceNotAvailable(f'Service {self.service_name} '
+                                                 f'temporarily unavailable, trying again...'))
                 return await self.loop_request(url, method, data, depth - 1)
         else:
-            pass  # TODO: log - other error responses
+            raise UnknownResponse(f'Unknown response {response.status}:{result} for {method} request on {url}.')
 
     async def convert(self, source, target, data):
         """
@@ -84,13 +93,12 @@ class Converter:
         :param data: given attribute value
         :return: obtained value of target attribute
         """
-        try:
-            result = await getattr(self, f'{source}_to_{target}')(data)
-            if result:
-                return result
-            raise DataNotRetrieved(f'Target attribute {target} not available.')
-        except AttributeError:
-            raise ConversionNotSupported(f'Conversion from {source} to {target} is not supported.')
+        result = await getattr(self, f'{source}_to_{target}')(data)
+        if result:
+            return result
+        else:
+            raise TargetAttributeNotRetrieved(f'Conversion ({self.service_name}) {source} -> {target}: '
+                                              f'no data retrieved.')
 
     def create_top_level_conversion_methods(self, conversions):
         """

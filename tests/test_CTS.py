@@ -3,6 +3,7 @@ import json
 import pytest
 
 from libs.services.CTS import CTS
+from libs.utils.Errors import UnknownResponse
 from tests.utils import wrap_with_session
 
 
