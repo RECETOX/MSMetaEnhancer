@@ -16,6 +16,9 @@ class Converter:
     def service_name(self):
         return self.__class__.__name__
 
+    def __hash__(self):
+        return hash(self.service_name)
+
     @lru_cache
     async def query_the_service(self, service, args, method='GET', data=None):
         """
@@ -46,10 +49,10 @@ class Converter:
         """
         try:
             if method == 'GET':
-                async with self.session.get(url=url) as response:
+                async with self.session.get(url) as response:
                     return await self.process_request(response, url, method, data, depth)
             else:
-                async with self.session.post(url=url, data=data) as response:
+                async with self.session.post(url, data=data) as response:
                     return await self.process_request(response, url, method, data, depth)
         except (ServerDisconnectedError, aiohttp.client_exceptions.ClientConnectorError):
             if depth > 0:
