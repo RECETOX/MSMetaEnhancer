@@ -45,7 +45,7 @@ async def test_loop_request(test_client):
     converter = Converter(session)
     converter.process_request = mock.AsyncMock(return_value=response)
 
-    result = await converter.loop_request('/', 'GET', None)
+    result = await converter.loop_request('/', 'GET', None, None)
     assert result == response
 
 
@@ -62,14 +62,27 @@ async def test_loop_request_fail(test_client):
     converter = Converter(session)
 
     with pytest.raises(UnknownResponse):
-        await converter.loop_request('/', 'GET', None)
+        await converter.loop_request('/', 'GET', None, None)
 
 
-@pytest.mark.parametrize('ok, expected, status', [
-    [True, 'this is response', 200],
-    [False, None, 503]
+def test_process_request():
+    converter = Converter(mock.Mock())
+    converter.loop_request = mock.AsyncMock(return_value=None)
+
+    response = mock.AsyncMock()
+    response.status = 200
+    response.text = mock.AsyncMock(return_value='this is response')
+    response.ok = True
+
+    result = asyncio.run(converter.process_request(response, '/', 'GET'))
+    assert result == 'this is response'
+
+
+@pytest.mark.parametrize('ok, status', [
+    [False, 500],
+    [False, 503]
 ])
-def test_process_request(ok, expected, status):
+def test_process_request_exception(ok, status):
     converter = Converter(mock.Mock())
     converter.loop_request = mock.AsyncMock(return_value=None)
 
@@ -78,21 +91,8 @@ def test_process_request(ok, expected, status):
     response.text = mock.AsyncMock(return_value='this is response')
     response.ok = ok
 
-    result = asyncio.run(converter.process_request(response, '/', 'GET', None, 10))
-    assert result == expected
-
-
-def test_process_request_exception():
-    converter = Converter(mock.Mock())
-    converter.loop_request = mock.AsyncMock(return_value=None)
-
-    response = mock.AsyncMock()
-    response.status = 500
-    response.text = mock.AsyncMock(return_value='this is response')
-    response.ok = False
-
     with pytest.raises(UnknownResponse):
-        asyncio.run(converter.process_request(response, '/', 'GET', None, 10))
+        asyncio.run(converter.process_request(response, '/', 'GET'))
 
 
 def test_convert():

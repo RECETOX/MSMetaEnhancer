@@ -1,12 +1,9 @@
 import asyncio
-import json
-
 import pytest
 
 from libs.services.PubChem import PubChem
 from frozendict import frozendict
 
-from libs.utils.Errors import UnknownResponse
 from tests.utils import wrap_with_session
 
 
@@ -33,17 +30,30 @@ def test_correct_behavior(arg, value, expected, method):
     ['smiles', WRONG_INCHI, 'inchi_to_smiles']
 ])
 def test_incorrect_behavior(arg, value, method):
-    with pytest.raises(UnknownResponse):
-        asyncio.run(wrap_with_session(PubChem, method, [value]))
+    assert len(asyncio.run(wrap_with_session(PubChem, method, [value]))) == 0
 
 
 def test_format():
     inchi = 'InChI=1S/C9H10O4/c10-7-3-1-6(2-4-7)5-8(11)9(12)13/h1-4,8,10-11H,5H2,(H,12,13)'
-    args = "inchi/JSON"
+
+    query = f"""
+    SELECT DISTINCT ?value ?type
+    WHERE
+    {{
+      ?attribute rdf:type ?type.
+      ?attribute sio:has-value ?value.
+      ?substance sio:has-attribute ?attribute.
+      ?substance sio:has-attribute ?inchi.
+      ?inchi sio:has-value "{inchi}"@en.
+    }}
+    """
+
+    data = frozendict({"query": query})
+
     response = asyncio.run(wrap_with_session(PubChem, 'query_the_service',
-                                             ['PubChem', args, 'POST', frozendict({'inchi': inchi})]))
-    response_json = json.loads(response)
-    assert 'PC_Compounds' in response_json
-    assert len(response_json['PC_Compounds']) == 1
-    assert 'props' in response_json['PC_Compounds'][0]
-    assert type(response_json['PC_Compounds'][0]['props']) == list
+                                             ['PubChem', '', 'POST', frozendict(data),
+                                              frozendict({"Accept": "application/sparql-results+json"})]))
+    response_json = eval(response)
+    assert 'results' in response_json
+    assert 'bindings' in response_json['results']
+    assert len(response_json['results']['bindings']) > 1

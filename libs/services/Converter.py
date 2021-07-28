@@ -54,10 +54,10 @@ class Converter:
         try:
             if method == 'GET':
                 async with self.session.get(url, headers=headers) as response:
-                    return await self.process_request(response, url, method, data, depth)
+                    return await self.process_request(response, url, method)
             else:
                 async with self.session.post(url, data=data, headers=headers) as response:
-                    return await self.process_request(response, url, method, data, depth)
+                    return await self.process_request(response, url, method)
         except (ServerDisconnectedError, aiohttp.client_exceptions.ClientConnectorError):
             if depth > 0:
                 logger.error(ServiceNotAvailable(f'Service {self.service_name} '
@@ -65,15 +65,13 @@ class Converter:
                 return await self.loop_request(url, method, data, headers, depth - 1)
             raise ServiceNotAvailable
 
-    async def process_request(self, response, url, method, data, depth):
+    async def process_request(self, response, url, method):
         """
         Method to wrap response handling (same for POST and GET requests).
 
         :param response: given async response
         :param url: service URL
         :param method: GET/POST
-        :param data: given arguments for POST request
-        :param depth: allowed recursion depth for unsuccessful requests
         :return: processed response
         """
         result = await response.text()
