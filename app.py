@@ -60,7 +60,7 @@ class Application:
         """
         self.spectra = Curator().curate_spectra(self.spectra)
 
-    async def annotate_spectra(self, services, jobs=None, batch_size=10, repeat=False):
+    async def annotate_spectra(self, services, jobs=None, repeat=False):
         """
         Annotates current Spectra data by specified jobs.
          Used services must be specified.
@@ -68,10 +68,8 @@ class Application:
 
         :param services: given list of services names
         :param jobs: list specifying jobs to be executed
-        :param batch_size: amount of data processed asynchronously at once
         :param repeat: if some metadata was added, all jobs are executed again
         """
-        results = []
         async with aiohttp.ClientSession() as session:
             self.validate_services(services)
             services = {service: eval(service)(session) for service in services}
@@ -84,9 +82,8 @@ class Application:
 
             logger.set_target_attributes(jobs)
 
-            for size in range(len(self.spectra.spectrums) // batch_size + 1):
-                results += await asyncio.gather(*[annotator.annotate(spectra, jobs, repeat) for spectra in
-                                                  self.spectra.spectrums[size * batch_size:(size + 1) * batch_size]])
+            results = await asyncio.gather(*[annotator.annotate(spectra, jobs, repeat)
+                                             for spectra in self.spectra.spectrums])
 
         self.spectra.spectrums = results
         logger.log_statistics(self.log_level, self.log_file)
