@@ -1,3 +1,5 @@
+import asyncio
+
 from libs.services.Converter import Converter
 from frozendict import frozendict
 
@@ -24,6 +26,9 @@ class PubChem(Converter):
                        ('inchi', 'formula', 'from_inchi'),
                        ('inchi', 'smiles', 'from_inchi')]
         self.create_top_level_conversion_methods(conversions)
+
+        # used to limit the maximal number of simultaneous requests being processed
+        self.semaphore = asyncio.Semaphore(10)
 
     async def name_to_inchikey(self, name):
         """
@@ -106,8 +111,18 @@ class PubChem(Converter):
         return await self.call_service(query)
 
     async def call_service(self, query):
+        """
+        General method to call PubChem service.
+
+        Uses semaphore to control maximal number of simultaneous requests being processed.
+        Limited to 10 as required by IDSM service.
+
+        :param query: given SPARQL query
+        :return: obtained attributes
+        """
         data = frozendict({"query": query})
-        response = await self.query_the_service('PubChem', '', method='POST', data=data, headers=self.header)
+        async with self.semaphore:
+            response = await self.query_the_service('PubChem', '', method='POST', data=data, headers=self.header)
         if response:
             return self.parse_attributes(response)
 
