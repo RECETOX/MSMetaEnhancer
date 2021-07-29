@@ -20,7 +20,7 @@ class Converter:
         return hash(self.service_name)
 
     @lru_cache
-    async def query_the_service(self, service, args, method='GET', data=None):
+    async def query_the_service(self, service, args, method='GET', data=None, headers=None):
         """
         Make get request to given service with arguments.
         Raises ConnectionError if service is not available.
@@ -29,15 +29,16 @@ class Converter:
         :param args: additional query arguments
         :param method: GET (default) or POST
         :param data: data for POST request
+        :param headers: optional headers for the request
         :return: obtained response
         """
         try:
-            result = await self.loop_request(self.services[service] + args, method, data)
+            result = await self.loop_request(self.services[service] + args, method, data, headers)
             return result
         except TypeError:
             logger.error(TypeError(f'Incorrect argument {args} for service {service}.'))
 
-    async def loop_request(self, url, method, data, depth=10):
+    async def loop_request(self, url, method, data, headers, depth=10):
         """
         Execute request with type depending on specified method.
 
@@ -45,42 +46,37 @@ class Converter:
         :param method: GET/POST
         :param data: given arguments for POST request
         :param depth: allowed recursion depth for unsuccessful requests
+        :param headers: optional headers for the request
         :return: obtained response
         """
+        if headers is None:
+            headers = dict()
         try:
             if method == 'GET':
-                async with self.session.get(url) as response:
-                    return await self.process_request(response, url, method, data, depth)
+                async with self.session.get(url, headers=headers) as response:
+                    return await self.process_request(response, url, method)
             else:
-                async with self.session.post(url, data=data) as response:
-                    return await self.process_request(response, url, method, data, depth)
+                async with self.session.post(url, data=data, headers=headers) as response:
+                    return await self.process_request(response, url, method)
         except (ServerDisconnectedError, aiohttp.client_exceptions.ClientConnectorError):
             if depth > 0:
                 logger.error(ServiceNotAvailable(f'Service {self.service_name} '
                                                  f'temporarily unavailable, trying again...'))
-                return await self.loop_request(url, method, data, depth - 1)
+                return await self.loop_request(url, method, data, headers, depth - 1)
             raise ServiceNotAvailable
 
-    async def process_request(self, response, url, method, data, depth):
+    async def process_request(self, response, url, method):
         """
         Method to wrap response handling (same for POST and GET requests).
 
         :param response: given async response
         :param url: service URL
         :param method: GET/POST
-        :param data: given arguments for POST request
-        :param depth: allowed recursion depth for unsuccessful requests
         :return: processed response
         """
         result = await response.text()
         if response.ok:
             return result
-        elif response.status == 503:
-            # server busy, try again
-            if depth > 0:
-                logger.error(ServiceNotAvailable(f'Service {self.service_name} '
-                                                 f'temporarily unavailable, trying again...'))
-                return await self.loop_request(url, method, data, depth - 1)
         else:
             raise UnknownResponse(f'Unknown response {response.status}:{result} for {method} request on {url}.')
 
