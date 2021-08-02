@@ -1,9 +1,12 @@
 import asyncio
+
+import aiohttp
 import mock
 import pytest
 from aiohttp import ServerDisconnectedError
 from aiohttp import web
 
+from libs.services import CTS, CIR
 from libs.services.Converter import Converter
 from libs.utils.Errors import TargetAttributeNotRetrieved, UnknownResponse
 
@@ -109,3 +112,26 @@ def test_convert():
 
     with pytest.raises(AttributeError):
         _ = asyncio.run(converter.convert('B', 'C', None))
+
+
+@pytest.mark.parametrize('service, args', [
+    ['CTS', 'CAS/InChIKey/7783-89-3'],
+    ['CTS', 'CAS/InChIKey/7783893'],
+    ['CIR', '7783-89-3/smiles?resolver=cas_number']
+])
+def test_lru_cache(service, args):
+    async def run():
+        async with aiohttp.ClientSession() as session:
+            converter = eval(service)(session)
+            converter.query_the_service.cache_clear()
+
+            _ = await converter.query_the_service(service, args)
+            assert converter.query_the_service.cache_info().hits == 0
+
+            _ = await converter.query_the_service(service, args)
+            assert converter.query_the_service.cache_info().hits == 1
+
+            _ = await converter.query_the_service(service, args)
+            assert converter.query_the_service.cache_info().hits == 2
+
+    asyncio.run(run())
