@@ -23,7 +23,8 @@ class Annotator:
         """
         metadata = spectra.metadata
         cache = dict()
-        warning = LogWarning(dict(metadata), logger.attribute_discovery_rates)
+        warning = LogWarning(dict(metadata))
+        logger.add_coverage_before(metadata.keys())
 
         added_metadata = True
         while added_metadata:
@@ -32,7 +33,6 @@ class Annotator:
                 if job.target not in metadata:
                     try:
                         metadata, cache = await self.execute_job_with_cache(job, metadata, cache)
-                        logger.add_success()
                         if repeat:
                             added_metadata = True
                     except (ConversionNotSupported, TargetAttributeNotRetrieved, UnknownResponse) as exc:
@@ -45,9 +45,8 @@ class Annotator:
                     warning.add_info(f'Conversion ({job.service}) {job.source} -> {job.target}: Requested '
                                      f'attribute {job.target} already present in given metadata.')
 
-        warning.compute_success_rate(metadata)
-        logger.add_fails(warning.fails)
         logger.add_warning(warning)
+        logger.add_coverage_after(metadata.keys())
 
         spectra.metadata = metadata
         return spectra

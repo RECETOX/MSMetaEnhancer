@@ -80,10 +80,10 @@ class Application:
                 jobs = annotator.get_all_conversions()
             jobs = convert_to_jobs(jobs)
 
-            logger.set_target_attributes(jobs)
+            logger.set_target_attributes(jobs, len(self.spectra.spectrums))
 
             results = await asyncio.gather(*[annotator.annotate(spectra, jobs, repeat)
                                              for spectra in self.spectra.spectrums])
 
         self.spectra.spectrums = results
-        logger.log_statistics(self.log_level, self.log_file)
+        logger.write_log(self.log_level, self.log_file)
