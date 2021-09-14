@@ -6,6 +6,7 @@ import pytest
 from aiohttp import ServerDisconnectedError
 from aiohttp import web
 
+from pyMSPannotator.libs.services import CTS, CIR
 from pyMSPannotator.libs.services.Converter import Converter
 from pyMSPannotator.libs.utils.Errors import TargetAttributeNotRetrieved, UnknownResponse
 
