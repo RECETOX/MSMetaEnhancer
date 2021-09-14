@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 setup(name='pyMSPannotator',
       version='0.1',
@@ -8,7 +8,7 @@ setup(name='pyMSPannotator',
       author='Matej Trojak',
       author_email='matej.trojak@recetox.muni.cz',
       license='MIT',
-      packages=['pyMSPannotator'],
+      packages=find_packages(exclude=['*tests*']),
       zip_safe=False,
       test_suite="tests",
       python_requires='>=3.7',
@@ -20,5 +20,5 @@ setup(name='pyMSPannotator',
             "asyncstdlib",
             "frozendict",
             "tabulate"
-      ],
+      ]
       )
