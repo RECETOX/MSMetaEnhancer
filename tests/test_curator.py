@@ -1,4 +1,4 @@
-from libs.Curator import Curator
+from pyMSPannotator.libs.Curator import Curator
 
 
 def test_fix_cas_number():

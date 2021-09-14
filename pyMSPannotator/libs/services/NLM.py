@@ -2,7 +2,7 @@ from io import StringIO
 
 import pandas as pd
 
-from libs.services.Converter import Converter
+from pyMSPannotator.libs.services.Converter import Converter
 
 
 class NLM(Converter):

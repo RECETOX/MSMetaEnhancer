@@ -3,8 +3,8 @@ from io import StringIO
 import pandas as pd
 import pytest
 
-from libs.services.NLM import NLM
-from libs.utils.Errors import UnknownResponse
+from pyMSPannotator.libs.services.NLM import NLM
+from pyMSPannotator.libs.utils.Errors import UnknownResponse
 from tests.utils import wrap_with_session
 
 

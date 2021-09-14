@@ -1,7 +1,7 @@
 import asyncio
 import pytest
 
-from libs.services.PubChem import PubChem
+from pyMSPannotator.libs.services.PubChem import PubChem
 from frozendict import frozendict
 
 from tests.utils import wrap_with_session

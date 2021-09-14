@@ -2,7 +2,7 @@ from datetime import datetime
 import logging
 from asyncio import Queue
 
-from libs.utils.Metrics import Metrics
+from pyMSPannotator.libs.utils.Metrics import Metrics
 
 
 class Logger:
