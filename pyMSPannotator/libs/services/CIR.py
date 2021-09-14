@@ -15,7 +15,7 @@ class CIR(Converter):
         :param cas_number: given CAS number
         :return: obtained SMILES
         """
-        args = f"{cas_number}/smiles?resolver=cas_number"
+        args = f'{cas_number}/smiles?resolver=cas_number'
         response = await self.query_the_service('CIR', args)
         if response:
             return {'smiles': response}
