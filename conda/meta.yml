@@ -1,9 +1,9 @@
 {% set name = "pyMSPannotator" %}
-{% set data = load_setup_py_data() %}
+{% set version = "0.1.0" %}
 
 package:
-  name: {{ name }}
-  version: {{ data.get('version') }}
+  name: {{ name|lower }}
+  version: {{ version }}
 
 source:
   path: ..
@@ -54,9 +54,7 @@ about:
   home: https://github.com/RECETOX/pyMSPannotator
   license: MIT
   license_file: LICENSE
-  summary: 'GC-MS retention index calculation'
-  description: |
-    Repository for tool that adds more annotations (e.g. SMILES, InChI, CAS number) to MSP files (Python version).
+  summary: Repository for tool that adds more annotations (e.g. SMILES, InChI, CAS number) to MSP files (Python version).
   dev_url: https://github.com/RECETOX/pyMSPannotator
 
 extra:
