@@ -17,7 +17,7 @@ class CTS(Converter):
                        ('inchikey', 'iupac_name', 'from_inchikey')]
         self.create_top_level_conversion_methods(conversions)
 
-    ### top level methods defining allowed conversions
+    # top level methods defining allowed conversions
 
     async def casno_to_inchikey(self, cas_number):
         """
@@ -43,8 +43,6 @@ class CTS(Converter):
         response = await self.query_the_service('CTS', args)
         if response:
             return self.parse_inchikey(response)
-
-    ###
 
     async def from_inchikey(self, inchikey):
         """
