@@ -2,8 +2,8 @@ import asyncio
 import json
 import pytest
 
-from libs.services.CTS import CTS
-from libs.utils.Errors import UnknownResponse
+from pyMSPannotator.libs.services.CTS import CTS
+from pyMSPannotator.libs.utils.Errors import UnknownResponse
 from tests.utils import wrap_with_session
 
 
@@ -11,8 +11,8 @@ from tests.utils import wrap_with_session
     ['inchikey', '7783-89-3', 'XQLMNMQWVCXIKR-UHFFFAOYSA-M', 'casno_to_inchikey'],
     ['inchi', 'XQLMNMQWVCXIKR-UHFFFAOYSA-M', 'InChI=1S/Ag.BrHO3/c;2-1(3)4/h;(H,2,3,4)/q+1;/p-1', 'inchikey_to_inchi'],
     ['inchikey', 'L-Alanine', 'QNAYBMKLOCPYGJ-REOHCLBHSA-N', 'name_to_inchikey'],
-    ['name', 'QNAYBMKLOCPYGJ-REOHCLBHSA-N', 'L-2-Aminopropanoic acid', 'inchikey_to_name'],
-    ['iupac_name', 'QNAYBMKLOCPYGJ-REOHCLBHSA-N', '(2S)-2-aminopropanoic acid', 'inchikey_to_iupac_name']
+    ['name', 'QNAYBMKLOCPYGJ-REOHCLBHSA-N', 'L-ALANINE', 'inchikey_to_name'],
+    ['iupac_name', 'QNAYBMKLOCPYGJ-REOHCLBHSA-N', '(2S)-2-azaniumylpropanoate', 'inchikey_to_iupac_name']
 ])
 def test_correct_behavior(arg, value, expected, method):
     assert asyncio.run(wrap_with_session(CTS, method, [value]))[arg] == expected

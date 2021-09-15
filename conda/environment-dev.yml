@@ -1,0 +1,19 @@
+name: pyMSPannotator
+channels:
+  - bioconda
+  - conda-forge
+  - defaults
+dependencies:
+  - python >=3.7,<3.9
+  - matchms >=0.9.1
+  - pandas
+  - scipy
+  - requests
+  - aiohttp
+  - asyncstdlib
+  - frozendict
+  - tabulate
+  - mock
+  - pytest
+  - pytest-aiohttp
+  - pytest-cov

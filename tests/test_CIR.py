@@ -1,8 +1,8 @@
 import asyncio
 import pytest
 
-from libs.services.CIR import CIR
-from libs.utils.Errors import UnknownResponse
+from pyMSPannotator.libs.services.CIR import CIR
+from pyMSPannotator.libs.utils.Errors import UnknownResponse
 from tests.utils import wrap_with_session
 
 

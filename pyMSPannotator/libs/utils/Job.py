@@ -1,4 +1,4 @@
-from libs.utils.Errors import ConversionNotSupported, SourceAttributeNotAvailable
+from pyMSPannotator.libs.utils.Errors import ConversionNotSupported, SourceAttributeNotAvailable
 
 
 class Job:

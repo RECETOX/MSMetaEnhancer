@@ -1,7 +1,7 @@
 import asyncio
 from copy import copy
 
-from app import Application
+from pyMSPannotator.app import Application
 
 
 def test_annotate_MSP_file():
