@@ -1,14 +1,24 @@
-[![Python package](https://github.com/xtrojak/pyMSPannotator/actions/workflows/python-package.yml/badge.svg)](https://github.com/xtrojak/pyMSPannotator/actions/workflows/python-package.yml)
-
 # pyMSPannotator
-Repository for tool that adds more annotations (e.g. SMILES, InChI, CAS number) to MSP files (Python version).
 
-### How to use this tool
+[![Python package](https://github.com/RECETOX/pyMSPannotator/actions/workflows/python-package.yml/badge.svg)](https://github.com/RECETOX/pyMSPannotator/actions/workflows/python-package.yml)
+[![Python package using Conda](https://github.com/RECETOX/pyMSPannotator/actions/workflows/python-package-conda.yml/badge.svg)](https://github.com/RECETOX/pyMSPannotator/actions/workflows/python-package-conda.yml)
+
+## Overview
+
+Repository for tool that adds more annotations (e.g. SMILES, InChI, CAS number) to MSP files.
+
+## Usage
+
+pyMSPannotator provides top level `Application` which implements interface for `.msp` files manipulation and annotation. 
+It supports several services which can be used to obtained desired annotation. 
+The app uses asynchronous implementation of annotation process, benefiting from non-trivial amount of time spent by waiting for a web query response.
+
+### Example
 
 ```python
 import asyncio
 
-from app import Application
+from pyMSPannotator.app import Application
 
 app = Application()
 
@@ -34,3 +44,26 @@ asyncio.run(app.annotate_spectra(services))
 # export .msp file 
 app.save_spectra('tests/test_data/sample_out.msp', file_format='msp')
 ```
+
+## Installation
+
+Installation is currently possible by creating the conda environment with 
+
+`conda env create -f conda/environment-dev.yml`
+
+The tool will be published via pypi and bioconda soon!
+
+## Developer Documentation
+
+### Setup
+
+Create your development environment using the provided [script](conda/environment-dev.yml) via conda to install all required dependencies.
+
+### Contributing
+
+We appreciate contributions - feel free to open an issue on our repository, create your own fork, work on the problem and pose a PR. 
+Make sure to add your contributions to the [changelog](CHANGELOG.md) and to adhere to the [versioning](https://semver.org/spec/v2.0.0.html).
+
+### Testing
+
+All functionality is tested with the [pytest](https://docs.pytest.org/en/6.2.x/contents.html) framework.
