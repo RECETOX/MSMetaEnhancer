@@ -3,6 +3,7 @@ from asyncstdlib import lru_cache
 
 
 from aiohttp.client_exceptions import ServerDisconnectedError
+from asyncio.exceptions import TimeoutError
 
 from pyMSPannotator.libs.utils import logger
 from pyMSPannotator.libs.utils.Errors import TargetAttributeNotRetrieved, ServiceNotAvailable, UnknownResponse
@@ -58,7 +59,7 @@ class Converter:
             else:
                 async with self.session.post(url, data=data, headers=headers) as response:
                     return await self.process_request(response, url, method)
-        except (ServerDisconnectedError, aiohttp.client_exceptions.ClientConnectorError):
+        except (ServerDisconnectedError, aiohttp.client_exceptions.ClientConnectorError, TimeoutError):
             if depth > 0:
                 logger.error(ServiceNotAvailable(f'Service {self.service_name} '
                                                  f'temporarily unavailable, trying again...'))
