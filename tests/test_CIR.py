@@ -6,6 +6,12 @@ from pyMSPannotator.libs.utils.Errors import UnknownResponse
 from tests.utils import wrap_with_session
 
 
+@pytest.mark.dependency()
+def test_service_available():
+    asyncio.run(wrap_with_session(CIR, 'casno_to_smiles', ['7783-89-3']))
+
+
+@pytest.mark.dependency(depends=["test_service_available"])
 @pytest.mark.parametrize('arg, value, expected, method', [
     ['smiles', '7783-89-3', '[Ag+].[O-][Br](=O)=O', 'casno_to_smiles'],
     ['smiles', 'XQLMNMQWVCXIKR-UHFFFAOYSA-M', '[Ag+].[O-][Br](=O)=O', 'inchikey_to_smiles'],
@@ -18,6 +24,7 @@ def test_correct_behavior(arg, value, expected, method):
     assert asyncio.run(wrap_with_session(CIR, method, [value]))[arg] == expected
 
 
+@pytest.mark.dependency(depends=["test_service_available"])
 @pytest.mark.parametrize('arg, value, method', [
     ['smiles', '7783893', 'casno_to_smiles'],
     ['smiles', 'XQLMNVCXIKR-UHFFFAOYSA-M', 'inchikey_to_smiles'],
