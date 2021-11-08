@@ -1,4 +1,4 @@
-name: pyMSPannotator
+name: pyMSPannotator-dev
 channels:
   - bioconda
   - conda-forge
