@@ -11,6 +11,12 @@ INCHI = 'InChI=1S/C11H8FNO3/c1-13-6-9(10(14)16-11(13)15)7-2-4-8(12)5-3-7/h2-6H,1
 WRONG_INCHI = 'InChI=1S/C9H10O4/c102-4-7)5-8(11)93/1-4,8,10-11H,5H2,(H,12,13)'
 
 
+@pytest.mark.dependency()
+def test_service_available():
+    asyncio.run(wrap_with_session(PubChem, 'inchi_to_inchikey', [INCHI]))
+
+
+@pytest.mark.dependency(depends=["test_service_available"])
 @pytest.mark.parametrize('arg, value, expected, method', [
     ['inchikey', INCHI, 'DHVXXNFWDPJSOI-UHFFFAOYSA-N', 'inchi_to_inchikey'],
     ['inchi', '3-Methyl-5-[p-fluorophenyl]-2H-1,3-[3H]-oxazine-2,6-dione', INCHI, 'name_to_inchi'],
@@ -22,6 +28,7 @@ def test_correct_behavior(arg, value, expected, method):
     assert asyncio.run(wrap_with_session(PubChem, method, [value]))[arg] == expected
 
 
+@pytest.mark.dependency(depends=["test_service_available"])
 @pytest.mark.parametrize('arg, value, method', [
     ['inchikey', WRONG_INCHI, 'inchi_to_inchikey'],
     ['inchi', 'L-Alanne', 'name_to_inchi'],
@@ -33,6 +40,7 @@ def test_incorrect_behavior(arg, value, method):
     assert len(asyncio.run(wrap_with_session(PubChem, method, [value]))) == 0
 
 
+@pytest.mark.dependency(depends=["test_service_available"])
 def test_format():
     inchi = 'InChI=1S/C9H10O4/c10-7-3-1-6(2-4-7)5-8(11)9(12)13/h1-4,8,10-11H,5H2,(H,12,13)'
 
