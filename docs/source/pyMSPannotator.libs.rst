@@ -36,11 +36,3 @@ pyMSPannotator.libs.Spectra module
    :members:
    :undoc-members:
    :show-inheritance:
-
-Module contents
----------------
-
-.. automodule:: pyMSPannotator.libs
-   :members:
-   :undoc-members:
-   :show-inheritance:

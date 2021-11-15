@@ -43,11 +43,3 @@ pyMSPannotator.libs.services.PubChem module
    :members:
    :undoc-members:
    :show-inheritance:
-
-Module contents
----------------
-
-.. automodule:: pyMSPannotator.libs.services
-   :members:
-   :undoc-members:
-   :show-inheritance:

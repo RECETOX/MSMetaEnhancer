@@ -19,11 +19,3 @@ pyMSPannotator.app module
    :members:
    :undoc-members:
    :show-inheritance:
-
-Module contents
----------------
-
-.. automodule:: pyMSPannotator
-   :members:
-   :undoc-members:
-   :show-inheritance:

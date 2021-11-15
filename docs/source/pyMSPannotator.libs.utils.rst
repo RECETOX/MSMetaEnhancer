@@ -35,11 +35,3 @@ pyMSPannotator.libs.utils.Metrics module
    :members:
    :undoc-members:
    :show-inheritance:
-
-Module contents
----------------
-
-.. automodule:: pyMSPannotator.libs.utils
-   :members:
-   :undoc-members:
-   :show-inheritance:
