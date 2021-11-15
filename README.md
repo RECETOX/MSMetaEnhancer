@@ -1,19 +1,22 @@
-# pyMSPannotator
+## pyMSPannotator
 
 [![Python package](https://github.com/RECETOX/pyMSPannotator/actions/workflows/python-package.yml/badge.svg)](https://github.com/RECETOX/pyMSPannotator/actions/workflows/python-package.yml)
 [![Python package using Conda](https://github.com/RECETOX/pyMSPannotator/actions/workflows/python-package-conda.yml/badge.svg)](https://github.com/RECETOX/pyMSPannotator/actions/workflows/python-package-conda.yml)
 
-## Overview
+### Overview
 
-Repository for tool that adds more annotations (e.g. SMILES, InChI, CAS number) to MSP files.
+**pyMSPannotator** is a tool used for `.msp` files annotation.
+It supports four services: [CIR](https://cactus.nci.nih.gov/chemical/structure_documentation), [CTS](https://cts.fiehnlab.ucdavis.edu/), [NLM](https://chem.nlm.nih.gov), and [PubChem](https://pubchem.ncbi.nlm.nih.gov/).
+The app uses asynchronous implementation of annotation process,
+benefiting from non-trivial amount of time spent by waiting for a web query response.
 
-## Usage
+### Usage
 
 pyMSPannotator provides top level `Application` which implements interface for `.msp` files manipulation and annotation. 
 It supports several services which can be used to obtained desired annotation. 
 The app uses asynchronous implementation of annotation process, benefiting from non-trivial amount of time spent by waiting for a web query response.
 
-### Example
+#### Example
 
 ```python
 import asyncio
@@ -45,25 +48,33 @@ asyncio.run(app.annotate_spectra(services))
 app.save_spectra('tests/test_data/sample_out.msp', file_format='msp')
 ```
 
-## Installation
+### Installation
 
-Installation is currently possible by creating the conda environment with 
+Prerequisites:
 
-`conda env create -f conda/environment-dev.yml`
+- Python 3.7 or 3.8
+- Anaconda
 
-The tool will be published via pypi and bioconda soon!
+Install `pyMSPannotator` from Bioconda with:
 
-## Developer Documentation
+```
+# install pyMSPannotator in a new virtual environment to avoid dependency clashes
+conda create --name pyMSPannotator python=3.8
+conda activate pyMSPannotator
+conda install --channel bioconda --channel conda-forge pyMSPannotator
+```
 
-### Setup
+### Developer Documentation
+
+#### Setup
 
 Create your development environment using the provided [script](conda/environment-dev.yml) via conda to install all required dependencies.
 
-### Contributing
+#### Contributing
 
 We appreciate contributions - feel free to open an issue on our repository, create your own fork, work on the problem and pose a PR. 
 Make sure to add your contributions to the [changelog](CHANGELOG.md) and to adhere to the [versioning](https://semver.org/spec/v2.0.0.html).
 
-### Testing
+#### Testing
 
 All functionality is tested with the [pytest](https://docs.pytest.org/en/6.2.x/contents.html) framework.
