@@ -8,6 +8,12 @@ from pyMSPannotator.libs.utils.Errors import UnknownResponse
 from tests.utils import wrap_with_session
 
 
+@pytest.mark.dependency()
+def test_service_available():
+    asyncio.run(wrap_with_session(NLM, 'inchikey_to_name', ['QNAYBMKLOCPYGJ-REOHCLBHSA-N']))
+
+
+@pytest.mark.dependency(depends=["test_service_available"])
 @pytest.mark.parametrize('arg, value, expected, method', [
     ['name', 'QNAYBMKLOCPYGJ-REOHCLBHSA-N', 'Alanine [USAN:INN]', 'inchikey_to_name'],
     ['inchikey', 'L-Alanine', 'QNAYBMKLOCPYGJ-REOHCLBHSA-N', 'name_to_inchikey'],
@@ -20,6 +26,7 @@ def test_correct_behavior(arg, value, expected, method):
     assert asyncio.run(wrap_with_session(NLM, method, [value]))[arg] == expected
 
 
+@pytest.mark.dependency(depends=["test_service_available"])
 @pytest.mark.parametrize('arg, value, method', [
     ['name', 'QNAYBMLOXXXXGJ-REOHCLBHSA-N', 'inchikey_to_name'],
     ['inchikey', 'L-Alanne', 'name_to_inchikey'],
@@ -31,6 +38,7 @@ def test_incorrect_behavior_exception(arg, value, method):
         asyncio.run(wrap_with_session(NLM, method, [value]))
 
 
+@pytest.mark.dependency(depends=["test_service_available"])
 @pytest.mark.parametrize('arg, value, method', [
     ['name', 'QNAYMLGJ-REOLBHSA-N', 'inchikey_to_name'],
     ['formula', 'QNAYMLGJ-REOLBHSA-N', 'inchikey_to_formula'],
@@ -40,6 +48,7 @@ def test_incorrect_behavior_none(arg, value, method):
     assert asyncio.run(wrap_with_session(NLM, method, [value])) is None
 
 
+@pytest.mark.dependency(depends=["test_service_available"])
 def test_format():
     inchikey = 'QNAYBMKLOCPYGJ-REOHCLBHSA-N'
     args = 'inchikey/equals/{}?data=summary&format=tsv'.format(inchikey)

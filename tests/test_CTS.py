@@ -7,6 +7,12 @@ from pyMSPannotator.libs.utils.Errors import UnknownResponse
 from tests.utils import wrap_with_session
 
 
+@pytest.mark.dependency()
+def test_service_available():
+    asyncio.run(wrap_with_session(CTS, 'casno_to_inchikey', ['7783-89-3']))
+
+
+@pytest.mark.dependency(depends=["test_service_available"])
 @pytest.mark.parametrize('arg, value, expected, method', [
     ['inchikey', '7783-89-3', 'XQLMNMQWVCXIKR-UHFFFAOYSA-M', 'casno_to_inchikey'],
     ['inchi', 'XQLMNMQWVCXIKR-UHFFFAOYSA-M', 'InChI=1S/Ag.BrHO3/c;2-1(3)4/h;(H,2,3,4)/q+1;/p-1', 'inchikey_to_inchi'],
@@ -18,6 +24,7 @@ def test_correct_behavior(arg, value, expected, method):
     assert asyncio.run(wrap_with_session(CTS, method, [value]))[arg] == expected
 
 
+@pytest.mark.dependency(depends=["test_service_available"])
 @pytest.mark.parametrize('arg, value, method', [
     ['inchi', 'XQLMNMQIKR-UHFFFAOYSA-M', 'inchikey_to_inchi'],
     ['name', 'XQLMNMQIKR-UHFFFAOYSA-M', 'inchikey_to_name'],
@@ -28,6 +35,7 @@ def test_incorrect_behavior_exception(arg, value, method):
         asyncio.run(wrap_with_session(CTS, method, [value]))
 
 
+@pytest.mark.dependency(depends=["test_service_available"])
 @pytest.mark.parametrize('arg, value, method', [
     ['inchikey', '7783893', 'casno_to_inchikey'],
     ['inchikey', 'L-Alalalalanine', 'name_to_inchikey']
@@ -36,6 +44,7 @@ def test_incorrect_behavior_none(arg, value, method):
     assert asyncio.run(wrap_with_session(CTS, method, [value])) is None
 
 
+@pytest.mark.dependency(depends=["test_service_available"])
 @pytest.mark.parametrize('value, size', [
     ['7783-89-3', 1],
     ['7783893', 0]

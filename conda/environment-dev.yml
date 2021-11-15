@@ -1,4 +1,4 @@
-name: pyMSPannotator
+name: pyMSPannotator-dev
 channels:
   - bioconda
   - conda-forge
@@ -17,3 +17,4 @@ dependencies:
   - pytest
   - pytest-aiohttp
   - pytest-cov
+  - pytest-dependency

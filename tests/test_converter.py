@@ -6,7 +6,6 @@ import pytest
 from aiohttp import ServerDisconnectedError
 from aiohttp import web
 
-from pyMSPannotator.libs.services import CTS, CIR
 from pyMSPannotator.libs.services.Converter import Converter
 from pyMSPannotator.libs.utils.Errors import TargetAttributeNotRetrieved, UnknownResponse
 
@@ -114,6 +113,16 @@ def test_convert():
         _ = asyncio.run(converter.convert('B', 'C', None))
 
 
+@pytest.mark.dependency()
+def test_services_available():
+    from tests.utils import wrap_with_session
+    from pyMSPannotator.libs.services import CTS, CIR
+
+    asyncio.run(wrap_with_session(CTS, 'casno_to_inchikey', ['7783-89-3']))
+    asyncio.run(wrap_with_session(CIR, 'casno_to_smiles', ['7783-89-3']))
+
+
+@pytest.mark.dependency(depends=["test_services_available"])
 @pytest.mark.parametrize('service, args', [
     ['CTS', 'CAS/InChIKey/7783-89-3'],
     ['CTS', 'CAS/InChIKey/7783893'],
