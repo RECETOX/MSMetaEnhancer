@@ -9,9 +9,9 @@ Welcome to pyMSPannotator's documentation!
 .. toctree::
    :maxdepth: 1
 
-   readme
-   changelog
-
+   Documentation <pyMSPannotator>
+   Changelog <changelog.md>
+   Readme <readme.md>
 
 Indices and tables
 ==================
