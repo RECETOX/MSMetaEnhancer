@@ -1,10 +1,10 @@
 from setuptools import setup, find_packages
 
-setup(name='pyMSPannotator',
+setup(name='MSMetaEnhancer',
       version='0.1',
       description='Repository for tool that adds more annotations '
                   '(e.g. SMILES, InChI, CAS number) to MSP files (Python version).',
-      url='https://github.com/RECETOX/pyMSPannotator',
+      url='https://github.com/RECETOX/MSMetaEnhancer',
       author='Matej Trojak',
       author_email='matej.trojak@recetox.muni.cz',
       license='MIT',

@@ -1,6 +1,6 @@
 import asyncio
 
-from pyMSPannotator.libs.services.Converter import Converter
+from MSMetaEnhancer.libs.services.Converter import Converter
 from frozendict import frozendict
 
 

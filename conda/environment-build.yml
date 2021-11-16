@@ -1,4 +1,4 @@
-name: pyMSPannotator-build
+name: MSMetaEnhancer-build
 channels:
   - defaults
 dependencies:

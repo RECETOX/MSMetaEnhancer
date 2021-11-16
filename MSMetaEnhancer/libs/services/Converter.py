@@ -5,8 +5,8 @@ from asyncstdlib import lru_cache
 from aiohttp.client_exceptions import ServerDisconnectedError
 from asyncio.exceptions import TimeoutError
 
-from pyMSPannotator.libs.utils import logger
-from pyMSPannotator.libs.utils.Errors import TargetAttributeNotRetrieved, ServiceNotAvailable, UnknownResponse
+from MSMetaEnhancer.libs.utils import logger
+from MSMetaEnhancer.libs.utils.Errors import TargetAttributeNotRetrieved, ServiceNotAvailable, UnknownResponse
 
 
 class Converter:

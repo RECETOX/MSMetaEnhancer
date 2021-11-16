@@ -1,18 +1,18 @@
-## pyMSPannotator
+## MSMetaEnhancer
 
-[![Python package](https://github.com/RECETOX/pyMSPannotator/actions/workflows/python-package.yml/badge.svg)](https://github.com/RECETOX/pyMSPannotator/actions/workflows/python-package.yml)
-[![Python package using Conda](https://github.com/RECETOX/pyMSPannotator/actions/workflows/python-package-conda.yml/badge.svg)](https://github.com/RECETOX/pyMSPannotator/actions/workflows/python-package-conda.yml)
+[![Python package](https://github.com/RECETOX/MSMetaEnhancer/actions/workflows/python-package.yml/badge.svg)](https://github.com/RECETOX/MSMetaEnhancer/actions/workflows/python-package.yml)
+[![Python package using Conda](https://github.com/RECETOX/MSMetaEnhancer/actions/workflows/python-package-conda.yml/badge.svg)](https://github.com/RECETOX/MSMetaEnhancer/actions/workflows/python-package-conda.yml)
 
 ### Overview
 
-**pyMSPannotator** is a tool used for `.msp` files annotation.
+**MSMetaEnhancer** is a tool used for `.msp` files annotation.
 It supports four services: [CIR](https://cactus.nci.nih.gov/chemical/structure_documentation), [CTS](https://cts.fiehnlab.ucdavis.edu/), [NLM](https://chem.nlm.nih.gov), and [PubChem](https://pubchem.ncbi.nlm.nih.gov/).
 The app uses asynchronous implementation of annotation process,
 benefiting from non-trivial amount of time spent by waiting for a web query response.
 
 ### Usage
 
-pyMSPannotator provides top level `Application` which implements interface for `.msp` files manipulation and annotation. 
+MSMetaEnhancer provides top level `Application` which implements interface for `.msp` files manipulation and annotation. 
 It supports several services which can be used to obtained desired annotation. 
 The app uses asynchronous implementation of annotation process, benefiting from non-trivial amount of time spent by waiting for a web query response.
 
@@ -21,7 +21,7 @@ The app uses asynchronous implementation of annotation process, benefiting from 
 ```python
 import asyncio
 
-from pyMSPannotator.app import Application
+from MSMetaEnhancer import Application
 
 app = Application()
 
@@ -55,13 +55,13 @@ Prerequisites:
 - Python 3.7 or 3.8
 - Anaconda
 
-Install `pyMSPannotator` from Bioconda with:
+Install `MSMetaEnhancer` from Bioconda with:
 
 ```
-# install pyMSPannotator in a new virtual environment to avoid dependency clashes
-conda create --name pyMSPannotator python=3.8
-conda activate pyMSPannotator
-conda install --channel bioconda --channel conda-forge pyMSPannotator
+# install MSMetaEnhancer in a new virtual environment to avoid dependency clashes
+conda create --name MSMetaEnhancer python=3.8
+conda activate MSMetaEnhancer
+conda install --channel bioconda --channel conda-forge MSMetaEnhancer
 ```
 
 ### Developer Documentation

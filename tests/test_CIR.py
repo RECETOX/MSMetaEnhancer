@@ -1,8 +1,8 @@
 import asyncio
 import pytest
 
-from pyMSPannotator.libs.services.CIR import CIR
-from pyMSPannotator.libs.utils.Errors import UnknownResponse
+from MSMetaEnhancer.libs.services.CIR import CIR
+from MSMetaEnhancer.libs.utils.Errors import UnknownResponse
 from tests.utils import wrap_with_session
 
 

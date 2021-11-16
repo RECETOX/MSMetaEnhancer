@@ -1,4 +1,4 @@
-{% set name = "pyMSPannotator" %}
+{% set name = "MSMetaEnhancer" %}
 {% set version = "0.1.0" %}
 
 package:
@@ -30,15 +30,15 @@ requirements:
 
 test:
   imports:
-    - pyMSPannotator
+    - MSMetaEnhancer
 
 about:
-  home: https://github.com/RECETOX/pyMSPannotator
+  home: https://github.com/RECETOX/MSMetaEnhancer
   license: MIT
   license_file: LICENSE
-  summary: "pyMSPannotator is a python tool that adds more annotations (e.g. SMILES, InChI, CAS number) to MSP files."
-  dev_url: "https://github.com/RECETOX/pyMSPannotator"
+  summary: "MSMetaEnhancer is a python tool that adds more annotations (e.g. SMILES, InChI, CAS number) to MSP files."
+  dev_url: "https://github.com/RECETOX/MSMetaEnhancer"
 
 extra:
   recipe-maintainers:
-    - RECETOX
+    - xtrojak, martenson
