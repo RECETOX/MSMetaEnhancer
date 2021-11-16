@@ -1,7 +1,7 @@
-# pyMSPannotator
+# MSMetaEnhancer
 
-[![Python package](https://github.com/RECETOX/pyMSPannotator/actions/workflows/python-package.yml/badge.svg)](https://github.com/RECETOX/pyMSPannotator/actions/workflows/python-package.yml)
-[![Python package using Conda](https://github.com/RECETOX/pyMSPannotator/actions/workflows/python-package-conda.yml/badge.svg)](https://github.com/RECETOX/pyMSPannotator/actions/workflows/python-package-conda.yml)
+[![Python package](https://github.com/RECETOX/MSMetaEnhancer/actions/workflows/python-package.yml/badge.svg)](https://github.com/RECETOX/MSMetaEnhancer/actions/workflows/python-package.yml)
+[![Python package using Conda](https://github.com/RECETOX/MSMetaEnhancer/actions/workflows/python-package-conda.yml/badge.svg)](https://github.com/RECETOX/MSMetaEnhancer/actions/workflows/python-package-conda.yml)
 
 ## Overview
 
@@ -9,7 +9,7 @@ Repository for tool that adds more annotations (e.g. SMILES, InChI, CAS number) 
 
 ## Usage
 
-pyMSPannotator provides top level `Application` which implements interface for `.msp` files manipulation and annotation. 
+MSMetaEnhancer provides top level `Application` which implements interface for `.msp` files manipulation and annotation. 
 It supports several services which can be used to obtained desired annotation. 
 The app uses asynchronous implementation of annotation process, benefiting from non-trivial amount of time spent by waiting for a web query response.
 
@@ -18,7 +18,7 @@ The app uses asynchronous implementation of annotation process, benefiting from 
 ```python
 import asyncio
 
-from pyMSPannotator.app import Application
+from MSMetaEnhancer import Application
 
 app = Application()
 

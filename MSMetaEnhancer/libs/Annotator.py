@@ -1,7 +1,7 @@
-from pyMSPannotator.libs.utils import logger
-from pyMSPannotator.libs.utils.Errors import ConversionNotSupported, TargetAttributeNotRetrieved, \
+from MSMetaEnhancer.libs.utils import logger
+from MSMetaEnhancer.libs.utils.Errors import ConversionNotSupported, TargetAttributeNotRetrieved, \
     SourceAttributeNotAvailable, ServiceNotAvailable, UnknownResponse
-from pyMSPannotator.libs.utils.Logger import LogWarning
+from MSMetaEnhancer.libs.utils.Logger import LogWarning
 
 
 class Annotator:

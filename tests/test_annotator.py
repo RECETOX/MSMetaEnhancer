@@ -2,9 +2,9 @@ import asyncio
 import pytest
 import mock
 
-from pyMSPannotator.libs.Annotator import Annotator
-from pyMSPannotator.libs.utils.Errors import TargetAttributeNotRetrieved
-from pyMSPannotator.libs.utils.Job import Job
+from MSMetaEnhancer.libs.Annotator import Annotator
+from MSMetaEnhancer.libs.utils.Errors import TargetAttributeNotRetrieved
+from MSMetaEnhancer.libs.utils.Job import Job
 
 
 @pytest.mark.parametrize('data, expected, repeat, mocked', [

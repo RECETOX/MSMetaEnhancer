@@ -1,6 +1,6 @@
 import json
 
-from pyMSPannotator.libs.services.Converter import Converter
+from MSMetaEnhancer.libs.services.Converter import Converter
 
 
 class CTS(Converter):

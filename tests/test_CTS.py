@@ -2,8 +2,8 @@ import asyncio
 import json
 import pytest
 
-from pyMSPannotator.libs.services.CTS import CTS
-from pyMSPannotator.libs.utils.Errors import UnknownResponse
+from MSMetaEnhancer.libs.services.CTS import CTS
+from MSMetaEnhancer.libs.utils.Errors import UnknownResponse
 from tests.utils import wrap_with_session
 
 
