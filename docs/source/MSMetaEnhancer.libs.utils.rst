@@ -1,9 +1,6 @@
 MSMetaEnhancer.libs.utils package
 =================================
 
-Submodules
-----------
-
 MSMetaEnhancer.libs.utils.Errors module
 ---------------------------------------
 

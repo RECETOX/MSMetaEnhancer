@@ -1,9 +1,6 @@
 MSMetaEnhancer.libs.services package
 ====================================
 
-Submodules
-----------
-
 MSMetaEnhancer.libs.services.CIR module
 ---------------------------------------
 

@@ -9,9 +9,6 @@ Subpackages
 
    MSMetaEnhancer.libs
 
-Submodules
-----------
-
 MSMetaEnhancer.app module
 -------------------------
 

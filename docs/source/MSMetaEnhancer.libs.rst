@@ -10,9 +10,6 @@ Subpackages
    MSMetaEnhancer.libs.services
    MSMetaEnhancer.libs.utils
 
-Submodules
-----------
-
 MSMetaEnhancer.libs.Annotator module
 ------------------------------------
 
