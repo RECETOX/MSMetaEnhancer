@@ -23,7 +23,7 @@ class Logger:
 
     def add_filehandler(self, file_name):
         if file_name is None:
-            file_name = datetime.now().strftime('MSPannotator_%Y%m%d%H%M%S.log')
+            file_name = datetime.now().strftime('MSMetaEnhancer_%Y%m%d%H%M%S.log')
 
         filehandler_dbg = logging.FileHandler(file_name, mode='w')
         filehandler_dbg.setLevel('DEBUG')
