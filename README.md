@@ -18,7 +18,7 @@ The app uses asynchronous implementation of annotation process, benefiting from 
 ```python
 import asyncio
 
-from MSMetaEnhancer.app import Application
+from MSMetaEnhancer import Application
 
 app = Application()
 

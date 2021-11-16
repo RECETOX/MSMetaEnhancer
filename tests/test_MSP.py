@@ -1,7 +1,7 @@
 import asyncio
 from copy import copy
 
-from MSMetaEnhancer.app import Application
+from MSMetaEnhancer import Application
 
 
 def test_annotate_MSP_file():
