@@ -10,8 +10,8 @@ Welcome to MSMetaEnhancer's documentation!
    :maxdepth: 1
 
    Documentation <MSMetaEnhancer>
-   Changelog <changelog.md>
-   Readme <readme.md>
+   Readme <readme>
+   changelog
 
 Indices and tables
 ==================

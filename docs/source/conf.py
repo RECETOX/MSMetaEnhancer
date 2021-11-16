@@ -16,6 +16,9 @@ import sys
 sys.path.insert(0, os.path.abspath('../../'))
 
 import MSMetaEnhancer
+from shutil import copyfile
+copyfile('../../README.md', 'readme.md')
+copyfile('../../CHANGELOG.md', 'changelog.md')
 
 # -- Project information -----------------------------------------------------
 
