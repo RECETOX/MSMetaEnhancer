@@ -1,13 +1,13 @@
 import asyncio
 import aiohttp
 
-from pyMSPannotator.libs.Annotator import Annotator
-from pyMSPannotator.libs.Curator import Curator
-from pyMSPannotator.libs.Spectra import Spectra
-from pyMSPannotator.libs.utils import logger
-from pyMSPannotator.libs.utils.Errors import UnknownService, UnknownSpectraFormat
-from pyMSPannotator.libs.utils.Job import convert_to_jobs
-from pyMSPannotator.libs.services import *
+from MSMetaEnhancer.libs.Annotator import Annotator
+from MSMetaEnhancer.libs.Curator import Curator
+from MSMetaEnhancer.libs.Spectra import Spectra
+from MSMetaEnhancer.libs.utils import logger
+from MSMetaEnhancer.libs.utils.Errors import UnknownService, UnknownSpectraFormat
+from MSMetaEnhancer.libs.utils.Job import convert_to_jobs
+from MSMetaEnhancer.libs.services import *
 
 
 class Application:

@@ -1,4 +1,4 @@
-name: pyMSPannotator-dev
+name: MSMetaEnhancer-dev
 channels:
   - bioconda
   - conda-forge
