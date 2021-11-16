@@ -1,4 +1,4 @@
-pyMSPannotator.libs package
+MSMetaEnhancer.libs package
 ===========================
 
 Subpackages
@@ -7,32 +7,32 @@ Subpackages
 .. toctree::
    :maxdepth: 4
 
-   pyMSPannotator.libs.services
-   pyMSPannotator.libs.utils
+   MSMetaEnhancer.libs.services
+   MSMetaEnhancer.libs.utils
 
 Submodules
 ----------
 
-pyMSPannotator.libs.Annotator module
+MSMetaEnhancer.libs.Annotator module
 ------------------------------------
 
-.. automodule:: pyMSPannotator.libs.Annotator
+.. automodule:: MSMetaEnhancer.libs.Annotator
    :members:
    :undoc-members:
    :show-inheritance:
 
-pyMSPannotator.libs.Curator module
+MSMetaEnhancer.libs.Curator module
 ----------------------------------
 
-.. automodule:: pyMSPannotator.libs.Curator
+.. automodule:: MSMetaEnhancer.libs.Curator
    :members:
    :undoc-members:
    :show-inheritance:
 
-pyMSPannotator.libs.Spectra module
+MSMetaEnhancer.libs.Spectra module
 ----------------------------------
 
-.. automodule:: pyMSPannotator.libs.Spectra
+.. automodule:: MSMetaEnhancer.libs.Spectra
    :members:
    :undoc-members:
    :show-inheritance:

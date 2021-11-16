@@ -1,37 +1,37 @@
-pyMSPannotator.libs.utils package
+MSMetaEnhancer.libs.utils package
 =================================
 
 Submodules
 ----------
 
-pyMSPannotator.libs.utils.Errors module
+MSMetaEnhancer.libs.utils.Errors module
 ---------------------------------------
 
-.. automodule:: pyMSPannotator.libs.utils.Errors
+.. automodule:: MSMetaEnhancer.libs.utils.Errors
    :members:
    :undoc-members:
    :show-inheritance:
 
-pyMSPannotator.libs.utils.Job module
+MSMetaEnhancer.libs.utils.Job module
 ------------------------------------
 
-.. automodule:: pyMSPannotator.libs.utils.Job
+.. automodule:: MSMetaEnhancer.libs.utils.Job
    :members:
    :undoc-members:
    :show-inheritance:
 
-pyMSPannotator.libs.utils.Logger module
+MSMetaEnhancer.libs.utils.Logger module
 ---------------------------------------
 
-.. automodule:: pyMSPannotator.libs.utils.Logger
+.. automodule:: MSMetaEnhancer.libs.utils.Logger
    :members:
    :undoc-members:
    :show-inheritance:
 
-pyMSPannotator.libs.utils.Metrics module
+MSMetaEnhancer.libs.utils.Metrics module
 ----------------------------------------
 
-.. automodule:: pyMSPannotator.libs.utils.Metrics
+.. automodule:: MSMetaEnhancer.libs.utils.Metrics
    :members:
    :undoc-members:
    :show-inheritance:

@@ -1,4 +1,4 @@
-pyMSPannotator package
+MSMetaEnhancer package
 ======================
 
 Subpackages
@@ -7,15 +7,15 @@ Subpackages
 .. toctree::
    :maxdepth: 4
 
-   pyMSPannotator.libs
+   MSMetaEnhancer.libs
 
 Submodules
 ----------
 
-pyMSPannotator.app module
+MSMetaEnhancer.app module
 -------------------------
 
-.. automodule:: pyMSPannotator.app
+.. automodule:: MSMetaEnhancer.app
    :members:
    :undoc-members:
    :show-inheritance:

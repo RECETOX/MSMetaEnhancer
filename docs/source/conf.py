@@ -15,11 +15,11 @@ import sys
 
 sys.path.insert(0, os.path.abspath('../../'))
 
-import pyMSPannotator
+import MSMetaEnhancer
 
 # -- Project information -----------------------------------------------------
 
-project = 'pyMSPannotator'
+project = 'MSMetaEnhancer'
 copyright = '2021, RECETOX'
 author = 'RECETOX'
 
