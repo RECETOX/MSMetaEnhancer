@@ -4,20 +4,11 @@
 [![Python package using Conda](https://github.com/RECETOX/MSMetaEnhancer/actions/workflows/python-package-conda.yml/badge.svg)](https://github.com/RECETOX/MSMetaEnhancer/actions/workflows/python-package-conda.yml)
 [![docs](https://readthedocs.org/projects/msmetaenhancer/badge/?version=latest)](https://msmetaenhancer.readthedocs.io/en/latest/)
 
-### Overview
-
 **MSMetaEnhancer** is a tool used for `.msp` files annotation.
-It supports four services: [CIR](https://cactus.nci.nih.gov/chemical/structure_documentation), [CTS](https://cts.fiehnlab.ucdavis.edu/), [NLM](https://chem.nlm.nih.gov), and [PubChem](https://pubchem.ncbi.nlm.nih.gov/).
-The app uses asynchronous implementation of annotation process,
-benefiting from non-trivial amount of time spent by waiting for a web query response.
+It adds metadata like SMILES, InChI, and CAS number fetched from the following services: [CIR](https://cactus.nci.nih.gov/chemical/structure_documentation), [CTS](https://cts.fiehnlab.ucdavis.edu/), [NLM](https://chem.nlm.nih.gov), and [PubChem](https://pubchem.ncbi.nlm.nih.gov/).
+The app uses asynchronous implementation of annotation process allowing for optimal fetching speed.
 
-### Usage
-
-MSMetaEnhancer provides top level `Application` which implements interface for `.msp` files manipulation and annotation. 
-It supports several services which can be used to obtained desired annotation. 
-The app uses asynchronous implementation of annotation process, benefiting from non-trivial amount of time spent by waiting for a web query response.
-
-#### Example
+## Usage
 
 ```python
 import asyncio
@@ -73,8 +64,8 @@ Create your development environment using the provided [script](conda/environmen
 
 #### Contributing
 
-We appreciate contributions - feel free to open an issue on our repository, create your own fork, work on the problem and pose a PR. 
-Make sure to add your contributions to the [changelog](CHANGELOG.md) and to adhere to the [versioning](https://semver.org/spec/v2.0.0.html).
+We appreciate contributions - feel free to open an issue on our repository, create your own fork, work on the problem and post a PR. 
+Please add your contributions to the [changelog](CHANGELOG.md) and to adhere to the [versioning](https://semver.org/spec/v2.0.0.html).
 
 #### Testing
 
