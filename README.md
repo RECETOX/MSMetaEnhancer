@@ -2,6 +2,7 @@
 
 [![Python package](https://github.com/RECETOX/MSMetaEnhancer/actions/workflows/python-package.yml/badge.svg)](https://github.com/RECETOX/MSMetaEnhancer/actions/workflows/python-package.yml)
 [![Python package using Conda](https://github.com/RECETOX/MSMetaEnhancer/actions/workflows/python-package-conda.yml/badge.svg)](https://github.com/RECETOX/MSMetaEnhancer/actions/workflows/python-package-conda.yml)
+[![docs](https://readthedocs.org/projects/msmetaenhancer/badge/?version=latest)](https://msmetaenhancer.readthedocs.io/en/latest/)
 
 ### Overview
 
