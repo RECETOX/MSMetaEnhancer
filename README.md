@@ -8,7 +8,7 @@
 It adds metadata like SMILES, InChI, and CAS number fetched from the following services: [CIR](https://cactus.nci.nih.gov/chemical/structure_documentation), [CTS](https://cts.fiehnlab.ucdavis.edu/), [NLM](https://chem.nlm.nih.gov), and [PubChem](https://pubchem.ncbi.nlm.nih.gov/).
 The app uses asynchronous implementation of annotation process allowing for optimal fetching speed.
 
-## Usage
+### Usage
 
 ```python
 import asyncio
