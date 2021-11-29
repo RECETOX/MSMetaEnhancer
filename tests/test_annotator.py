@@ -62,17 +62,3 @@ def test_execute_job_with_cache():
 
     with pytest.raises(TargetAttributeNotRetrieved):
         metadata, cache = asyncio.run(annotator.execute_job_with_cache(job, {'smiles': '$SMILES'}, dict()))
-
-
-def test_get_all_conversions():
-    pubchem = mock.Mock()
-    pubchem.A_to_B = mock.Mock()
-    pubchem.B_to_C = mock.Mock()
-
-    cts = mock.Mock()
-    cts.X_to_Y = mock.Mock()
-
-    services = {'PubChem': pubchem, 'CTS': cts}
-    annotator = Annotator(services)
-
-    assert set(annotator.get_all_conversions()) == {('A', 'B', 'PubChem'), ('B', 'C', 'PubChem'), ('X', 'Y', 'CTS')}

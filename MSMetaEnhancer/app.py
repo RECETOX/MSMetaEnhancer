@@ -60,6 +60,14 @@ class Application:
         """
         self.spectra = Curator().curate_spectra(self.spectra)
 
+    def get_service_conversions(self, service):
+        """
+        Method to get all conversions for given service.
+
+        :return: a list of available conversion functions
+        """
+        return service.get_conversions()
+
     async def annotate_spectra(self, services, jobs=None, repeat=False):
         """
         Annotates current Spectra data by specified jobs.
@@ -77,7 +85,9 @@ class Application:
 
             # create all possible jobs if not given
             if not jobs:
-                jobs = annotator.get_all_conversions()
+                jobs = []
+                for service in services.values():
+                    jobs += self.get_service_conversions(service)
             jobs = convert_to_jobs(jobs)
 
             logger.set_target_attributes(jobs, len(self.spectra.spectrums))
