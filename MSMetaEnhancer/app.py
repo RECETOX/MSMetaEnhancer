@@ -64,6 +64,7 @@ class Application:
         """
         Method to get all conversions for given service.
 
+        :param service: given Converter subclass
         :return: a list of available conversion functions
         """
         return service.get_conversions()
