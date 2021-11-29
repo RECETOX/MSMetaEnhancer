@@ -65,3 +65,12 @@ def test_format():
     assert 'results' in response_json
     assert 'bindings' in response_json['results']
     assert len(response_json['results']['bindings']) > 1
+
+
+def test_get_conversions():
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    jobs = PubChem(None).get_conversions()
+    loop.close()
+
+    assert ("inchi", "iupac_name", "PubChem") in jobs
