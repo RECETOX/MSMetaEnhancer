@@ -106,7 +106,7 @@ class Converter:
         for conversion in conversions:
             create_top_level_method(self, *conversion)
 
-    def get_conversions(self):
+    def get_conversion_functions(self):
         """
         Method to compute all available conversion functions.
 

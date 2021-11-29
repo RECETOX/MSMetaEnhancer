@@ -60,5 +60,5 @@ def test_format(value, size):
 
 
 def test_get_conversions():
-    jobs = CTS(None).get_conversions()
+    jobs = CTS(None).get_conversion_functions()
     assert ("inchikey", "name", "CTS") in jobs

@@ -70,7 +70,7 @@ def test_format():
 def test_get_conversions():
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
-    jobs = PubChem(None).get_conversions()
+    jobs = PubChem(None).get_conversion_functions()
     loop.close()
 
     assert ("inchi", "iupac_name", "PubChem") in jobs

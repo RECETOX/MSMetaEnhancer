@@ -39,5 +39,5 @@ def test_incorrect_behavior(arg, value, method):
 
 
 def test_get_conversions():
-    jobs = CIR(None).get_conversions()
+    jobs = CIR(None).get_conversion_functions()
     assert ("smiles", "inchikey", "CIR") in jobs

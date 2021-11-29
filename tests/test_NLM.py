@@ -59,5 +59,5 @@ def test_format():
 
 
 def test_get_conversions():
-    jobs = NLM(None).get_conversions()
+    jobs = NLM(None).get_conversion_functions()
     assert ("name", "inchikey", "NLM") in jobs
