@@ -56,3 +56,8 @@ def test_format():
 
     table = pd.read_csv(StringIO(response), sep='\t')
     assert not table.empty
+
+
+def test_get_conversions():
+    jobs = NLM(None).get_conversion_functions()
+    assert ("name", "inchikey", "NLM") in jobs

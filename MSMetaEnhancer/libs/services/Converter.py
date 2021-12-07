@@ -106,6 +106,20 @@ class Converter:
         for conversion in conversions:
             create_top_level_method(self, *conversion)
 
+    def get_conversion_functions(self):
+        """
+        Method to compute all available conversion functions.
+
+        Assumes that the functions always have from {source}_to_{target}
+
+        :return: a list of available conversion functions
+        """
+        jobs = []
+        methods = [method_name for method_name in dir(self) if '_to_' in method_name]
+        for method in methods:
+            jobs.append((*method.split('_to_'), self.service_name))
+        return jobs
+
 
 def create_top_level_method(obj, source, target, method):
     """

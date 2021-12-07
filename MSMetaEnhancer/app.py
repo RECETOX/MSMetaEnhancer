@@ -77,7 +77,9 @@ class Application:
 
             # create all possible jobs if not given
             if not jobs:
-                jobs = annotator.get_all_conversions()
+                jobs = []
+                for service in services.values():
+                    jobs += service.get_conversion_functions()
             jobs = convert_to_jobs(jobs)
 
             logger.set_target_attributes(jobs, len(self.spectra.spectrums))

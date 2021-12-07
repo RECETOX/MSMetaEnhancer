@@ -36,3 +36,8 @@ def test_correct_behavior(arg, value, expected, method):
 def test_incorrect_behavior(arg, value, method):
     with pytest.raises(UnknownResponse):
         asyncio.run(wrap_with_session(CIR, method, [value]))
+
+
+def test_get_conversions():
+    jobs = CIR(None).get_conversion_functions()
+    assert ("smiles", "inchikey", "CIR") in jobs

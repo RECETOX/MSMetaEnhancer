@@ -77,18 +77,3 @@ class Annotator:
             else:
                 raise TargetAttributeNotRetrieved('No data obtained from the specified job.')
         return metadata, cache
-
-    def get_all_conversions(self):
-        """
-        Method to compute all available conversion functions of all available Services.
-
-        Assumes that the functions always have from {source}_to_{target}
-
-        :return: a list of available conversion functions
-        """
-        jobs = []
-        for service in self.services:
-            methods = [method_name for method_name in dir(self.services[service]) if '_to_' in method_name]
-            for method in methods:
-                jobs.append((*method.split('_to_'), service))
-        return jobs

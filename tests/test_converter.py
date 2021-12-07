@@ -131,6 +131,7 @@ def test_services_available():
 def test_lru_cache(service, args):
     async def run():
         async with aiohttp.ClientSession() as session:
+            from MSMetaEnhancer.libs.services import CTS, CIR
             converter = eval(service)(session)
             converter.query_the_service.cache_clear()
 

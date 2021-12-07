@@ -57,3 +57,8 @@ def test_format(value, size):
     assert len(response_json) == 1
     assert 'results' in response_json[0]
     assert len(response_json[0]['results']) == size
+
+
+def test_get_conversions():
+    jobs = CTS(None).get_conversion_functions()
+    assert ("inchikey", "name", "CTS") in jobs
