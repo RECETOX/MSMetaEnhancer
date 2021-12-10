@@ -1,18 +1,24 @@
 MSMetaEnhancer package
 ======================
 
-Subpackages
------------
+The Application class serves as a top-level interface to use the tool.
 
-.. toctree::
-   :maxdepth: 4
+The main method is (asynchronous) `annotate_spectra`, which runs the annotation
+process using given processes. It is possible to specify particular jobs, which
+will be executed in respecting the given order. If no jobs are given, all
+jobs supported by given services are used.
 
-   MSMetaEnhancer.libs
-
-MSMetaEnhancer.app module
--------------------------
+Additionally, It allows to load and save spectra files in supported formats, and curate given spectra.
 
 .. automodule:: MSMetaEnhancer.app
    :members:
    :undoc-members:
    :show-inheritance:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   MSMetaEnhancer.libs
