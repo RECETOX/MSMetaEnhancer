@@ -5,6 +5,9 @@ from MSMetaEnhancer.libs.utils.Logger import LogWarning
 
 
 class Annotator:
+    """
+    Annotator is responsible for annotation process of single spectra.
+    """
     def __init__(self, services):
         self.services = services
 

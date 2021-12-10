@@ -5,6 +5,13 @@ from frozendict import frozendict
 
 
 class PubChem(Converter):
+    """
+    PubChem is the world's largest collection of freely accessible chemical information.
+
+    Available online at: https://pubchem.ncbi.nlm.nih.gov/
+
+    To improve the performance, we use IDSM service: https://idsm.elixir-czech.cz/
+    """
     def __init__(self, session):
         super().__init__(session)
         # service URLs

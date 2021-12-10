@@ -6,6 +6,14 @@ from MSMetaEnhancer.libs.services.Converter import Converter
 
 
 class NLM(Converter):
+    """
+    National Library of Medicine databases give access to structure and
+    nomenclature authority files used to identify chemical substances.
+
+    Available online at: https://chem.nlm.nih.gov/chemidplus/
+
+    More info about the available conversions: https://chem.nlm.nih.gov/chemidplus/jsp/chemidheavy/help.jsp
+    """
     def __init__(self, session):
         super().__init__(session)
         # service URLs

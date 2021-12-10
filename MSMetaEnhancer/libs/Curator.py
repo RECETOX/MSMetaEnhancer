@@ -1,10 +1,26 @@
 class Curator:
+    """
+    Curator makes sure that all data is curated before the actual annotation can proceed.
+    Currently, fixing CAS numbers to correct format is supported.
+    """
     def curate_spectra(self, spectra):
+        """
+        Iterates over given spectrums and curates individual spectra.
+
+        :param spectra: given spectrums
+        :return: curated spectrums
+        """
         for spectrum in spectra.spectrums:
             spectrum.metadata = self.curate_metadata(spectrum.metadata)
         return spectra
 
     def curate_metadata(self, metadata):
+        """
+        Curate metadata of particular spectra.
+
+        :param metadata: given metadata
+        :return: curated metadata
+        """
         if 'casno' in metadata:
             metadata['casno'] = self.fix_cas_number(metadata['casno'])
         return metadata

@@ -4,6 +4,13 @@ from MSMetaEnhancer.libs.services.Converter import Converter
 
 
 class CTS(Converter):
+    """
+    Chemical Translation Service performs batch conversions of the most common compound identifiers.
+
+    Available online at: http://cts.fiehnlab.ucdavis.edu
+
+    More info about the available conversions: http://cts.fiehnlab.ucdavis.edu/services
+    """
     def __init__(self, session):
         super().__init__(session)
         # service URLs
@@ -22,8 +29,9 @@ class CTS(Converter):
     async def casno_to_inchikey(self, cas_number):
         """
         Convert CAS number to InChiKey using CTS web service
-        More info: http://cts.fiehnlab.ucdavis.edu/services
+
         The method returns first found hit.
+
         :param cas_number: given CAS number
         :return: obtained InChiKey
         """
@@ -35,7 +43,7 @@ class CTS(Converter):
     async def name_to_inchikey(self, name):
         """
         Convert Chemical name to InChiKey using CTS service
-        More info: http://cts.fiehnlab.ucdavis.edu/services
+
         :param name: given Chemical name
         :return: obtained InChiKey
         """
@@ -47,7 +55,6 @@ class CTS(Converter):
     async def from_inchikey(self, inchikey):
         """
         Convert InChiKey to all possible attributes using CTS compound service
-        More info: http://cts.fiehnlab.ucdavis.edu/services
 
         :param inchikey: given InChiKey value
         :return: all found data
