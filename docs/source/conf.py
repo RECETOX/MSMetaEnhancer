@@ -26,9 +26,6 @@ project = 'MSMetaEnhancer'
 copyright = '2021, RECETOX'
 author = 'RECETOX'
 
-release = '0.1'
-version = '0.1.0'
-
 # -- General configuration ---------------------------------------------------
 
 # Add any Sphinx extension module names here, as strings. They can be
