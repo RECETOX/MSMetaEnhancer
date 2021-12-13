@@ -12,6 +12,13 @@ class Job:
         return f'Job(({self.source}, {self.target}, {self.service}))'
 
     def validate(self, services, metadata):
+        """
+        Makes sure to job is supported or possible to execute on given metadata.
+
+        :param services: available services
+        :param metadata: given metadata
+        :return: particular service and data if conversion is possible
+        """
         service = services.get(self.service, None)
         data = metadata.get(self.source, None)
 
