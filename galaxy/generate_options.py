@@ -14,7 +14,7 @@ def generate_options():
         jobs += (eval(service)(None).get_conversion_functions())
 
     for job in jobs:
-        print(f'<option value="{job[0],job[1],job[2]}">{job[2]}: {job[0]} -> {job[1]}</option>')
+        print(f'<option value="{job[0]} {job[1]} {job[2]}">{job[2]}: {job[0]} -> {job[1]}</option>')
 
 
 if __name__ == '__main__':
