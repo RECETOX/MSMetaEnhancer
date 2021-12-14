@@ -2,11 +2,14 @@ from MSMetaEnhancer.libs.utils import logger
 from MSMetaEnhancer.libs.utils.Errors import ConversionNotSupported, TargetAttributeNotRetrieved, \
     SourceAttributeNotAvailable, ServiceNotAvailable, UnknownResponse
 from MSMetaEnhancer.libs.utils.Logger import LogWarning
+from MSMetaEnhancer.libs.utils.Monitor import Monitor
 
 
 class Annotator:
     def __init__(self, services):
         self.services = services
+        self.monitor = Monitor(self.services)
+        self.monitor.start()
 
     async def annotate(self, spectra, jobs, repeat=False):
         """
@@ -70,10 +73,16 @@ class Annotator:
         if job.target in cache[job.service]:
             metadata[job.target] = cache[job.service][job.target]
         else:
-            result = await service.convert(job.source, job.target, data)
-            cache[job.service].update(result)
-            if job.target in cache[job.service]:
-                metadata[job.target] = cache[job.service][job.target]
+            if service.is_available:
+                result = await service.convert(job.source, job.target, data)
+                cache[job.service].update(result)
+                if job.target in cache[job.service]:
+                    metadata[job.target] = cache[job.service][job.target]
+                else:
+                    raise TargetAttributeNotRetrieved('No data obtained from the specified job.')
             else:
-                raise TargetAttributeNotRetrieved('No data obtained from the specified job.')
+                raise ServiceNotAvailable
         return metadata, cache
+
+    def exit(self):
+        self.monitor.join()

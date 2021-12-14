@@ -12,6 +12,7 @@ from MSMetaEnhancer.libs.utils.Errors import TargetAttributeNotRetrieved, Servic
 class Converter:
     def __init__(self, session):
         self.session = session
+        self.is_available = True
 
     @property
     def service_name(self):

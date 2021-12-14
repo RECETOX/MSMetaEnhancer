@@ -87,5 +87,7 @@ class Application:
             results = await asyncio.gather(*[annotator.annotate(spectra, jobs, repeat)
                                              for spectra in self.spectra.spectrums])
 
+            annotator.exit()
+
         self.spectra.spectrums = results
         logger.write_log(self.log_level, self.log_file)
