@@ -1,6 +1,5 @@
 import asyncio
 
-import aiohttp
 import mock
 import pytest
 from aiohttp import ServerDisconnectedError
@@ -113,35 +112,23 @@ def test_convert():
         _ = asyncio.run(converter.convert('B', 'C', None))
 
 
-@pytest.mark.dependency()
-def test_services_available():
-    from tests.utils import wrap_with_session
-    from MSMetaEnhancer.libs.services import CTS, CIR
+async def test_lru_cache(test_client):
+    def create_app(loop):
+        app = web.Application(loop=loop)
+        return app
 
-    asyncio.run(wrap_with_session(CTS, 'casno_to_inchikey', ['7783-89-3']))
-    asyncio.run(wrap_with_session(CIR, 'casno_to_smiles', ['7783-89-3']))
+    session = await test_client(create_app)
+    converter = Converter(session)
+    converter.services = {'/': '/'}
+    converter.loop_request = mock.AsyncMock(return_value=(1, 2, 3))
 
+    converter.query_the_service.cache_clear()
 
-@pytest.mark.dependency(depends=["test_services_available"])
-@pytest.mark.parametrize('service, args', [
-    ['CTS', 'CAS/InChIKey/7783-89-3'],
-    ['CTS', 'CAS/InChIKey/7783893'],
-    ['CIR', '7783-89-3/smiles?resolver=cas_number']
-])
-def test_lru_cache(service, args):
-    async def run():
-        async with aiohttp.ClientSession() as session:
-            from MSMetaEnhancer.libs.services import CTS, CIR
-            converter = eval(service)(session)
-            converter.query_the_service.cache_clear()
+    _ = await converter.query_the_service('/', '')
+    assert converter.query_the_service.cache_info().hits == 0
 
-            _ = await converter.query_the_service(service, args)
-            assert converter.query_the_service.cache_info().hits == 0
+    _ = await converter.query_the_service('/', '')
+    assert converter.query_the_service.cache_info().hits == 1
 
-            _ = await converter.query_the_service(service, args)
-            assert converter.query_the_service.cache_info().hits == 1
-
-            _ = await converter.query_the_service(service, args)
-            assert converter.query_the_service.cache_info().hits == 2
-
-    asyncio.run(run())
+    _ = await converter.query_the_service('/', '')
+    assert converter.query_the_service.cache_info().hits == 2
