@@ -7,6 +7,7 @@ from MSMetaEnhancer.libs.Spectra import Spectra
 from MSMetaEnhancer.libs.utils import logger
 from MSMetaEnhancer.libs.utils.Errors import UnknownService, UnknownSpectraFormat
 from MSMetaEnhancer.libs.utils.Job import convert_to_jobs
+from MSMetaEnhancer.libs.utils.Monitor import Monitor
 from MSMetaEnhancer.libs.services import *
 
 
@@ -75,6 +76,11 @@ class Application:
             services = {service: eval(service)(session) for service in services}
             annotator = Annotator(services)
 
+            # start services status checker and wait for first status
+            monitor = Monitor(services)
+            monitor.start()
+            monitor.first_check.wait()
+
             # create all possible jobs if not given
             if not jobs:
                 jobs = []
@@ -87,7 +93,7 @@ class Application:
             results = await asyncio.gather(*[annotator.annotate(spectra, jobs, repeat)
                                              for spectra in self.spectra.spectrums])
 
-            annotator.exit()
+            monitor.join()
 
         self.spectra.spectrums = results
         logger.write_log(self.log_level, self.log_file)

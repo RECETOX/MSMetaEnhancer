@@ -12,6 +12,7 @@ class Monitor(Thread):
         super(Monitor, self).__init__()
         self.converters = converters
         self.stop_request = Event()
+        self.first_check = Event()
 
     @staticmethod
     def get_base_url(converter):
@@ -50,6 +51,7 @@ class Monitor(Thread):
             for converter in self.converters.values():
                 url = self.get_base_url(converter)
                 converter.is_available = self.check_service(url)
+            self.first_check.set()
             time.sleep(10)
 
     def join(self, timeout=None):
