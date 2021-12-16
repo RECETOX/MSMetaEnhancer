@@ -10,6 +10,9 @@ from MSMetaEnhancer.libs.utils.Errors import TargetAttributeNotRetrieved, Servic
 
 
 class Converter:
+    """
+    General class for conversion services.
+    """
     def __init__(self, session):
         self.session = session
 

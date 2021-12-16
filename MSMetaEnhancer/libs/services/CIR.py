@@ -2,6 +2,14 @@ from MSMetaEnhancer.libs.services.Converter import Converter
 
 
 class CIR(Converter):
+    """
+    Chemical Identifier Resolver allows one to convert a given structure identifier
+    into another representation or structure identifier.
+
+    Available online at: https://cactus.nci.nih.gov/chemical/structure
+
+    More info about the available conversions: https://cactus.nci.nih.gov/chemical/structure_documentation
+    """
     def __init__(self, session):
         super().__init__(session)
         # service URLs
@@ -10,7 +18,6 @@ class CIR(Converter):
     async def casno_to_smiles(self, cas_number):
         """
         Convert CAS number to SMILES using CIR web service
-        More info: https://cactus.nci.nih.gov/chemical/structure_documentation
 
         :param cas_number: given CAS number
         :return: obtained SMILES
@@ -23,7 +30,6 @@ class CIR(Converter):
     async def inchikey_to_smiles(self, inchikey):
         """
         Convert InChiKey to SMILES using CIR web service
-        More info: https://cactus.nci.nih.gov/chemical/structure_documentation
 
         :param inchikey: given InChiKey
         :return: obtained SMILES
@@ -36,7 +42,6 @@ class CIR(Converter):
     async def inchikey_to_inchi(self, inchikey):
         """
         Convert InChiKey to InCHi using CIR web service
-        More info: https://cactus.nci.nih.gov/chemical/structure_documentation
 
         :param inchikey: given InChiKey
         :return: obtained InCHi
@@ -49,7 +54,6 @@ class CIR(Converter):
     async def inchikey_to_casno(self, inchikey):
         """
         Convert InChiKey to CAS number using CIR web service
-        More info: https://cactus.nci.nih.gov/chemical/structure_documentation
 
         :param inchikey: given InChiKey
         :return: obtained CAS number
@@ -62,7 +66,6 @@ class CIR(Converter):
     async def inchikey_to_formula(self, inchikey):
         """
         Convert InChiKey to chemical formula using CIR web service
-        More info: https://cactus.nci.nih.gov/chemical/structure_documentation
 
         :param inchikey: given InChiKey
         :return: obtained chemical formula
@@ -75,7 +78,6 @@ class CIR(Converter):
     async def smiles_to_inchikey(self, smiles):
         """
         Convert SMILES to InChiKey using CIR web service
-        More info: https://cactus.nci.nih.gov/chemical/structure_documentation
 
         :param smiles: given SMILES
         :return: obtained InChiKey

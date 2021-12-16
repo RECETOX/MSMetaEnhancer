@@ -57,14 +57,17 @@ class Application:
     def curate_spectra(self):
         """
         Updates current Spectra data by curation process.
+
+        This includes e.g. normalisation of CAS numbers.
         """
         self.spectra = Curator().curate_spectra(self.spectra)
 
     async def annotate_spectra(self, services, jobs=None, repeat=False):
         """
         Annotates current Spectra data by specified jobs.
-         Used services must be specified.
-         Jobs do not have to be given, all available jobs will be executed instead.
+
+        Used services must be specified.
+        Jobs do not have to be given, all available jobs will be executed instead.
 
         :param services: given list of services names
         :param jobs: list specifying jobs to be executed

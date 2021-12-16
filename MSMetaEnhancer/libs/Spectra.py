@@ -3,6 +3,10 @@ from matchms.exporting import save_as_msp
 
 
 class Spectra:
+    """
+    Spectra class represents a single spectra dataset as a list.
+    It is using `matchms` package to load and save MSP files.
+    """
     def __init__(self):
         self.spectrums = []
 
