@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [dev] - unreleased
 ### Added
+- `generate_options()` function in `Galaxy` submodule to create all possible conversions supported by the tool in a format suitable for the galaxy tool form [#58](https://github.com/RECETOX/MSMetaEnhancer/pull/58)
 ### Changed
 ### Removed
 
