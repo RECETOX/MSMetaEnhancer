@@ -73,10 +73,13 @@ class Annotator:
         if job.target in cache[job.service]:
             metadata[job.target] = cache[job.service][job.target]
         else:
-            result = await service.convert(job.source, job.target, data)
-            cache[job.service].update(result)
-            if job.target in cache[job.service]:
-                metadata[job.target] = cache[job.service][job.target]
+            if service.is_available:
+                result = await service.convert(job.source, job.target, data)
+                cache[job.service].update(result)
+                if job.target in cache[job.service]:
+                    metadata[job.target] = cache[job.service][job.target]
+                else:
+                    raise TargetAttributeNotRetrieved(f'{job} - conversion retrieved no data.')
             else:
-                raise TargetAttributeNotRetrieved('No data obtained from the specified job.')
+                raise ServiceNotAvailable
         return metadata, cache

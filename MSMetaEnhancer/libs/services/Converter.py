@@ -15,6 +15,7 @@ class Converter:
     """
     def __init__(self, session):
         self.session = session
+        self.is_available = True
 
     @property
     def service_name(self):
@@ -97,8 +98,8 @@ class Converter:
         if result:
             return result
         else:
-            raise TargetAttributeNotRetrieved(f'Conversion ({self.service_name}) {source} -> {target}: '
-                                              f'no data retrieved.')
+            raise TargetAttributeNotRetrieved(f'{self.service_name}: {source} -> {target} '
+                                              f'- conversion retrieved no data.')
 
     def create_top_level_conversion_methods(self, conversions):
         """
