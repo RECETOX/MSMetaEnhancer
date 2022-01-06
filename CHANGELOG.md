@@ -6,9 +6,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [dev] - unreleased
 ### Added
-- `generate_options()` function in `Galaxy` submodule to create all possible conversions supported by the tool in a format suitable for the galaxy tool form [#58](https://github.com/RECETOX/MSMetaEnhancer/pull/58)
 ### Changed
 ### Removed
+
+## [0.1.2] - 2022-01-06
+### Added
+- `generate_options()` function in `Galaxy` submodule to create all possible conversions supported by the tool in a format suitable for the galaxy tool form [#58](https://github.com/RECETOX/MSMetaEnhancer/pull/58)
+- monitoring of services status during annotation process [#56](https://github.com/RECETOX/MSMetaEnhancer/issues/56)
+- validation of obtained metadata [#59](https://github.com/RECETOX/MSMetaEnhancer/issues/59)
+### Changed
+- structure and contents of documentation [#51](https://github.com/RECETOX/MSMetaEnhancer/pull/51)
+### Removed
+- tests checking contents and consistency of individual services [#54](https://github.com/RECETOX/MSMetaEnhancer/pull/61)
 
 ## [0.1.1] - 2021-12-07
 ### Added
