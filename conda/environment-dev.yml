@@ -18,3 +18,4 @@ dependencies:
   - pytest-aiohttp
   - pytest-cov
   - pytest-dependency
+  - rdkit
