@@ -1,3 +1,6 @@
+from matchms import utils
+
+
 class Curator:
     """
     Curator makes sure that all data is curated before the actual annotation can proceed.
@@ -36,3 +39,26 @@ class Curator:
         if "-" not in cas_number:
             return f'{cas_number[:-3]}-{cas_number[-3:-1]}-{cas_number[-1]}'
         return cas_number
+
+    @staticmethod
+    def filter_invalid_metadata(metadata):
+        """
+        Validates metadata and filters out invalid ones.
+
+        :param metadata: metadata content
+        :return: only valid metadata
+        """
+        filters = {
+            'smiles': utils.is_valid_smiles,
+            'inchi': utils.is_valid_inchi,
+            'inchikey': utils.is_valid_inchikey
+        }
+
+        valid_metadata = {}
+        for (attribute, value) in metadata.items():
+            if attribute in filters.keys():
+                if filters[attribute](value):
+                    valid_metadata[attribute] = value
+            else:
+                valid_metadata[attribute] = value
+        return valid_metadata
