@@ -27,6 +27,7 @@ requirements:
     - asyncstdlib
     - frozendict
     - tabulate
+    - rdkit
 
 test:
   imports:

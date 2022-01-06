@@ -1,3 +1,4 @@
+from MSMetaEnhancer.libs.Curator import Curator
 from MSMetaEnhancer.libs.utils import logger
 from MSMetaEnhancer.libs.utils.Errors import ConversionNotSupported, TargetAttributeNotRetrieved, \
     SourceAttributeNotAvailable, ServiceNotAvailable, UnknownResponse
@@ -10,6 +11,7 @@ class Annotator:
     """
     def __init__(self, services):
         self.services = services
+        self.curator = Curator()
 
     async def annotate(self, spectra, jobs, repeat=False):
         """
@@ -75,6 +77,7 @@ class Annotator:
         else:
             if service.is_available:
                 result = await service.convert(job.source, job.target, data)
+                result = self.curator.filter_invalid_metadata(result)
                 cache[job.service].update(result)
                 if job.target in cache[job.service]:
                     metadata[job.target] = cache[job.service][job.target]
