@@ -30,19 +30,37 @@ bibliography: paper.bib
 
 # Summary
 
-TBD
+MSMetaEnhancer is a software package annotation of mass spectra files. 
+The package uses matchms [@Huber2020] for data IO and supports `.msp` input and output data formats.
+It annotates given mass spectra file by adding missing metadata such as SMILES, InChI, and CAS numbers.
+The package retrieves the medatada by querying several external databases, 
+currently supporting CIR, CTS [@Wohlgemuth2010], ChemIDplus [@tomasulo2002chemidplus], and PubChem [@kim2021pubchem].
+The package is hosted via bioconda and is available on Galaxy.
 
 # Statement of need
 
 TBD
 
+- single python package connecting multiple services
+- efficient performance
+- adjustable annotation process
+
 # State of the field
 
 TBD
 
-# Author's Contributions
+- [@yones2021metafetcher]
+- webchem
+
+# Example of use
 
 TBD
+
+# Author's Contributions
+HT wrote the manuscript and developed the software.
+HH contributed to the software and the manuscript.
+MČ contributed via code reviews and implementation guidance.
+EJP provided conceptual oversight and contributed to the manuscript.
 
 # Acknowledgements
 The work was supported from Operational Programme Research, Development and Innovation - project RECETOX RI - CZ.02.1.01/0.0/0.0/16_013/0001761.
