@@ -56,11 +56,37 @@ However, to the best of out knowledge, there is no Python package connecting the
 
 # The software package
 
-TBD
+MSMetaEnhancer 
 
 # Example workflow
 
-TBD
+Performing annotation of a `.msp` file is straightforward, and requires to specify services to be used and a list of annotation steps.
+
+```python
+import asyncio
+
+from MSMetaEnhancer import Application
+
+app = Application()
+
+# import your .msp file
+app.load_spectra('input_spectra_file.msp', file_format='msp')
+
+# specify services
+services = ['CIR', 'CTS', 'PubChem']
+
+# specify annotation steps
+jobs = [('inchikey', 'inchi', 'CIR'),
+        ('inchikey', 'name', 'CTS'),
+        ('inchi', 'smiles', 'PubChem'),
+        ('inchi', 'formula', 'PubChem')]
+
+# run asynchronous annotation of spectra data
+asyncio.run(app.annotate_spectra(services, jobs))
+
+# export .msp file
+app.save_spectra('annotated_spectra_file.msp', file_format='msp')
+```
 
 # Author's Contributions
 MT wrote the manuscript and developed the software.
