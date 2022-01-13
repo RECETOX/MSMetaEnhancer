@@ -67,7 +67,7 @@ The tool iterates over all steps until no new metadata is found.
 This happens for each individual spectra record in the provided file. 
 Since it takes some non-trivial time for the services to respond to a query, this task is suitable for asynchronous approach, which makes the tool computationally efficient.
 
-+ scheme?
+![Schematic overview of MSMetaEnhancer annotation workflow. \label{fig:scheme}](scheme.png)
 
 To improve the usability of the tool, a Galaxy [@galaxy] wrapper was created to provide a user-friendly interface and simple way of results reproducibility. It is hosted on our Galaxy instance available at https://umsa.cerit-sc.cz/. Moreover, the tool is available from bioconda as a standalone package.
 
