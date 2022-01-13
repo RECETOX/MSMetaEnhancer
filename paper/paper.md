@@ -13,7 +13,7 @@ authors:
     affiliation: 1
   - name: Martin Čech
     orcid: 0000-0002-9318-1781
-    affiliation: "1, 2"
+    affiliation: 1
   - name: Elliott James Price
     orcid: 0000-0001-5691-7000
     affiliation: 1
@@ -21,8 +21,6 @@ authors:
 affiliations:
  - name: RECETOX, Faculty of Science, Masaryk University, Kotlarska 2, Brno 60200, Czech Republic
    index: 1
- - name: Institute of Organic Chemistry and Biochemistry of the CAS, Prague, Czech Republic
-   index: 2
 date: 11 January 2022
 bibliography: paper.bib
  
