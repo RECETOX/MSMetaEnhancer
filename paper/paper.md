@@ -30,7 +30,7 @@ bibliography: paper.bib
 
 # Summary
 
-MSMetaEnhancer is a Python software package annotation of mass spectra files. 
+MSMetaEnhancer is a Python software package for annotation of mass spectra files. 
 The package uses matchms [@Huber2020] for data IO and supports `.msp` input and output data format.
 It annotates given mass spectra file by adding missing metadata such as SMILES, InChI, and CAS numbers.
 The package retrieves the medatada by querying several external databases, 
@@ -56,7 +56,20 @@ However, to the best of out knowledge, there is no Python package connecting the
 
 # The software package
 
-MSMetaEnhancer 
+MSMetaEnhancer is an annotation tool for mass spectra files.
+It takes as input a single `.msp` file with multiple mass spectra records and a list of annotation steps.
+These steps consist of specification what service should be used to obtain a particular metadata attribute, based on another already existing attribute.
+The supported service currently include CIR, CTS, ChemIDplus, and PubChem.
+The supported metadata attributes are InChI, InChIKey, SMILES, IUPAC chemical name, chemical formula, and CAS number. 
+The particular available conversions can be found in the documentation via https://msmetaenhancer.readthedocs.io/.
+
+The tool iterates over all steps until no new metadata is found. 
+This happens for each individual spectra record in the provided file. 
+Since it takes some non-trivial time for the services to respond to a query, this task is suitable for asynchronous approach, which makes the tool computationally efficient.
+
++ scheme?
+
+To improve the usability of the tool, a Galaxy [@galaxy] wrapper was created to provide a user-friendly interface and simple way of results reproducibility. It is hosted on our Galaxy instance available at https://umsa.cerit-sc.cz/. Moreover, the tool is available from bioconda as a standalone package.
 
 # Example workflow
 
@@ -77,7 +90,7 @@ services = ['CIR', 'CTS', 'PubChem']
 
 # specify annotation steps
 jobs = [('inchikey', 'inchi', 'CIR'),
-        ('inchikey', 'name', 'CTS'),
+        ('inchikey', 'iupac_name', 'CTS'),
         ('inchi', 'smiles', 'PubChem'),
         ('inchi', 'formula', 'PubChem')]
 
