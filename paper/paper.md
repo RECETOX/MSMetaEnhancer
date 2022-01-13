@@ -58,22 +58,22 @@ However, to the best of out knowledge, there is no Python package connecting the
 
 MSMetaEnhancer is an annotation tool for mass spectra files.
 It takes as input a single `.msp` file with multiple mass spectra records and a list of annotation steps.
-These steps consist of specification what service should be used to obtain a particular metadata attribute, based on another already existing attribute.
-The supported service currently include CIR, CTS, ChemIDplus, and PubChem.
+These steps consist of specifying what service should be used to obtain a particular metadata attribute based on another already existing attribute.
+The supported service currently includes CIR, CTS, ChemIDplus, and PubChem.
 The supported metadata attributes are InChI, InChIKey, SMILES, IUPAC chemical name, chemical formula, and CAS number. 
 The particular available conversions can be found in the documentation via https://msmetaenhancer.readthedocs.io/.
 
 The tool iterates over all steps until no new metadata is found. 
-This happens for each individual spectra record in the provided file. 
-Since it takes some non-trivial time for the services to respond to a query, this task is suitable for asynchronous approach, which makes the tool computationally efficient.
+This happens for each spectra record in the provided file. 
+Since it takes some non-trivial time for the services to respond to a query, this task is suitable for the asynchronous approach, making the tool computationally efficient.
 
 ![Schematic overview of MSMetaEnhancer annotation workflow. \label{fig:scheme}](scheme.png)
 
-To improve the usability of the tool, a Galaxy [@galaxy] wrapper was created to provide a user-friendly interface and simple way of results reproducibility. It is hosted on our Galaxy instance available at https://umsa.cerit-sc.cz/. Moreover, the tool is available from bioconda as a standalone package.
+To improve the usability of the tool, a Galaxy [@galaxy] wrapper was created to provide a user-friendly interface and a simple way of results reproducibility. It is hosted on our Galaxy instance available at https://umsa.cerit-sc.cz/. Moreover, the tool is available from bioconda as a standalone package.
 
 # Example workflow
 
-Performing annotation of a `.msp` file is straightforward, and requires to specify services to be used and a list of annotation steps.
+Performing annotation of a `.msp` file is straightforward and requires to specify services to be used and a list of annotation steps.
 
 ```python
 import asyncio
