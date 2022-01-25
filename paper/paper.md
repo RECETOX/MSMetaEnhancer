@@ -57,8 +57,9 @@ However, to the best of our knowledge, there is no Python package connecting the
 MSMetaEnhancer is an annotation tool for mass spectra files.
 It takes as input a single `.msp` file with multiple mass spectra records and a list of annotation steps.
 These steps consist of specifying what service should be used to obtain a particular metadata attribute based on another already existing attribute.
-The supported service currently includes CIR, CTS, ChemIDplus, and PubChem.
-The supported metadata attributes are InChI, InChIKey, SMILES, IUPAC chemical name, chemical formula, and CAS number. 
+The supported services include, among others, CIR, CTS, ChemIDplus, and PubChem.
+To improve the performance of the tool, we use high-throughput APIs to access the services when available (e.g. IDSM [@galgonek2021idsm] to access PubChem).
+The supported metadata attributes include InChI, InChIKey, SMILES, IUPAC chemical name, chemical formula, CAS number, and others. 
 The particular available conversions can be found in the documentation via https://msmetaenhancer.readthedocs.io/.
 
 The tool processes the spectral library by iteratively executing all steps for each entry until no new metadata is found. 
