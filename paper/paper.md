@@ -1,5 +1,5 @@
 ---
-title: 'MSMetaEnhancer: A Python package for mass spectra annotation'
+title: 'MSMetaEnhancer: A Python package for mass spectra metadata annotation'
 tags:
   - Python
   - mass spectra
@@ -28,17 +28,17 @@ bibliography: paper.bib
 
 # Summary
 
-MSMetaEnhancer is a Python software package for annotation of mass spectra files. 
-The package uses matchms [@Huber2020] for data IO and supports `.msp` input and output data format.
+MSMetaEnhancer is a Python software package for the metadata enrichment of entries in spectral library files. 
+The package uses matchms [@Huber2020] for data IO and supports the `.msp` open format.
 It annotates given mass spectra file by adding missing metadata such as SMILES, InChI, and CAS numbers.
 The package retrieves the medatada by querying several external databases, 
-currently supporting CIR, CTS [@Wohlgemuth2010], ChemIDplus [@tomasulo2002chemidplus], and PubChem [@kim2021pubchem].
+currently supporting the chemical identifier resolver (CIR), chemical translation service (CTS) [@Wohlgemuth2010], ChemIDplus [@tomasulo2002chemidplus], and PubChem [@kim2021pubchem].
 The package is hosted via bioconda and is available on Galaxy.
 
 # Statement of need
 
-Mass spectra data need to be annotated with metadata to make them more reproducible and interoperable with other datasets. 
-While this metadata is mostly accessible from public chemical databases, they are not always present in the output of the mass spectrometry libraries. 
+Mass spectra stored in a library need to be enriched with metadata (e.g chemical formula, SMILES code, InChI, the origin of the spectrum, etc.) to make the identification process more robust and reproducible and to leverage the interoperability capabilities of chemical databases.
+While this metadata is mostly accessible from public chemical databases, they are not always present in mass spectral libraries. 
 Therefore, the data needs to be post-processed and appropriate metadata gathered from reliable sources.
 Such a process usually cannot be fully automated, and assistance from the user is required to specify particular annotation steps and sources. 
 
@@ -50,7 +50,7 @@ For example, there are R packages that provide an interface to PubChem [@guha201
 Then, there are packages unifying several sources -- `webchem` [@szocs2020webchem] allows to automatically query chemical data from several web sources and `MetaFetcheR`[@yones2021metafetcher] links metabolite data from several small-compound databases, trying to resolve inconsistencies.
 
 On the Python side, there are packages for PubChem [@swain2017], ChemSpider [@swain2018], or CIR [@swain2016]. 
-However, to the best of out knowledge, there is no Python package connecting these sources into a single tool, allowing straightforward annotation of mass spectra files.
+However, to the best of our knowledge, there is no Python package connecting these sources into a single tool, allowing straightforward metadata annotation of mass spectra.
 
 # The software package
 
@@ -61,13 +61,13 @@ The supported service currently includes CIR, CTS, ChemIDplus, and PubChem.
 The supported metadata attributes are InChI, InChIKey, SMILES, IUPAC chemical name, chemical formula, and CAS number. 
 The particular available conversions can be found in the documentation via https://msmetaenhancer.readthedocs.io/.
 
-The tool iterates over all steps until no new metadata is found. 
+The tool processes the spectral library by iteratively executing all steps for each entry until no new metadata is found. 
 This happens for each spectra record in the provided file. 
 Since it takes some non-trivial time for the services to respond to a query, this task is suitable for the asynchronous approach, making the tool computationally efficient.
 
 ![Schematic overview of MSMetaEnhancer annotation workflow. \label{fig:scheme}](scheme.png)
 
-To improve the usability of the tool, a Galaxy [@galaxy] wrapper was created to provide a user-friendly interface and a simple way of results reproducibility. It is hosted on our Galaxy instance available at https://umsa.cerit-sc.cz/. Moreover, the tool is available from bioconda as a standalone package.
+To improve the usability of the tool, a Galaxy [@galaxy] wrapper was created to provide a user-friendly interface and a simple way of reproducible data processing and analysis. It is hosted on the Galaxy instance available at https://umsa.cerit-sc.cz/. Moreover, the tool is available from bioconda [@bioconda] as a standalone package.
 
 # Example workflow
 
