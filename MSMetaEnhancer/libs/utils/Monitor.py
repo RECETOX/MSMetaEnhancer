@@ -36,7 +36,7 @@ class Monitor(Thread):
         try:
             result = requests.get(url, timeout=5)
             return result.status_code == 200
-        except (requests.exceptions.ConnectionError, TimeoutError):
+        except (requests.exceptions.ConnectionError, TimeoutError, requests.exceptions.ReadTimeout):
             return False
 
     def run(self):
