@@ -61,7 +61,6 @@ class Logger:
     def add_warning(self, warning):
         """
         Logs given exception as a Warning.
-        Increases number of failed jobs.
 
         :param warning: LogWarning
         """
@@ -141,7 +140,6 @@ class LogWarning:
     def add_warning(self, exc: Exception):
         """
         Logs given exception as a Warning.
-        Increases number of failed jobs.
 
         :param exc: given exception
         """

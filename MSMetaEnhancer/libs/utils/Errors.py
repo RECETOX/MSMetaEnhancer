@@ -24,3 +24,7 @@ class ServiceNotAvailable(Exception):
 
 class UnknownResponse(Exception):
     pass
+
+
+class InvalidAttributeFormat(Exception):
+    pass

@@ -37,7 +37,7 @@ class Annotator:
             for job in jobs:
                 if job.target not in metadata:
                     try:
-                        metadata, cache = await self.execute_job_with_cache(job, metadata, cache)
+                        metadata, cache = await self.execute_job_with_cache(job, metadata, cache, warning)
                         if repeat:
                             added_metadata = True
                     except (ConversionNotSupported, TargetAttributeNotRetrieved, UnknownResponse) as exc:
@@ -56,7 +56,7 @@ class Annotator:
         spectra.metadata = metadata
         return spectra
 
-    async def execute_job_with_cache(self, job, metadata, cache):
+    async def execute_job_with_cache(self, job, metadata, cache, warning):
         """
         Execute given job in cached mode. Cache is service specific
         and spectra specific.
@@ -66,6 +66,7 @@ class Annotator:
         :param job: given job to be executed
         :param metadata: data to be annotated by the job
         :param cache: given cache for this spectra
+        :param warning: object storing warnings related to current metadata
         :return: updated metadata and cache
         """
         # make sure the job makes sense
@@ -77,7 +78,7 @@ class Annotator:
         else:
             if service.is_available:
                 result = await service.convert(job.source, job.target, data)
-                result = self.curator.filter_invalid_metadata(result)
+                result = self.curator.filter_invalid_metadata(result, warning, job)
                 cache[job.service].update(result)
                 if job.target in cache[job.service]:
                     metadata[job.target] = cache[job.service][job.target]

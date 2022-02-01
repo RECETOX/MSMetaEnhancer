@@ -1,4 +1,6 @@
 from matchms import utils
+from MSMetaEnhancer.libs.utils import logger
+from MSMetaEnhancer.libs.utils.Errors import InvalidAttributeFormat
 
 
 class Curator:
@@ -41,11 +43,13 @@ class Curator:
         return cas_number
 
     @staticmethod
-    def filter_invalid_metadata(metadata):
+    def filter_invalid_metadata(metadata, warning, job):
         """
         Validates metadata and filters out invalid ones.
 
         :param metadata: metadata content
+        :param warning: object storing warnings related to current metadata
+        :param job: executed job
         :return: only valid metadata
         """
         filters = {
@@ -59,6 +63,9 @@ class Curator:
             if attribute in filters.keys():
                 if filters[attribute](value):
                     valid_metadata[attribute] = value
+                else:
+                    warning.add_warning(
+                        InvalidAttributeFormat(f'Job {job} obtained {attribute} in invalid format: {value}'))
             else:
                 valid_metadata[attribute] = value
         return valid_metadata
