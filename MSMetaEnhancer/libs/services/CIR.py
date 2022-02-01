@@ -86,3 +86,15 @@ class CIR(Converter):
         response = await self.query_the_service('CIR', args)
         if response:
             return {'inchikey': response.split('\n')[0][9:]}
+
+    async def inchi_to_smiles(self, inchi):
+        """
+        Convert InChi to SMILES using CIR web service
+
+        :param inchi: given InChi
+        :return: obtained SMILES
+        """
+        args = f'{inchi}/smiles'
+        response = await self.query_the_service('CIR', args)
+        if response:
+            return {'smiles': response.split('\n')[0]}

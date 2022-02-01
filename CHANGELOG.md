@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 * multidict package requirement
 * tracking of attributes validation in log [#68](https://github.com/RECETOX/MSMetaEnhancer/issues/68)
+* CIR: Inchi -> SMILES conversion [#66](https://github.com/RECETOX/MSMetaEnhancer/issues/66)
 ### Changed
 * passed `multidict` instead of `frozendict` to `aiohttp.ClientSession.post` (required by package)
 * take only first result when there are multiple hits in CIR conversions [#69](https://github.com/RECETOX/MSMetaEnhancer/issues/69)
