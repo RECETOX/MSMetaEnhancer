@@ -15,10 +15,23 @@ Additionally, it allows to load and save spectra files in supported formats, and
    :undoc-members:
    :show-inheritance:
 
-Submodules
-----------
+Services
+--------
 
 .. toctree::
-   :maxdepth: 4
 
-   MSMetaEnhancer.libs
+   MSMetaEnhancer.libs.services
+
+Utils
+-----
+
+.. toctree::
+
+    MSMetaEnhancer.libs.utils
+
+Libs
+----
+
+.. toctree::
+
+    MSMetaEnhancer.libs
