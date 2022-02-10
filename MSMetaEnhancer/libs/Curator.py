@@ -5,6 +5,8 @@ class Curator:
     """
     Curator makes sure that all data is curated before the actual annotation can proceed.
     Currently, fixing CAS numbers to correct format is supported.
+
+    Additionally, it supports metadata validation to make sure the produced data are correct.
     """
     def curate_spectra(self, spectra):
         """
