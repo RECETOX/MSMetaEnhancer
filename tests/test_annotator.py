@@ -29,8 +29,9 @@ def test_annotate(data, expected, repeat, mocked):
 
 
 def test_execute_job_with_cache():
+    warning = mock.Mock()
     curator = mock.Mock()
-    curator.filter_invalid_metadata = mock.MagicMock(side_effect=lambda a: a)
+    curator.filter_invalid_metadata = mock.MagicMock(side_effect=lambda a, b, c: a)
 
     pubchem = mock.Mock()
     pubchem.convert = mock.AsyncMock(return_value={'smiles': '$SMILES'})
@@ -40,7 +41,7 @@ def test_execute_job_with_cache():
 
     annotator = Annotator({'PubChem': pubchem})
     annotator.curator = curator
-    metadata, cache = asyncio.run(annotator.execute_job_with_cache(job, {'inchi': '$InChi'}, dict()))
+    metadata, cache = asyncio.run(annotator.execute_job_with_cache(job, {'inchi': '$InChi'}, dict(), warning))
     assert metadata == {'inchi': '$InChi', 'smiles': '$SMILES'}
 
     # already cached
@@ -55,7 +56,7 @@ def test_execute_job_with_cache():
 
     annotator = Annotator({'CTS': cts})
     annotator.curator = curator
-    metadata, cache = asyncio.run(annotator.execute_job_with_cache(job, {'smiles': '$SMILES'}, cache))
+    metadata, cache = asyncio.run(annotator.execute_job_with_cache(job, {'smiles': '$SMILES'}, cache, warning))
     assert metadata == {'smiles': '$SMILES', 'formula': '$FORMULA'}
 
     # no data retrieved
@@ -67,4 +68,4 @@ def test_execute_job_with_cache():
     annotator.curator = curator
 
     with pytest.raises(TargetAttributeNotRetrieved):
-        metadata, cache = asyncio.run(annotator.execute_job_with_cache(job, {'smiles': '$SMILES'}, dict()))
+        metadata, cache = asyncio.run(annotator.execute_job_with_cache(job, {'smiles': '$SMILES'}, dict(), warning))

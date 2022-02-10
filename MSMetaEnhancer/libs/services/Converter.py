@@ -1,5 +1,6 @@
 import aiohttp
 from asyncstdlib import lru_cache
+from multidict import MultiDict
 
 
 from aiohttp.client_exceptions import ServerDisconnectedError
@@ -61,6 +62,7 @@ class Converter:
                 async with self.session.get(url, headers=headers) as response:
                     return await self.process_request(response, url, method)
             else:
+                data = MultiDict(data)
                 async with self.session.post(url, data=data, headers=headers) as response:
                     return await self.process_request(response, url, method)
         except (ServerDisconnectedError, aiohttp.client_exceptions.ClientConnectorError, TimeoutError):

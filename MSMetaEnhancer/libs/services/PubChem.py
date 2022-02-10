@@ -22,16 +22,19 @@ class PubChem(Converter):
                            {'code': 'iupac_name', 'label': 'CHEMINF_000382'},
                            {'code': 'inchikey', 'label': 'CHEMINF_000399'},
                            {'code': 'formula', 'label': 'CHEMINF_000335'},
-                           {'code': 'smiles', 'label': 'CHEMINF_000376'}]
+                           {'code': 'canonical_smiles', 'label': 'CHEMINF_000376'},
+                           {'code': 'isomeric_smiles', 'label': 'CHEMINF_000379'}]
 
         # generate top level methods defining allowed conversions
         conversions = [('name', 'inchi', 'from_name'),
                        ('name', 'iupac_name', 'from_name'),
                        ('name', 'formula', 'from_name'),
-                       ('name', 'smiles', 'from_name'),
+                       ('name', 'canonical_smiles', 'from_name'),
+                       ('name', 'isomeric_smiles', 'from_name'),
                        ('inchi', 'iupac_name', 'from_inchi'),
                        ('inchi', 'formula', 'from_inchi'),
-                       ('inchi', 'smiles', 'from_inchi')]
+                       ('inchi', 'canonical_smiles', 'from_inchi'),
+                       ('inchi', 'isomeric_smiles', 'from_inchi')]
         self.create_top_level_conversion_methods(conversions)
 
         # used to limit the maximal number of simultaneous requests being processed

@@ -28,6 +28,7 @@ requirements:
     - frozendict
     - tabulate
     - rdkit
+    - multidict
 
 test:
   imports:
