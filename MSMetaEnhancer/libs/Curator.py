@@ -54,6 +54,8 @@ class Curator:
         """
         filters = {
             'smiles': utils.is_valid_smiles,
+            'canonical_smiles': utils.is_valid_smiles,
+            'isomeric_smiles': utils.is_valid_smiles,
             'inchi': utils.is_valid_inchi,
             'inchikey': utils.is_valid_inchikey
         }
