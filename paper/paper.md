@@ -61,10 +61,12 @@ The supported services include, among others, CIR, CTS, ChemIDplus, and PubChem.
 To improve the performance of the tool, we use high-throughput APIs to access the services when available (e.g. IDSM [@galgonek2021idsm] to access PubChem).
 The supported metadata attributes include InChI, InChIKey, SMILES, IUPAC chemical name, chemical formula, CAS number, and others. 
 The particular available conversions can be found in the documentation via https://msmetaenhancer.readthedocs.io/.
+Finally, the obtained metadata are validated to ensure their correct form (currently, matchms [@Huber2020] validators are employed for this task).
 
 The tool processes the spectral library by iteratively executing all steps for each entry until no new metadata is found. 
 This happens for each spectra record in the provided file. 
 Since it takes some non-trivial time for the services to respond to a query, this task is suitable for the asynchronous approach, making the tool computationally efficient.
+Any issues regarding the annotation process (such as the absence of target data or unavailability of a service) are recorded in a detailed log file, which can be specified as an optional output of the tool.
 
 ![Schematic overview of MSMetaEnhancer annotation workflow. \label{fig:scheme}](scheme.png)
 
