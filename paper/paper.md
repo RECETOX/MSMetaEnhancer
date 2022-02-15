@@ -19,7 +19,7 @@ authors:
     affiliation: 1
 
 affiliations:
- - name: RECETOX, Faculty of Science, Masaryk University, Kotlarska 2, Brno 60200, Czech Republic
+ - name: RECETOX, Faculty of Science, Masaryk University, Kotlářská 2, Brno 60200, Czech Republic
    index: 1
 date: 11 January 2022
 bibliography: paper.bib
@@ -33,7 +33,7 @@ The package uses matchms [@Huber2020] for data IO and supports the `.msp` open f
 It annotates given mass spectra file by adding missing metadata such as SMILES, InChI, and CAS numbers.
 The package retrieves the medatada by querying several external databases, 
 currently supporting the chemical identifier resolver (CIR), chemical translation service (CTS) [@Wohlgemuth2010], ChemIDplus [@tomasulo2002chemidplus], and PubChem [@kim2021pubchem].
-The package is hosted via bioconda and is available on Galaxy.
+The package is hosted via bioconda [@bioconda] and is available on Galaxy [@galaxy; @umsa].
 
 # Statement of need
 
@@ -102,7 +102,7 @@ app.save_spectra('annotated_spectra_file.msp', file_format='msp')
 
 # Author's Contributions
 MT wrote the manuscript and developed the software.
-HH contributed to the software and the manuscript.
+HH contributed to the manuscript and via code reviews and implementation guidance.
 MČ contributed via code reviews and implementation guidance.
 EJP provided conceptual oversight and contributed to the manuscript.
 
