@@ -78,14 +78,11 @@ Performing annotation of a `.msp` file is straightforward and requires to specif
 
 ```python
 import asyncio
-
 from MSMetaEnhancer import Application
 
 app = Application()
-
 # import your .msp file
 app.load_spectra('input_spectra_file.msp', file_format='msp')
-
 # specify services
 services = ['CIR', 'CTS', 'PubChem']
 
@@ -97,7 +94,6 @@ jobs = [('inchikey', 'inchi', 'CIR'),
 
 # run asynchronous annotation of spectra data
 asyncio.run(app.annotate_spectra(services, jobs))
-
 # export .msp file
 app.save_spectra('annotated_spectra_file.msp', file_format='msp')
 ```
