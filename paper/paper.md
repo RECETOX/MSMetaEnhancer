@@ -29,11 +29,11 @@ bibliography: paper.bib
 # Summary
 
 MSMetaEnhancer is a Python software package for the metadata enrichment of entries in spectral library files. 
-The package uses matchms [@Huber2020] for data IO and supports the `.msp` open format.
-It annotates given mass spectra file by adding missing metadata such as SMILES, InChI, and CAS numbers.
+The package uses matchms [@Huber2020] for data IO and supports the open, text-based `.msp` format.
+Entries contain mass spectral information such as peak mass to charge (m/z) ratios and intensities, alongside metadata information.
+It annotates given mass spectra in the library file by adding missing metadata such as SMILES, InChI, and CAS numbers to the individual entries.
 The package retrieves the medatada by querying several external databases, 
 currently supporting the chemical identifier resolver (CIR), chemical translation service (CTS) [@Wohlgemuth2010], ChemIDplus [@tomasulo2002chemidplus], and PubChem [@kim2021pubchem].
-The package is hosted via bioconda [@bioconda] and is available on Galaxy [@galaxy; @umsa].
 
 # Statement of need
 
@@ -46,7 +46,7 @@ Such a process usually cannot be fully automated, and assistance from the user i
 
 There are several packages within Python and R ecosystems which support querying external
 databases. 
-For example, there are R packages that provide an interface to PubChem [@guha2016,@cao2008chemminer], and a package with interface to wikidata [@keys2021]. 
+For example, there are R packages that provide an interface to PubChem [@guha2016; @cao2008chemminer], and a package with interface to wikidata [@keys2021]. 
 Then, there are packages unifying several sources -- `webchem` [@szocs2020webchem] allows to automatically query chemical data from several web sources and `MetaFetcheR`[@yones2021metafetcher] links metabolite data from several small-compound databases, trying to resolve inconsistencies.
 
 On the Python side, there are packages for PubChem [@swain2017], ChemSpider [@swain2018], or CIR [@swain2016]. 
@@ -70,7 +70,7 @@ Any issues regarding the annotation process (such as the absence of target data 
 
 ![Schematic overview of MSMetaEnhancer annotation workflow. \label{fig:scheme}](scheme.png)
 
-To improve the usability of the tool, a Galaxy [@galaxy] wrapper was created to provide a user-friendly interface and a simple way of reproducible data processing and analysis. It is hosted on the Galaxy instance available at https://umsa.cerit-sc.cz/. Moreover, the tool is available from bioconda [@bioconda] as a standalone package.
+To improve the usability of the tool, a Galaxy [@galaxy] wrapper was created to provide a user-friendly interface and a simple way of reproducible data processing and analysis. The tool is hosted on the Galaxy instance available at https://umsa.cerit-sc.cz/, among others [@umsa]. Moreover, the tool is available from bioconda [@bioconda] as a standalone package.
 
 # Example workflow
 
