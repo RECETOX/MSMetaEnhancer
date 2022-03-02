@@ -1,5 +1,4 @@
-from matchms import utils
-from MSMetaEnhancer.libs.utils import logger
+from matchms import metadata_utils
 from MSMetaEnhancer.libs.utils.Errors import InvalidAttributeFormat
 
 
@@ -55,11 +54,11 @@ class Curator:
         :return: only valid metadata
         """
         filters = {
-            'smiles': utils.is_valid_smiles,
-            'canonical_smiles': utils.is_valid_smiles,
-            'isomeric_smiles': utils.is_valid_smiles,
-            'inchi': utils.is_valid_inchi,
-            'inchikey': utils.is_valid_inchikey
+            'smiles': metadata_utils.is_valid_smiles,
+            'canonical_smiles': metadata_utils.is_valid_smiles,
+            'isomeric_smiles': metadata_utils.is_valid_smiles,
+            'inchi': metadata_utils.is_valid_inchi,
+            'inchikey': metadata_utils.is_valid_inchikey
         }
 
         valid_metadata = {}
