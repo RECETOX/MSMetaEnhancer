@@ -13,8 +13,8 @@ from MSMetaEnhancer.libs.utils.Job import Job
      [({'name': '$NAME', 'inchi': '$InChi'}, None), ({'name': '$NAME', 'inchi': '$InChi', 'smiles': '$SMILES'}, None)]]
 ])
 def test_annotate(data, expected, repeat, mocked):
-    jobs = [Job(('inchi', 'smiles', 'PubChem')),
-            Job(('name', 'inchi', 'PubChem'))]
+    jobs = [Job(('inchi', 'smiles', 'IDSM')),
+            Job(('name', 'inchi', 'IDSM'))]
 
     annotator = Annotator(dict())
     annotator.execute_job_with_cache = mock.AsyncMock()
@@ -33,13 +33,13 @@ def test_execute_job_with_cache():
     curator = mock.Mock()
     curator.filter_invalid_metadata = mock.MagicMock(side_effect=lambda a, b, c: a)
 
-    pubchem = mock.Mock()
-    pubchem.convert = mock.AsyncMock(return_value={'smiles': '$SMILES'})
+    idsm = mock.Mock()
+    idsm.convert = mock.AsyncMock(return_value={'smiles': '$SMILES'})
 
-    job = Job(('inchi', 'smiles', 'PubChem'))
-    job.validate = mock.Mock(return_value=(pubchem, None))
+    job = Job(('inchi', 'smiles', 'IDSM'))
+    job.validate = mock.Mock(return_value=(idsm, None))
 
-    annotator = Annotator({'PubChem': pubchem})
+    annotator = Annotator({'IDSM': idsm})
     annotator.curator = curator
     metadata, cache = asyncio.run(annotator.execute_job_with_cache(job, {'inchi': '$InChi'}, dict(), warning))
     assert metadata == {'inchi': '$InChi', 'smiles': '$SMILES'}

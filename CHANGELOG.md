@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [dev] - unreleased
 ### Added
 ### Changed
+* renamed PubChem service to IDSM to avoid confusion
 ### Removed
 
 ## [0.1.3] - 2022-02-15
