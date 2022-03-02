@@ -33,7 +33,7 @@ The package uses matchms [@Huber2020] for data IO and supports the open, text-ba
 Entries contain mass spectral information such as peak mass to charge (m/z) ratios and intensities, alongside metadata information.
 It annotates given mass spectra in the library file by adding missing metadata such as SMILES, InChI, and CAS numbers to the individual entries.
 The package retrieves the medatada by querying several external databases, 
-currently supporting the chemical identifier resolver (CIR), chemical translation service (CTS) [@Wohlgemuth2010], ChemIDplus [@tomasulo2002chemidplus], and PubChem [@kim2021pubchem].
+currently supporting the chemical identifier resolver (CIR), chemical translation service (CTS) [@Wohlgemuth2010], ChemIDplus [@tomasulo2002chemidplus], and IDSM [@galgonek2021idsm].
 
 # Statement of need
 
@@ -44,8 +44,7 @@ Such a process usually cannot be fully automated, and assistance from the user i
 
 # State of the field
 
-There are several packages within Python and R ecosystems which support querying external
-databases. 
+There are several packages within Python and R ecosystems which support querying external databases. 
 For example, there are R packages that provide an interface to PubChem [@guha2016; @cao2008chemminer], and a package with interface to wikidata [@keys2021]. 
 Then, there are packages unifying several sources -- `webchem` [@szocs2020webchem] allows to automatically query chemical data from several web sources and `MetaFetcheR`[@yones2021metafetcher] links metabolite data from several small-compound databases, trying to resolve inconsistencies.
 
@@ -57,8 +56,8 @@ However, to the best of our knowledge, there is no Python package connecting the
 MSMetaEnhancer is an annotation tool for mass spectra files.
 It takes as input a single `.msp` file with multiple mass spectra records and a list of annotation steps.
 These steps consist of specifying what service should be used to obtain a particular metadata attribute based on another already existing attribute.
-The supported services include, among others, CIR, CTS, ChemIDplus, and PubChem.
-To improve the performance of the tool, we use high-throughput APIs to access the services when available (e.g. IDSM [@galgonek2021idsm] to access PubChem).
+The supported services include, among others, CIR, CTS, ChemIDplus, and IDSM.
+To improve the performance of the tool, we use services with high-throughput APIs when available (e.g. IDSM [@galgonek2021idsm], which can be used to access PubChem database).
 The supported metadata attributes include InChI, InChIKey, SMILES, IUPAC chemical name, chemical formula, CAS number, and others. 
 The particular available conversions can be found in the documentation via https://msmetaenhancer.readthedocs.io/.
 Finally, the obtained metadata are validated to ensure their correct form (currently, matchms [@Huber2020] validators are employed for this task).
@@ -84,13 +83,13 @@ app = Application()
 # import your .msp file
 app.load_spectra('input_spectra_file.msp', file_format='msp')
 # specify services
-services = ['CIR', 'CTS', 'PubChem']
+services = ['CIR', 'CTS', 'IDSM']
 
 # specify annotation steps
 jobs = [('inchikey', 'inchi', 'CIR'),
         ('inchikey', 'iupac_name', 'CTS'),
-        ('inchi', 'smiles', 'PubChem'),
-        ('inchi', 'formula', 'PubChem')]
+        ('inchi', 'canonical_smiles', 'IDSM'),
+        ('inchi', 'formula', 'IDSM')]
 
 # run asynchronous annotation of spectra data
 asyncio.run(app.annotate_spectra(services, jobs))
