@@ -32,15 +32,15 @@ MSMetaEnhancer is a Python software package for the metadata enrichment of entri
 The package uses matchms [@Huber2020] for data IO and supports the open, text-based `.msp` format.
 Entries contain mass spectral information such as peak mass to charge (m/z) ratios and intensities, alongside metadata information.
 It annotates given mass spectra in the library file by adding missing metadata such as SMILES, InChI, and CAS numbers to the individual entries.
-The package retrieves the medatada by querying several external databases, 
-currently supporting the chemical identifier resolver (CIR), chemical translation service (CTS) [@Wohlgemuth2010], ChemIDplus [@tomasulo2002chemidplus], and IDSM [@galgonek2021idsm].
+The package retrieves the respective information by querying several external databases using existing metadata (e.g., SMILES or CAS number), 
+currently supporting the chemical identifier resolver (CIR), chemical translation service (CTS) [@Wohlgemuth2010], ChemIDplus [@tomasulo2002chemidplus], the Integrated Database for Small Molecules (IDSM) [@galgonek2021idsm] and PubChem [@kim2021pubchem].
 
 # Statement of need
 
 Mass spectra stored in a library need to be enriched with metadata (e.g chemical formula, SMILES code, InChI, the origin of the spectrum, etc.) to make the identification process more robust and reproducible and to leverage the interoperability capabilities of chemical databases.
 While this metadata is mostly accessible from public chemical databases, they are not always present in mass spectral libraries. 
 Therefore, the data needs to be post-processed and appropriate metadata gathered from reliable sources.
-Such a process usually cannot be fully automated, and assistance from the user is required to specify particular annotation steps and sources. 
+Such a process usually cannot be fully automated, and assistance from the user is required to specify particular annotation steps and sources.
 
 # State of the field
 
@@ -59,7 +59,7 @@ These steps consist of specifying what service should be used to obtain a partic
 The supported services include, among others, CIR, CTS, ChemIDplus, and IDSM.
 To improve the performance of the tool, we use services with high-throughput APIs when available (e.g. IDSM [@galgonek2021idsm], which can be used to access PubChem database).
 The supported metadata attributes include InChI, InChIKey, SMILES, IUPAC chemical name, chemical formula, CAS number, and others. 
-The particular available conversions can be found in the documentation via https://msmetaenhancer.readthedocs.io/.
+The particular available conversions can be found in the documentation via https://msmetaenhancer.readthedocs.io/ and are open to extension.
 Finally, the obtained metadata are validated to ensure their correct form (currently, matchms [@Huber2020] validators are employed for this task).
 
 The tool processes the spectral library by iteratively executing all steps for each entry until no new metadata is found. 
@@ -69,7 +69,8 @@ Any issues regarding the annotation process (such as the absence of target data 
 
 ![Schematic overview of MSMetaEnhancer annotation workflow. \label{fig:scheme}](scheme.png)
 
-To improve the usability of the tool, a Galaxy [@galaxy] wrapper was created to provide a user-friendly interface and a simple way of reproducible data processing and analysis. The tool is hosted on the Galaxy instance available at https://umsa.cerit-sc.cz/, among others [@umsa]. Moreover, the tool is available from bioconda [@bioconda] as a standalone package.
+To improve the usability of the tool, a Galaxy [@galaxy] wrapper was created to provide a user-friendly interface and a simple way of reproducible data processing and analysis.
+The tool is hosted on the Galaxy instance available at https://umsa.cerit-sc.cz/, among others [@umsa]. Moreover, the tool is available from bioconda [@bioconda] as a standalone package.
 
 # Example workflow
 
