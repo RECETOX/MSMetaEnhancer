@@ -4,7 +4,7 @@
 [![docs](https://readthedocs.org/projects/msmetaenhancer/badge/?version=latest)](https://msmetaenhancer.readthedocs.io/en/latest/)
 
 **MSMetaEnhancer** is a tool used for `.msp` files annotation.
-It adds metadata like SMILES, InChI, and CAS number fetched from the following services: [CIR](https://cactus.nci.nih.gov/chemical/structure_documentation), [CTS](https://cts.fiehnlab.ucdavis.edu/), [NLM](https://chem.nlm.nih.gov), and [PubChem](https://pubchem.ncbi.nlm.nih.gov/).
+It adds metadata like SMILES, InChI, and CAS number fetched from the following services: [CIR](https://cactus.nci.nih.gov/chemical/structure_documentation), [CTS](https://cts.fiehnlab.ucdavis.edu/), [NLM](https://chem.nlm.nih.gov), and [IDSM](https://idsm.elixir-czech.cz/).
 The app uses asynchronous implementation of annotation process allowing for optimal fetching speed.
 
 ### Usage
@@ -23,11 +23,11 @@ app.load_spectra('tests/test_data/sample.msp', file_format='msp')
 app.curate_spectra()
 
 # specify requested services (these are supported)
-services = ['CTS', 'CIR', 'NLM', 'PubChem']
+services = ['CTS', 'CIR', 'NLM', 'IDSM']
 
 # specify requested jobs
-jobs = [('name', 'inchi', 'PubChem'), ('inchi', 'formula', 'PubChem'), ('inchi', 'inchikey', 'PubChem'),
-        ('inchi', 'iupac_name', 'PubChem'), ('inchi', 'smiles', 'PubChem')]
+jobs = [('name', 'inchi', 'IDSM'), ('inchi', 'formula', 'IDSM'), ('inchi', 'inchikey', 'IDSM'),
+        ('inchi', 'iupac_name', 'IDSM'), ('inchi', 'canonical_smiles', 'IDSM')]
 
 # run asynchronous annotations of spectra data
 asyncio.run(app.annotate_spectra(services, jobs))

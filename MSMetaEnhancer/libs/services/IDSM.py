@@ -4,18 +4,18 @@ from MSMetaEnhancer.libs.services.Converter import Converter
 from frozendict import frozendict
 
 
-class PubChem(Converter):
+class IDSM(Converter):
     """
-    PubChem is the world's largest collection of freely accessible chemical information.
+    IDSM provides unique source of fast similarity and structural search functionality 
+    in databases such as ChEMBL, ChEBI or PubChem.
+    Currently, PubChem fragment is supported.
 
-    Available online at: https://pubchem.ncbi.nlm.nih.gov/
-
-    To improve the performance, we use IDSM service: https://idsm.elixir-czech.cz/
+    IDSM service: https://idsm.elixir-czech.cz/
     """
     def __init__(self, session):
         super().__init__(session)
         # service URLs
-        self.services = {'PubChem': 'https://idsm.elixir-czech.cz/sparql/endpoint/idsm'}
+        self.services = {'IDSM': 'https://idsm.elixir-czech.cz/sparql/endpoint/idsm'}
         self.header = frozendict({"Accept": "application/sparql-results+json"})
 
         self.attributes = [{'code': 'inchi', 'label': 'CHEMINF_000396'},
@@ -122,7 +122,7 @@ class PubChem(Converter):
 
     async def call_service(self, query):
         """
-        General method to call PubChem service.
+        General method to call IDSM service.
 
         Uses semaphore to control maximal number of simultaneous requests being processed.
         Limited to 10 as required by IDSM service.
@@ -132,7 +132,7 @@ class PubChem(Converter):
         """
         data = frozendict({"query": query})
         async with self.semaphore:
-            response = await self.query_the_service('PubChem', '', method='POST', data=data, headers=self.header)
+            response = await self.query_the_service('IDSM', '', method='POST', data=data, headers=self.header)
         if response:
             return self.parse_attributes(response)
 

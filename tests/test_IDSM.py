@@ -1,7 +1,7 @@
 import asyncio
 import pytest
 
-from MSMetaEnhancer.libs.services.PubChem import PubChem
+from MSMetaEnhancer.libs.services.IDSM import IDSM
 from frozendict import frozendict
 
 from tests.utils import wrap_with_session
@@ -12,7 +12,7 @@ INCHI = 'InChI=1S/C11H8FNO3/c1-13-6-9(10(14)16-11(13)15)7-2-4-8(12)5-3-7/h2-6H,1
 
 @pytest.mark.dependency()
 def test_service_available():
-    asyncio.run(wrap_with_session(PubChem, 'inchi_to_inchikey', [INCHI]))
+    asyncio.run(wrap_with_session(IDSM, 'inchi_to_inchikey', [INCHI]))
 
 
 @pytest.mark.dependency(depends=["test_service_available"])
@@ -33,8 +33,8 @@ def test_format():
 
     data = frozendict({"query": query})
 
-    response = asyncio.run(wrap_with_session(PubChem, 'query_the_service',
-                                             ['PubChem', '', 'POST', frozendict(data),
+    response = asyncio.run(wrap_with_session(IDSM, 'query_the_service',
+                                             ['IDSM', '', 'POST', frozendict(data),
                                               frozendict({"Accept": "application/sparql-results+json"})]))
     response_json = eval(response)
     assert 'results' in response_json
@@ -45,7 +45,7 @@ def test_format():
 def test_get_conversions():
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
-    jobs = PubChem(None).get_conversion_functions()
+    jobs = IDSM(None).get_conversion_functions()
     loop.close()
 
-    assert ("inchi", "iupac_name", "PubChem") in jobs
+    assert ("inchi", "iupac_name", "IDSM") in jobs

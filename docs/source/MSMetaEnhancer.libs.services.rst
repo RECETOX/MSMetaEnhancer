@@ -22,10 +22,10 @@ NLM
    :undoc-members:
    :show-inheritance:
 
-PubChem
--------
+IDSM
+----
 
-.. automodule:: MSMetaEnhancer.libs.services.PubChem
+.. automodule:: MSMetaEnhancer.libs.services.IDSM
    :members:
    :undoc-members:
    :show-inheritance:
