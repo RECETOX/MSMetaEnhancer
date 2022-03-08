@@ -30,6 +30,15 @@ IDSM
    :undoc-members:
    :show-inheritance:
 
+PubChem
+-------
+
+.. automodule:: MSMetaEnhancer.libs.services.PubChem
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
 .. automodule:: MSMetaEnhancer.libs.services.Converter
    :members:
    :undoc-members:
