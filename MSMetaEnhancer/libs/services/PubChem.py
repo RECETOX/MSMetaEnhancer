@@ -3,6 +3,9 @@ import json
 from MSMetaEnhancer.libs.services.Converter import Converter
 from frozendict import frozendict
 
+from MSMetaEnhancer.libs.utils.Errors import UnknownResponse
+from MSMetaEnhancer.libs.utils.Throttler import Throttler
+
 
 class PubChem(Converter):
     """
@@ -36,6 +39,8 @@ class PubChem(Converter):
                        ('inchi', 'isomeric_smiles', 'from_inchi')]
         self.create_top_level_conversion_methods(conversions)
 
+        self.throttler = Throttler(rate_limit=4)
+
     async def from_name(self, name):
         """
         Convert Chemical name to all possible attributes using PubChem service
@@ -45,9 +50,7 @@ class PubChem(Converter):
         :return: all found data
         """
         args = f'name/{name}/JSON'
-        response = await self.query_the_service('PubChem', args)
-        if response:
-            return self.parse_attributes(response)
+        return await self.call_service(args, 'GET', None)
 
     async def from_inchi(self, inchi):
         """
@@ -58,9 +61,76 @@ class PubChem(Converter):
         :return: all found data
         """
         args = "inchi/JSON"
-        response = await self.query_the_service('PubChem', args, method='POST', data=frozendict({'inchi': inchi}))
+        return await self.call_service(args, 'POST', frozendict({'inchi': inchi}))
+
+    async def call_service(self, args, method, data):
+        """
+        General method to call PubChem service.
+
+        Uses a throttler to control maximal number of simultaneous requests being processed per second.
+        Limited to 5 requests per second, can be dynamically lowered at times of excessive load.
+
+        More info: https://pubchemdocs.ncbi.nlm.nih.gov/programmatic-access$_requestvolumelimitations
+
+        :param args: additional url suffix
+        :param method: POST of GET
+        :param data: source data for POST request
+        :return: obtained attributes
+        """
+        async with self.throttler:
+            response = await self.query_the_service('PubChem', args, method=method, data=data)
         if response:
             return self.parse_attributes(response)
+
+    async def process_request(self, response, url, method):
+        """
+        Redefined parent method with additional adjustment of throttling.
+
+        :param response: given async response
+        :param url: service URL
+        :param method: GET/POST
+        :return: processed response
+        """
+        result = await response.text()
+        self.adjust_throttling(response.headers['X-Throttling-Control'])
+        if response.ok:
+            return result
+        else:
+            raise UnknownResponse(f'Unknown response {response.status}:{result} for {method} request on {url}.')
+
+    def adjust_throttling(self, throttling_header):
+        """
+        Adjust current requests rate based on Dynamic Request Throttling provided by PubChem.
+
+        More info: https://pubchemdocs.ncbi.nlm.nih.gov/dynamic-request-throttling
+
+        :param throttling_header: header containing current service load info
+        """
+        def parse_status(part):
+            value = part.split(': ')[1]
+            return int(value.split(' (')[1][:-2])
+
+        def parse_pubchem_info(header):
+            """
+            Parse PubChem header regarding Dynamic Request Throttling.
+
+            It has the following form of three indicators:
+            Request Count status: Green (0%), Request Time status: Green (0%), Service status: Green (20%)
+
+            :param header: given PubChem header with Throttling info
+            :return: most critical indicator value (maximum of three) with possible complete blacklist indicator
+            """
+            indicators = header.split(',')
+            blocked = False
+            if 'too many requests per second or blacklisted' in indicators[-1]:
+                blocked = True
+            return {'load': max([parse_status(indicator) for indicator in indicators[:3]]), 'blocked': blocked}
+
+        status = parse_pubchem_info(throttling_header)
+        if status['blocked'] or status['load'] > 75:
+            self.throttler.decrease_limit()
+        elif status['load'] < 25:
+            self.throttler.increase_limit()
 
     def parse_attributes(self, response):
         """
@@ -84,3 +154,5 @@ class PubChem(Converter):
                     else:
                         result[att['code']] = prop['value']['sval']
         return result
+
+
