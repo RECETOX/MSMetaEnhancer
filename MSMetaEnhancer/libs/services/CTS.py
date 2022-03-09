@@ -20,7 +20,7 @@ class CTS(Converter):
 
         # generate top level methods defining allowed conversions
         conversions = [('inchikey', 'inchi', 'from_inchikey'),
-                       ('inchikey', 'name', 'from_inchikey'),
+                       ('inchikey', 'compound_name', 'from_inchikey'),
                        ('inchikey', 'iupac_name', 'from_inchikey')]
         self.create_top_level_conversion_methods(conversions)
 
@@ -40,7 +40,7 @@ class CTS(Converter):
         if response:
             return self.parse_inchikey(response)
 
-    async def name_to_inchikey(self, name):
+    async def compound_name_to_inchikey(self, name):
         """
         Convert Chemical name to InChiKey using CTS service
 
@@ -96,7 +96,7 @@ class CTS(Converter):
 
             names = [item['name'] for item in synonyms if item['type'] == 'Synonym']
             if names:
-                result['name'] = names[0]
+                result['compound_name'] = names[0]
 
             names = [item['name'] for item in synonyms if item['type'] == 'IUPAC Name (Preferred)']
             if names:

@@ -9,7 +9,7 @@ from tests.utils import wrap_with_session
 
 @pytest.mark.dependency()
 def test_service_available():
-    asyncio.run(wrap_with_session(NLM, 'inchikey_to_name', ['QNAYBMKLOCPYGJ-REOHCLBHSA-N']))
+    asyncio.run(wrap_with_session(NLM, 'inchikey_to_compound_name', ['QNAYBMKLOCPYGJ-REOHCLBHSA-N']))
 
 
 @pytest.mark.dependency(depends=["test_service_available"])
@@ -24,4 +24,4 @@ def test_format():
 
 def test_get_conversions():
     jobs = NLM(None).get_conversion_functions()
-    assert ("name", "inchikey", "NLM") in jobs
+    assert ("compound_name", "inchikey", "NLM") in jobs

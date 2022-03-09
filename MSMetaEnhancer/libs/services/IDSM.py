@@ -40,7 +40,7 @@ class IDSM(Converter):
         # used to limit the maximal number of simultaneous requests being processed
         self.semaphore = asyncio.Semaphore(10)
 
-    async def name_to_inchikey(self, name):
+    async def compound_name_to_inchikey(self, name):
         """
         Convert Chemical name to InChIKey using IDSM service
 

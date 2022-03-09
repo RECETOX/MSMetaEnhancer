@@ -21,16 +21,16 @@ class NLM(Converter):
 
         self.attributes = [{'code': 'casno', 'label': 'RN / ID'},
                            {'code': 'inchikey', 'label': 'InChIKey'},
-                           {'code': 'name', 'label': 'Name'},
+                           {'code': 'compound_name', 'label': 'Name'},
                            {'code': 'formula', 'label': 'Formula'}]
 
         # generate top level methods defining allowed conversions
-        conversions = [('inchikey', 'name', 'from_inchikey'),
+        conversions = [('inchikey', 'compound_name', 'from_inchikey'),
                        ('inchikey', 'formula', 'from_inchikey'),
                        ('inchikey', 'casno', 'from_inchikey'),
-                       ('name', 'inchikey', 'from_name'),
-                       ('name', 'formula', 'from_name'),
-                       ('name', 'casno', 'from_name')]
+                       ('compound_name', 'inchikey', 'from_name'),
+                       ('compound_name', 'formula', 'from_name'),
+                       ('compound_name', 'casno', 'from_name')]
         self.create_top_level_conversion_methods(conversions)
 
     async def from_inchikey(self, inchikey):
