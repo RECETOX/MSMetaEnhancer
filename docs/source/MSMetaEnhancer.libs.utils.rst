@@ -29,3 +29,11 @@ Errors
    :members:
    :undoc-members:
    :show-inheritance:
+
+Throttler
+---------
+
+.. automodule:: MSMetaEnhancer.libs.utils.Throttler
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -26,11 +26,11 @@ class IDSM(Converter):
                            {'code': 'isomeric_smiles', 'label': 'CHEMINF_000379'}]
 
         # generate top level methods defining allowed conversions
-        conversions = [('name', 'inchi', 'from_name'),
-                       ('name', 'iupac_name', 'from_name'),
-                       ('name', 'formula', 'from_name'),
-                       ('name', 'canonical_smiles', 'from_name'),
-                       ('name', 'isomeric_smiles', 'from_name'),
+        conversions = [('compound_name', 'inchi', 'from_name'),
+                       ('compound_name', 'iupac_name', 'from_name'),
+                       ('compound_name', 'formula', 'from_name'),
+                       ('compound_name', 'canonical_smiles', 'from_name'),
+                       ('compound_name', 'isomeric_smiles', 'from_name'),
                        ('inchi', 'iupac_name', 'from_inchi'),
                        ('inchi', 'formula', 'from_inchi'),
                        ('inchi', 'canonical_smiles', 'from_inchi'),
@@ -40,7 +40,7 @@ class IDSM(Converter):
         # used to limit the maximal number of simultaneous requests being processed
         self.semaphore = asyncio.Semaphore(10)
 
-    async def name_to_inchikey(self, name):
+    async def compound_name_to_inchikey(self, name):
         """
         Convert Chemical name to InChIKey using IDSM service
 

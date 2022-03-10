@@ -8,9 +8,11 @@ from MSMetaEnhancer.libs.utils.Job import Job
 
 
 @pytest.mark.parametrize('data, expected, repeat, mocked', [
-    [{'name': '$NAME'}, {'name': '$NAME', 'inchi': '$InChi'}, False, [({'name': '$NAME', 'inchi': '$InChi'}, None)]],
-    [{'name': '$NAME'}, {'name': '$NAME', 'inchi': '$InChi', 'smiles': '$SMILES'}, True,
-     [({'name': '$NAME', 'inchi': '$InChi'}, None), ({'name': '$NAME', 'inchi': '$InChi', 'smiles': '$SMILES'}, None)]]
+    [{'compound_name': '$NAME'}, {'compound_name': '$NAME', 'inchi': '$InChi'}, False,
+     [({'compound_name': '$NAME', 'inchi': '$InChi'}, None)]],
+    [{'compound_name': '$NAME'}, {'compound_name': '$NAME', 'inchi': '$InChi', 'smiles': '$SMILES'}, True,
+     [({'compound_name': '$NAME', 'inchi': '$InChi'}, None),
+      ({'compound_name': '$NAME', 'inchi': '$InChi', 'smiles': '$SMILES'}, None)]]
 ])
 def test_annotate(data, expected, repeat, mocked):
     jobs = [Job(('inchi', 'smiles', 'IDSM')),
