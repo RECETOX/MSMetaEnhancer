@@ -69,14 +69,14 @@ The supported metadata attributes include InChI, InChIKey, SMILES, IUPAC chemica
 The particular available conversions can be found in the documentation via https://msmetaenhancer.readthedocs.io/ and are open to extension.
 Finally, the obtained metadata are validated to ensure their correct form (currently, matchms [@Huber2020] validators are employed for this task).
 
+![Schematic overview of MSMetaEnhancer annotation workflow. \label{fig:scheme}](scheme.png)
+
 The tool processes the spectral library by iteratively executing all steps for each entry until no new metadata is found. 
 This happens for each spectra record in the provided file. 
 Since it takes some non-trivial time for the services to respond to a query, this task is suitable for the asynchronous approach, making the tool computationally efficient.
 Additionally, results containing all metadata related to a compound are cached, making access to all available metadata for a compound result in only a single query.
 For services with limited access rate (i.e., PubChem), we implemented a throttling mechanism -- maximizing performance while mitigating restrictions from the requested webservice.
 Any issues regarding the annotation process (such as the absence of target data or unavailability of a service) are recorded in a detailed log file, which can be specified as an optional output of the tool.
-
-![Schematic overview of MSMetaEnhancer annotation workflow. \label{fig:scheme}](scheme.png)
 
 To improve the usability of the tool, a Galaxy [@galaxy] wrapper was created to provide a user-friendly interface and a simple way of reproducible data processing and analysis.
 The tool is hosted on the Galaxy instance available at https://umsa.cerit-sc.cz/, among others [@umsa]. Moreover, the tool is available from bioconda [@bioconda] as a standalone package.
