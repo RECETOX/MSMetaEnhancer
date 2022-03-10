@@ -19,7 +19,7 @@ authors:
     affiliation: 1
 
 affiliations:
- - name: RECETOX, Faculty of Science, Masaryk University, Kotlářská 2, Brno 60200, Czech Republic
+ - name: RECETOX, Faculty of Science, Masaryk University, Kotlářská 2, Brno, Czech Republic
    index: 1
 date: 11 January 2022
 bibliography: paper.bib
@@ -46,10 +46,16 @@ Such a process usually cannot be fully automated, and assistance from the user i
 
 There are several packages within Python and R ecosystems which support querying external databases. 
 For example, there are R packages that provide an interface to PubChem [@guha2016; @cao2008chemminer], and a package with interface to wikidata [@keys2021]. 
-Then, there are packages unifying several sources -- `webchem` [@szocs2020webchem] allows to automatically query chemical data from several web sources and `MetaFetcheR`[@yones2021metafetcher] links metabolite data from several small-compound databases, trying to resolve inconsistencies.
+Then, there are packages unifying several sources -- `webchem` [@szocs2020webchem] allows to automatically query chemical data from several web sources (similar to MSMetaEnhancer) and to interconvert between identifiers.
+The `MetaFetcheR`[@yones2021metafetcher] package focuses on database-specific identifiers and links metabolite data from several small-compound databases (e.g., PubChem, the Human Metabolome Database (HMDB)[@Wishart2022]), trying to resolve inconsistencies.
+Similarly, RaMP cross-references multiple database specific identifiers via their internal RaMP_ID to integrate various pathway and compound databases [@Zhang2018c].
+BridgeDb is an ELIXIR project providing mapping functionality of different identifiers present in HMDB (e.g., PubChemCID, ChEBI and InChIKey), gene information and several pathway databases in an organism centric manner, exposing a Java and REST API [@VanIersel2010;@Willighagen2022].
 
-On the Python side, there are packages for PubChem [@swain2017], ChemSpider [@swain2018], or CIR [@swain2016]. 
-However, to the best of our knowledge, there is no Python package connecting these sources into a single tool, allowing straightforward metadata annotation of mass spectra.
+On the Python side, there are packages providing direct API access for PubChem [@swain2017], ChemSpider [@swain2018], or CIR [@swain2016].
+PubChem's public API limits programmatic access to less than ~5 requests per second, limiting the ability of advanced users to effectively mine the database.
+
+However, to the best of our knowledge, there is no Python package connecting these sources into a single tool, allowing straightforward metadata annotation of large mass spectral libraries with various identifiers and cross-references to different databases in a user-friendly way.
+
 
 # The software package
 
@@ -65,6 +71,8 @@ Finally, the obtained metadata are validated to ensure their correct form (curre
 The tool processes the spectral library by iteratively executing all steps for each entry until no new metadata is found. 
 This happens for each spectra record in the provided file. 
 Since it takes some non-trivial time for the services to respond to a query, this task is suitable for the asynchronous approach, making the tool computationally efficient.
+Additionally, results containing all metadata related to a compound are cached, making access to all available metadata for a compound result in only a single query.
+For services with limited access rate (i.e., PubChem), we implemented a throttling mechanism -- maximizing performance while mitigating restrictions from the requested webservice.
 Any issues regarding the annotation process (such as the absence of target data or unavailability of a service) are recorded in a detailed log file, which can be specified as an optional output of the tool.
 
 ![Schematic overview of MSMetaEnhancer annotation workflow. \label{fig:scheme}](scheme.png)
