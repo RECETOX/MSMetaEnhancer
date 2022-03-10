@@ -37,10 +37,11 @@ currently supporting the chemical identifier resolver (CIR), chemical translatio
 
 # Statement of need
 
-Mass spectra stored in a library need to be enriched with metadata (e.g chemical formula, SMILES code, InChI, the origin of the spectrum, etc.) to make the identification process more robust and reproducible and to leverage the interoperability capabilities of chemical databases.
+Mass spectra stored in a library need to be enriched with metadata (e.g chemical formula, SMILES code, InChI, the origin of the spectrum, etc.) to (1) combine spectral and structural information, (2) make the identification process more robust and reproducible and (3) leverage the interoperability capabilities of chemical databases.
 While this metadata is mostly accessible from public chemical databases, they are not always present in mass spectral libraries. 
 Therefore, the data needs to be post-processed and appropriate metadata gathered from reliable sources.
 Such a process usually cannot be fully automated, and assistance from the user is required to specify particular annotation steps and sources.
+Moreso, manual curation and addition of metadata while creating a compound library is labour intensive and error-prone [@Price2021].
 
 # State of the field
 
