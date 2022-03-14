@@ -154,5 +154,3 @@ class PubChem(WebConverter):
                     else:
                         result[att['code']] = prop['value']['sval']
         return result
-
-

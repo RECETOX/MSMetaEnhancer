@@ -6,7 +6,7 @@ from frozendict import frozendict
 
 class IDSM(WebConverter):
     """
-    IDSM provides unique source of fast similarity and structural search functionality 
+    IDSM provides unique source of fast similarity and structural search functionality
     in databases such as ChEMBL, ChEBI or PubChem.
     Currently, PubChem fragment is supported.
 

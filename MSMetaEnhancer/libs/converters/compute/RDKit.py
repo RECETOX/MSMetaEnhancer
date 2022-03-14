@@ -19,4 +19,3 @@ class RDKit(ComputeConverter):
     def from_smiles(self, smiles):
         weight = ExactMolWt(MolFromSmiles(smiles))
         return {'mw': weight}
-    

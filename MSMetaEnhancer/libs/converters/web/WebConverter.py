@@ -13,7 +13,7 @@ from MSMetaEnhancer.libs.utils.Errors import ServiceNotAvailable, UnknownRespons
 
 class WebConverter(Converter):
     """
-    General class for conversions.
+    General class for web conversions.
     """
     def __init__(self, session):
         super().__init__()

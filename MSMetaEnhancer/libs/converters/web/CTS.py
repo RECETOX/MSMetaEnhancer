@@ -15,7 +15,7 @@ class CTS(WebConverter):
         super().__init__(session)
         # service URLs
         self.endpoints = {'CTS': 'https://cts.fiehnlab.ucdavis.edu/rest/convert/',
-                         'CTS_compound': 'http://cts.fiehnlab.ucdavis.edu/service/compound/'
+                          'CTS_compound': 'http://cts.fiehnlab.ucdavis.edu/service/compound/'
                           }
 
         # generate top level methods defining allowed conversions
