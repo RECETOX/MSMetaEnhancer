@@ -13,7 +13,7 @@ class CIR(Converter):
     def __init__(self, session):
         super().__init__(session)
         # service URLs
-        self.services = {'CIR': 'https://cactus.nci.nih.gov/chemical/structure/'}
+        self.endpoints = {'CIR': 'https://cactus.nci.nih.gov/chemical/structure/'}
 
     async def casno_to_smiles(self, cas_number):
         """
@@ -49,7 +49,7 @@ class CIR(Converter):
         args = f'{inchikey}/stdinchi'
         response = await self.query_the_service('CIR', args)
         if response:
-            return {'inchi':self.retrieve_first(response)}
+            return {'inchi': self.retrieve_first(response)}
 
     async def inchikey_to_casno(self, inchikey):
         """

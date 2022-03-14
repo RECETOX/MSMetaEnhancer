@@ -3,32 +3,33 @@ from MSMetaEnhancer.libs.utils.Errors import ConversionNotSupported, SourceAttri
 
 class Job:
     def __init__(self, data):
-        self.source, self.target, self.service = data
+        self.source, self.target, self.converter = data
 
     def __str__(self):
-        return f'{self.service}: {self.source} -> {self.target}'
+        return f'{self.converter}: {self.source} -> {self.target}'
 
     def __repr__(self):
-        return f'Job(({self.source}, {self.target}, {self.service}))'
+        return f'Job(({self.source}, {self.target}, {self.converter}))'
 
-    def validate(self, services, metadata):
+    def validate(self, converters, metadata):
         """
         Makes sure to job is supported or possible to execute on given metadata.
 
-        :param services: available services
+        :param converters: available endpoints
         :param metadata: given metadata
-        :return: particular service and data if conversion is possible
+        :return: particular converter and data if conversion is possible
         """
-        service = services.get(self.service, None)
+        converter = converters.get(self.converter, None)
         data = metadata.get(self.source, None)
 
-        if service is None:
-            raise ConversionNotSupported(f'Conversion ({self.service}) {self.source} -> {self.target}: is not supported')
+        if converter is None:
+            raise ConversionNotSupported(f'Conversion ({self.converter}) {self.source} -> {self.target}: '
+                                         f'is not supported')
         elif data is None:
-            raise SourceAttributeNotAvailable(f'Conversion ({self.service}) {self.source} -> {self.target}: '
+            raise SourceAttributeNotAvailable(f'Conversion ({self.converter}) {self.source} -> {self.target}: '
                                               f'Attribute {self.source} missing in given metadata.')
         else:
-            return service, data
+            return converter, data
 
 
 def convert_to_jobs(jobs):

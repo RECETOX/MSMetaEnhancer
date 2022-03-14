@@ -5,13 +5,13 @@ import os
 sys.path.append(os.path.split(sys.path[0])[0])
 
 from MSMetaEnhancer.libs.services import *
-from MSMetaEnhancer.libs.services import __all__ as services
+from MSMetaEnhancer.libs.services import __all__ as converters
 
 
 def generate_options():
     jobs = []
-    for service in services:
-        jobs += (eval(service)(None).get_conversion_functions())
+    for converter in converters:
+        jobs += (eval(converter)(None).get_conversion_functions())
 
     for job in jobs:
         print(f'<option value="{job[0]} {job[1]} {job[2]}">{job[2]}: {job[0]} -> {job[1]}</option>')

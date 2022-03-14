@@ -15,7 +15,7 @@ class IDSM(Converter):
     def __init__(self, session):
         super().__init__(session)
         # service URLs
-        self.services = {'IDSM': 'https://idsm.elixir-czech.cz/sparql/endpoint/idsm'}
+        self.endpoints = {'IDSM': 'https://idsm.elixir-czech.cz/sparql/endpoint/idsm'}
         self.header = frozendict({"Accept": "application/sparql-results+json"})
 
         self.attributes = [{'code': 'inchi', 'label': 'CHEMINF_000396'},

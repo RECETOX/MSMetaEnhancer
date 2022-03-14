@@ -19,10 +19,10 @@ class Monitor(Thread):
         """
         Extract base URL from the converter.
 
-        :param converter: given service
+        :param converter: given converter
         :return: base URL
         """
-        url = urlparse(list(converter.services.values())[0])
+        url = urlparse(list(converter.endpoints.values())[0])
         return url.scheme + "://" + url.netloc
 
     @staticmethod
@@ -43,8 +43,8 @@ class Monitor(Thread):
         """
         Main loop of the Monitor thread.
 
-        Monitor checks if GET on base URL of every service give status code 200.
-        Such a service is considered available.
+        Monitor checks if GET on base URL of every converter give status code 200.
+        Such a converter is considered available.
         This is checked periodically to always have up-to-date information.
         """
         while not self.stop_request.isSet():

@@ -5,7 +5,7 @@ from MSMetaEnhancer.libs.Annotator import Annotator
 from MSMetaEnhancer.libs.Curator import Curator
 from MSMetaEnhancer.libs.Spectra import Spectra
 from MSMetaEnhancer.libs.utils import logger
-from MSMetaEnhancer.libs.utils.Errors import UnknownService, UnknownSpectraFormat
+from MSMetaEnhancer.libs.utils.Errors import UnknownConverter, UnknownSpectraFormat
 from MSMetaEnhancer.libs.utils.Job import convert_to_jobs
 from MSMetaEnhancer.libs.utils.Monitor import Monitor
 from MSMetaEnhancer.libs.services import *
@@ -18,18 +18,18 @@ class Application:
         self.spectra = Spectra()
 
     @staticmethod
-    def validate_services(services):
+    def validate_converters(converters):
         """
-        Check if services do exist.
-        Raises UnknownService if a service does not exist.
+        Check if converters do exist.
+        Raises UnknownConverter if a converter does not exist.
 
-        :param services: given list of services names
+        :param converters: given list of converters names
         """
-        for service in services:
+        for converter in converters:
             try:
-                eval(service)
+                eval(converter)
             except NameError:
-                raise UnknownService(f'Service {service} unknown.')
+                raise UnknownConverter(f'Converter {converter} unknown.')
 
     def load_spectra(self, filename, file_format):
         """
@@ -63,32 +63,32 @@ class Application:
         """
         self.spectra = Curator().curate_spectra(self.spectra)
 
-    async def annotate_spectra(self, services, jobs=None, repeat=False):
+    async def annotate_spectra(self, converters, jobs=None, repeat=False):
         """
         Annotates current Spectra data by specified jobs.
 
-        Used services must be specified.
+        Used converters must be specified.
         Jobs do not have to be given, all available jobs will be executed instead.
 
-        :param services: given list of services names
+        :param converters: given list of converters names
         :param jobs: list specifying jobs to be executed
         :param repeat: if some metadata was added, all jobs are executed again
         """
         async with aiohttp.ClientSession() as session:
-            self.validate_services(services)
-            services = {service: eval(service)(session) for service in services}
-            annotator = Annotator(services)
+            self.validate_converters(converters)
+            converters = {converter: eval(converter)(session) for converter in converters}
+            annotator = Annotator(converters)
 
-            # start services status checker and wait for first status
-            monitor = Monitor(services)
+            # start converters status checker and wait for first status
+            monitor = Monitor(converters)
             monitor.start()
             monitor.first_check.wait()
 
             # create all possible jobs if not given
             if not jobs:
                 jobs = []
-                for service in services.values():
-                    jobs += service.get_conversion_functions()
+                for converter in converters.values():
+                    jobs += converter.get_conversion_functions()
             jobs = convert_to_jobs(jobs)
 
             logger.set_target_attributes(jobs, len(self.spectra.spectrums))

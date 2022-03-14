@@ -12,26 +12,26 @@ from MSMetaEnhancer.libs.utils.Errors import TargetAttributeNotRetrieved, Servic
 
 class Converter:
     """
-    General class for conversion services.
+    General class for conversions.
     """
     def __init__(self, session):
         self.session = session
         self.is_available = True
 
     @property
-    def service_name(self):
+    def converter_name(self):
         return self.__class__.__name__
 
     def __hash__(self):
-        return hash(self.service_name)
+        return hash(self.converter_name)
 
     @lru_cache
     async def query_the_service(self, service, args, method='GET', data=None, headers=None):
         """
-        Make get request to given service with arguments.
-        Raises ConnectionError if service is not available.
+        Make get request to given converter with arguments.
+        Raises ConnectionError if converter is not available.
 
-        :param service: requested service to be queried
+        :param service: requested converter to be queried
         :param args: additional query arguments
         :param method: GET (default) or POST
         :param data: data for POST request
@@ -39,16 +39,16 @@ class Converter:
         :return: obtained response
         """
         try:
-            result = await self.loop_request(self.services[service] + args, method, data, headers)
+            result = await self.loop_request(self.endpoints[service] + args, method, data, headers)
             return result
         except TypeError:
-            logger.error(TypeError(f'Incorrect argument {args} for service {service}.'))
+            logger.error(TypeError(f'Incorrect argument {args} for converter {service}.'))
 
     async def loop_request(self, url, method, data, headers, depth=10):
         """
         Execute request with type depending on specified method.
 
-        :param url: service URL
+        :param url: converter URL
         :param method: GET/POST
         :param data: given arguments for POST request
         :param depth: allowed recursion depth for unsuccessful requests
@@ -67,7 +67,7 @@ class Converter:
                     return await self.process_request(response, url, method)
         except (ServerDisconnectedError, aiohttp.client_exceptions.ClientConnectorError, TimeoutError):
             if depth > 0:
-                logger.error(ServiceNotAvailable(f'Service {self.service_name} '
+                logger.error(ServiceNotAvailable(f'Service {self.converter_name} '
                                                  f'temporarily unavailable, trying again...'))
                 return await self.loop_request(url, method, data, headers, depth - 1)
             raise ServiceNotAvailable
@@ -77,7 +77,7 @@ class Converter:
         Method to wrap response handling (same for POST and GET requests).
 
         :param response: given async response
-        :param url: service URL
+        :param url: converter URL
         :param method: GET/POST
         :return: processed response
         """
@@ -100,7 +100,7 @@ class Converter:
         if result:
             return result
         else:
-            raise TargetAttributeNotRetrieved(f'{self.service_name}: {source} -> {target} '
+            raise TargetAttributeNotRetrieved(f'{self.converter_name}: {source} -> {target} '
                                               f'- conversion retrieved no data.')
 
     def create_top_level_conversion_methods(self, conversions):
@@ -123,7 +123,7 @@ class Converter:
         jobs = []
         methods = [method_name for method_name in dir(self) if '_to_' in method_name]
         for method in methods:
-            jobs.append((*method.split('_to_'), self.service_name))
+            jobs.append((*method.split('_to_'), self.converter_name))
         return jobs
 
 
@@ -139,7 +139,7 @@ def create_top_level_method(obj, source, target, method):
     async def conversion(key):
         return await getattr(obj, str(method))(key)
 
-    conversion.__doc__ = f'Convert {source} to {target} using {obj.__class__.__name__} service'
+    conversion.__doc__ = f'Convert {source} to {target} using {obj.__class__.__name__} converter'
     conversion.__name__ = f'{source}_to_{target}'
 
     setattr(obj, conversion.__name__, conversion)

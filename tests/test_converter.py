@@ -11,7 +11,7 @@ from MSMetaEnhancer.libs.utils.Errors import TargetAttributeNotRetrieved, Unknow
 
 def test_query_the_service():
     converter = Converter(mock.Mock())
-    converter.services = {'CTS': 'what a service'}
+    converter.endpoints = {'CTS': 'what a converter'}
     converter.loop_request = mock.AsyncMock(return_value={'smiles': '$SMILES'})
 
     result = asyncio.run(converter.query_the_service('CTS', 'arg'))
@@ -119,7 +119,7 @@ async def test_lru_cache(test_client):
 
     session = await test_client(create_app)
     converter = Converter(session)
-    converter.services = {'/': '/'}
+    converter.endpoints = {'/': '/'}
     converter.loop_request = mock.AsyncMock(return_value=(1, 2, 3))
 
     converter.query_the_service.cache_clear()

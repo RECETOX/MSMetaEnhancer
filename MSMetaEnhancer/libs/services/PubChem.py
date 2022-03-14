@@ -16,7 +16,7 @@ class PubChem(Converter):
     def __init__(self, session):
         super().__init__(session)
         # service URLs
-        self.services = {'PubChem': 'https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/'}
+        self.endpoints = {'PubChem': 'https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/'}
 
         self.attributes = [{'code': 'inchi', 'label': 'InChI', 'extra': None},
                            {'code': 'inchikey', 'label': 'InChIKey', 'extra': None},
