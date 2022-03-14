@@ -36,10 +36,23 @@ class PubChem(Converter):
                        ('inchi', 'iupac_name', 'from_inchi'),
                        ('inchi', 'formula', 'from_inchi'),
                        ('inchi', 'canonical_smiles', 'from_inchi'),
-                       ('inchi', 'isomeric_smiles', 'from_inchi')]
+                       ('inchi', 'isomeric_smiles', 'from_inchi'),
+                       ('inchi', 'pubchemid', 'from_inchi'),
+                       ('pubchemid', 'inchi', 'from_pubchemid')]
         self.create_top_level_conversion_methods(conversions)
 
         self.throttler = Throttler(rate_limit=4)
+
+    async def from_pubchemid(self, pubchemid):
+        """
+        Obtain chemical identifiers based on given PubChem ID using PubChem service
+        More info: https://pubchemdocs.ncbi.nlm.nih.gov/pug-rest
+
+        :param pubchemid: given Chemical name
+        :return: all found data
+        """
+        args = f'cid/{pubchemid}/JSON'
+        return await self.call_service(args, 'GET', None)
 
     async def from_name(self, name):
         """
@@ -143,6 +156,8 @@ class PubChem(Converter):
         """
         response_json = json.loads(response)
         result = dict()
+
+        result['pubchemid'] = response_json['PC_Compounds'][0]['id']['id']['cid']
 
         for prop in response_json['PC_Compounds'][0]['props']:
             label = prop['urn']['label']
