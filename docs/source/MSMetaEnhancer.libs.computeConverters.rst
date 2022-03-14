@@ -1,7 +1,10 @@
-TBD
----
+Compute Converters
+==================
 
-.. automodule:: MSMetaEnhancer.libs.converters.compute.matchMS
+RDKit
+-----
+
+.. automodule:: MSMetaEnhancer.libs.converters.compute.RDKit
    :members:
    :undoc-members:
    :show-inheritance:

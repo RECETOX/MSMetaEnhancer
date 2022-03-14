@@ -1,3 +1,6 @@
+Web Converters
+==============
+
 CIR
 ---
 
@@ -38,8 +41,8 @@ PubChem
    :undoc-members:
    :show-inheritance:
 
-General Service
----------------
+General Web Converter
+---------------------
 
 .. automodule:: MSMetaEnhancer.libs.converters.web.WebConverter
    :members:
