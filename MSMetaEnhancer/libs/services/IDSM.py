@@ -40,6 +40,26 @@ class IDSM(Converter):
         # used to limit the maximal number of simultaneous requests being processed
         self.semaphore = asyncio.Semaphore(10)
 
+    async def iupac_name_to_inchi(self, iupac_name):
+        """
+        Convert IUPAC name to InChI using IDSM service
+
+        :param iupac_name: given IUPAC name
+        :return: all found data
+        """
+        query = f"""
+        SELECT DISTINCT ?value ?type
+        WHERE
+        {{
+          ?attribute rdf:type ?type.
+          ?attribute sio:has-value ?value.
+          ?compound sio:has-attribute ?attribute.
+          ?compound sio:has-attribute ?descriptor.
+          ?descriptor sio:has-value "{iupac_name.lower()}"@en.
+        }}
+        """
+        return await self.call_service(query)
+
     async def compound_name_to_inchikey(self, name):
         """
         Convert Chemical name to InChIKey using IDSM service
