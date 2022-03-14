@@ -2,10 +2,10 @@ from io import StringIO
 
 import pandas as pd
 
-from MSMetaEnhancer.libs.services.Converter import Converter
+from MSMetaEnhancer.libs.converters.web.WebConverter import WebConverter
 
 
-class NLM(Converter):
+class NLM(WebConverter):
     """
     National Library of Medicine databases give access to structure and
     nomenclature authority files used to identify chemical substances.

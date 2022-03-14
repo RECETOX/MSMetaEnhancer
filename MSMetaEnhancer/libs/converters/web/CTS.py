@@ -1,11 +1,11 @@
 import json
 
-from MSMetaEnhancer.libs.services.Converter import Converter
+from MSMetaEnhancer.libs.converters.web.WebConverter import WebConverter
 
 
-class CTS(Converter):
+class CTS(WebConverter):
     """
-    Chemical Translation Service performs batch conversions of the most common compound identifiers.
+    Chemical Translation WebConverter performs batch conversions of the most common compound identifiers.
 
     Available online at: http://cts.fiehnlab.ucdavis.edu
 

@@ -1,7 +1,7 @@
-from MSMetaEnhancer.libs.services.Converter import Converter
+from MSMetaEnhancer.libs.converters.web.WebConverter import WebConverter
 
 
-class CIR(Converter):
+class CIR(WebConverter):
     """
     Chemical Identifier Resolver allows one to convert a given structure identifier
     into another representation or structure identifier.

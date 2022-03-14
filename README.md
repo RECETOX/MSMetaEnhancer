@@ -22,7 +22,7 @@ app.load_spectra('tests/test_data/sample.msp', file_format='msp')
 # curate given metadata (e.g. fix CAS numbers)
 app.curate_spectra()
 
-# specify requested services (these are supported)
+# specify requested web (these are supported)
 services = ['CTS', 'CIR', 'NLM', 'IDSM', 'PubChem']
 
 # specify requested jobs

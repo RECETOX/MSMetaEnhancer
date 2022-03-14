@@ -5,10 +5,10 @@ from MSMetaEnhancer.libs.Annotator import Annotator
 from MSMetaEnhancer.libs.Curator import Curator
 from MSMetaEnhancer.libs.Spectra import Spectra
 from MSMetaEnhancer.libs.utils import logger
-from MSMetaEnhancer.libs.utils.Errors import UnknownConverter, UnknownSpectraFormat
+from MSMetaEnhancer.libs.utils.ConverterBuilder import ConverterBuilder
+from MSMetaEnhancer.libs.utils.Errors import UnknownSpectraFormat
 from MSMetaEnhancer.libs.utils.Job import convert_to_jobs
 from MSMetaEnhancer.libs.utils.Monitor import Monitor
-from MSMetaEnhancer.libs.services import *
 
 
 class Application:
@@ -16,20 +16,6 @@ class Application:
         self.log_level = log_level
         self.log_file = log_file
         self.spectra = Spectra()
-
-    @staticmethod
-    def validate_converters(converters):
-        """
-        Check if converters do exist.
-        Raises UnknownConverter if a converter does not exist.
-
-        :param converters: given list of converters names
-        """
-        for converter in converters:
-            try:
-                eval(converter)
-            except NameError:
-                raise UnknownConverter(f'Converter {converter} unknown.')
 
     def load_spectra(self, filename, file_format):
         """
@@ -75,12 +61,13 @@ class Application:
         :param repeat: if some metadata was added, all jobs are executed again
         """
         async with aiohttp.ClientSession() as session:
-            self.validate_converters(converters)
-            converters = {converter: eval(converter)(session) for converter in converters}
+            builder = ConverterBuilder()
+            builder.validate_converters(converters)
+            converters, web_converters = builder.build_converters(session, converters)
             annotator = Annotator(converters)
 
             # start converters status checker and wait for first status
-            monitor = Monitor(converters)
+            monitor = Monitor(web_converters)
             monitor.start()
             monitor.first_check.wait()
 

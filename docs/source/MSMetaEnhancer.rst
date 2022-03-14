@@ -15,12 +15,13 @@ Additionally, it allows to load and save spectra files in supported formats, and
    :undoc-members:
    :show-inheritance:
 
-Services
---------
+Converters
+----------
 
 .. toctree::
 
-   MSMetaEnhancer.libs.services
+   MSMetaEnhancer.libs.webConverters
+   MSMetaEnhancer.libs.computeConverters
 
 Utils
 -----

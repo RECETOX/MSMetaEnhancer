@@ -6,24 +6,26 @@ from multidict import MultiDict
 from aiohttp.client_exceptions import ServerDisconnectedError
 from asyncio.exceptions import TimeoutError
 
+from MSMetaEnhancer.libs.Converter import Converter
 from MSMetaEnhancer.libs.utils import logger
-from MSMetaEnhancer.libs.utils.Errors import TargetAttributeNotRetrieved, ServiceNotAvailable, UnknownResponse
+from MSMetaEnhancer.libs.utils.Errors import ServiceNotAvailable, UnknownResponse, TargetAttributeNotRetrieved
 
 
-class Converter:
+class WebConverter(Converter):
     """
     General class for conversions.
     """
     def __init__(self, session):
+        super().__init__()
         self.session = session
-        self.is_available = True
 
-    @property
-    def converter_name(self):
-        return self.__class__.__name__
-
-    def __hash__(self):
-        return hash(self.converter_name)
+    async def convert(self, source, target, data):
+        result = await getattr(self, f'{source}_to_{target}')(data)
+        if result:
+            return result
+        else:
+            raise TargetAttributeNotRetrieved(f'{self.converter_name}: {source} -> {target} '
+                                              f'- conversion retrieved no data.')
 
     @lru_cache
     async def query_the_service(self, service, args, method='GET', data=None, headers=None):
@@ -86,60 +88,3 @@ class Converter:
             return result
         else:
             raise UnknownResponse(f'Unknown response {response.status}:{result} for {method} request on {url}.')
-
-    async def convert(self, source, target, data):
-        """
-        Converts specified {source} attribute (provided in {data}) to {target} attribute.
-
-        :param source: given attribute name
-        :param target: required attribute name
-        :param data: given attribute value
-        :return: obtained value of target attribute
-        """
-        result = await getattr(self, f'{source}_to_{target}')(data)
-        if result:
-            return result
-        else:
-            raise TargetAttributeNotRetrieved(f'{self.converter_name}: {source} -> {target} '
-                                              f'- conversion retrieved no data.')
-
-    def create_top_level_conversion_methods(self, conversions):
-        """
-        Method to create and set dynamic methods defined in conversions
-
-        :param conversions: triples of form (from, to, method)
-        """
-        for conversion in conversions:
-            create_top_level_method(self, *conversion)
-
-    def get_conversion_functions(self):
-        """
-        Method to compute all available conversion functions.
-
-        Assumes that the functions always have from {source}_to_{target}
-
-        :return: a list of available conversion functions
-        """
-        jobs = []
-        methods = [method_name for method_name in dir(self) if '_to_' in method_name]
-        for method in methods:
-            jobs.append((*method.split('_to_'), self.converter_name))
-        return jobs
-
-
-def create_top_level_method(obj, source, target, method):
-    """
-    Assign a new method to {obj} called {source}_to_{target} which calls {method}.
-
-    :param obj: given object (typically a Converter)
-    :param source: attribute name used as source of data
-    :param target: attribute name obtained using this dynamic method
-    :param method: method which is called in the object with single argument
-    """
-    async def conversion(key):
-        return await getattr(obj, str(method))(key)
-
-    conversion.__doc__ = f'Convert {source} to {target} using {obj.__class__.__name__} converter'
-    conversion.__name__ = f'{source}_to_{target}'
-
-    setattr(obj, conversion.__name__, conversion)

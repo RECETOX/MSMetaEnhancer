@@ -1,10 +1,10 @@
 import asyncio
 
-from MSMetaEnhancer.libs.services.Converter import Converter
+from MSMetaEnhancer.libs.converters.web.WebConverter import WebConverter
 from frozendict import frozendict
 
 
-class IDSM(Converter):
+class IDSM(WebConverter):
     """
     IDSM provides unique source of fast similarity and structural search functionality 
     in databases such as ChEMBL, ChEBI or PubChem.

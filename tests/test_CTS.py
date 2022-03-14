@@ -2,7 +2,7 @@ import asyncio
 import json
 import pytest
 
-from MSMetaEnhancer.libs.services.CTS import CTS
+from MSMetaEnhancer.libs.converters.web import CTS
 from tests.utils import wrap_with_session
 
 

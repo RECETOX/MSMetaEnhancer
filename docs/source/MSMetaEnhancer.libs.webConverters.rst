@@ -1,7 +1,7 @@
 CIR
 ---
 
-.. automodule:: MSMetaEnhancer.libs.services.CIR
+.. automodule:: MSMetaEnhancer.libs.converters.web.CIR
    :members:
    :undoc-members:
    :show-inheritance:
@@ -9,7 +9,7 @@ CIR
 CTS
 ---
 
-.. automodule:: MSMetaEnhancer.libs.services.CTS
+.. automodule:: MSMetaEnhancer.libs.converters.web.CTS
    :members:
    :undoc-members:
    :show-inheritance:
@@ -17,7 +17,7 @@ CTS
 NLM
 ---
 
-.. automodule:: MSMetaEnhancer.libs.services.NLM
+.. automodule:: MSMetaEnhancer.libs.converters.web.NLM
    :members:
    :undoc-members:
    :show-inheritance:
@@ -25,7 +25,7 @@ NLM
 IDSM
 ----
 
-.. automodule:: MSMetaEnhancer.libs.services.IDSM
+.. automodule:: MSMetaEnhancer.libs.converters.web.IDSM
    :members:
    :undoc-members:
    :show-inheritance:
@@ -33,13 +33,15 @@ IDSM
 PubChem
 -------
 
-.. automodule:: MSMetaEnhancer.libs.services.PubChem
+.. automodule:: MSMetaEnhancer.libs.converters.web.PubChem
    :members:
    :undoc-members:
    :show-inheritance:
 
+General Service
+---------------
 
-.. automodule:: MSMetaEnhancer.libs.services.Converter
+.. automodule:: MSMetaEnhancer.libs.converters.web.WebConverter
    :members:
    :undoc-members:
    :show-inheritance:

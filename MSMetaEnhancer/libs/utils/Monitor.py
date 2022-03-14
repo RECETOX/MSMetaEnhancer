@@ -6,7 +6,7 @@ import requests
 
 class Monitor(Thread):
     """
-    Class to periodically monitor status of used services.
+    Class to periodically monitor status of used web.
     """
     def __init__(self, converters):
         super(Monitor, self).__init__()
