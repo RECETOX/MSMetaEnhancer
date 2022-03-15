@@ -1,5 +1,3 @@
-import sys
-
 from MSMetaEnhancer.libs.services.Converter import Converter
 
 
@@ -100,9 +98,9 @@ class BridgeDB(Converter):
 
     def parse_attributes(self, response):
         """
-        Parse all available attributes obtained from InChiKey.
+        Parse all available attributes obtained using BridgeDB.
 
-        :param response: CTS compound response to given InChiKey
+        :param response: BridgeDB response to given ID
         :return: all parsed data
         """
         result = dict()
@@ -114,11 +112,3 @@ class BridgeDB(Converter):
                 if identifier in self.identifiers.keys():
                     result[self.identifiers[identifier]] = value
         return result
-
-    def whoami(self):
-        """
-        Identify name of calling function
-
-        :return: name of calling function
-        """
-        return sys._getframe(1).f_code.co_name
