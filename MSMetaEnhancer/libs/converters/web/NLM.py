@@ -2,10 +2,10 @@ from io import StringIO
 
 import pandas as pd
 
-from MSMetaEnhancer.libs.services.Converter import Converter
+from MSMetaEnhancer.libs.converters.web.WebConverter import WebConverter
 
 
-class NLM(Converter):
+class NLM(WebConverter):
     """
     National Library of Medicine databases give access to structure and
     nomenclature authority files used to identify chemical substances.
@@ -17,7 +17,7 @@ class NLM(Converter):
     def __init__(self, session):
         super().__init__(session)
         # service URLs
-        self.services = {'NLM': 'https://chem.nlm.nih.gov/api/data/'}
+        self.endpoints = {'NLM': 'https://chem.nlm.nih.gov/api/data/'}
 
         self.attributes = [{'code': 'casno', 'label': 'RN / ID'},
                            {'code': 'inchikey', 'label': 'InChIKey'},

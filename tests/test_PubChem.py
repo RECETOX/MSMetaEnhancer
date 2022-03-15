@@ -2,7 +2,7 @@ import asyncio
 import json
 import pytest
 
-from MSMetaEnhancer.libs.services.PubChem import PubChem
+from MSMetaEnhancer.libs.converters.web import PubChem
 from frozendict import frozendict
 
 from tests.utils import wrap_with_session

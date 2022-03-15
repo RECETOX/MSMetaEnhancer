@@ -1,7 +1,7 @@
 import asyncio
 import pytest
 
-from MSMetaEnhancer.libs.services.IDSM import IDSM
+from MSMetaEnhancer.libs.converters.web import IDSM
 from frozendict import frozendict
 
 from tests.utils import wrap_with_session

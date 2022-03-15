@@ -4,14 +4,18 @@ import os
 # this add to path the home dir, so it can be called from anywhere
 sys.path.append(os.path.split(sys.path[0])[0])
 
-from MSMetaEnhancer.libs.services import *
-from MSMetaEnhancer.libs.services import __all__ as services
+from MSMetaEnhancer.libs.utils.ConverterBuilder import ConverterBuilder
+from MSMetaEnhancer.libs.converters.web import __all__ as web_converters
+from MSMetaEnhancer.libs.converters.compute import __all__ as compute_converters
 
 
 def generate_options():
     jobs = []
-    for service in services:
-        jobs += (eval(service)(None).get_conversion_functions())
+    converters = web_converters + compute_converters
+    built_converters, built_web_converters = ConverterBuilder().build_converters(None, converters)
+
+    for converter in built_converters:
+        jobs += (built_converters[converter].get_conversion_functions())
 
     for job in jobs:
         print(f'<option value="{job[0]} {job[1]} {job[2]}">{job[2]}: {job[0]} -> {job[1]}</option>')

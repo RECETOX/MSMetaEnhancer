@@ -9,17 +9,17 @@ class Annotator:
     """
     Annotator is responsible for annotation process of single spectra.
     """
-    def __init__(self, services):
-        self.services = services
+    def __init__(self, converters):
+        self.converters = converters
         self.curator = Curator()
 
     async def annotate(self, spectra, jobs, repeat=False):
         """
         Runs all jobs to add annotations to given dictionary containing metadata
 
-        The method goes through specified jobs of form (Source, Target, Service)
+        The method goes through specified jobs of form (Source, Target, Converter)
         and tries to obtain 'Target' attribute based on 'Source' attribute using
-        'Service' service.
+        'Converter' converter.
 
         :param spectra: given spectra metadata
         :param jobs: specified list of jobs to be executed
@@ -45,9 +45,9 @@ class Annotator:
                     except SourceAttributeNotAvailable as exc:
                         warning.add_info(exc)
                     except ServiceNotAvailable:
-                        warning.add_warning(ServiceNotAvailable(f'Service {job.service} not available.'))
+                        warning.add_warning(ServiceNotAvailable(f'Service {job.converter} not available.'))
                 else:
-                    warning.add_info(f'Conversion ({job.service}) {job.source} -> {job.target}: Requested '
+                    warning.add_info(f'Conversion ({job.converter}) {job.source} -> {job.target}: Requested '
                                      f'attribute {job.target} already present in given metadata.')
 
         logger.add_warning(warning)
@@ -58,7 +58,7 @@ class Annotator:
 
     async def execute_job_with_cache(self, job, metadata, cache, warning):
         """
-        Execute given job in cached mode. Cache is service specific
+        Execute given job in cached mode. Cache is converter specific
         and spectra specific.
 
         Raises TargetAttributeNotRetrieved
@@ -70,18 +70,18 @@ class Annotator:
         :return: updated metadata and cache
         """
         # make sure the job makes sense
-        service, data = job.validate(self.services, metadata)
+        converter, data = job.validate(self.converters, metadata)
 
-        cache[job.service] = cache.get(job.service, dict())
-        if job.target in cache[job.service]:
-            metadata[job.target] = cache[job.service][job.target]
+        cache[job.converter] = cache.get(job.converter, dict())
+        if job.target in cache[job.converter]:
+            metadata[job.target] = cache[job.converter][job.target]
         else:
-            if service.is_available:
-                result = await service.convert(job.source, job.target, data)
+            if converter.is_available:
+                result = await converter.convert(job.source, job.target, data)
                 result = self.curator.filter_invalid_metadata(result, warning, job)
-                cache[job.service].update(result)
-                if job.target in cache[job.service]:
-                    metadata[job.target] = cache[job.service][job.target]
+                cache[job.converter].update(result)
+                if job.target in cache[job.converter]:
+                    metadata[job.target] = cache[job.converter][job.target]
                 else:
                     raise TargetAttributeNotRetrieved(f'{job} - conversion retrieved no data.')
             else:

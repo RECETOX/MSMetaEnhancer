@@ -1,7 +1,7 @@
-from MSMetaEnhancer.libs.services.Converter import Converter
+from MSMetaEnhancer.libs.converters.web.WebConverter import WebConverter
 
 
-class BridgeDB(Converter):
+class BridgeDB(WebConverter):
     """
     BridgeDb is a framework to map identifiers between various biological databases. These mappings are provided for
     genes, proteins, genetic variants, metabolites, and metabolic reactions
@@ -11,7 +11,7 @@ class BridgeDB(Converter):
     def __init__(self, session):
         super().__init__(session)
         # service URLs
-        self.services = {'BridgeDB': 'https://webservice.bridgedb.org/Human/xrefs/'}
+        self.endpoints = {'BridgeDB': 'https://webservice.bridgedb.org/Human/xrefs/'}
 
         self.codes = {'hmdbid': 'Ch', 'pubchemid': 'Cpc', 'chemspiderid': 'Cs', 'wikidataid': 'Wd', 'chebiid': 'Ce'}
         self.identifiers = {'PubChem-compound': 'pubchemid', 'Chemspider': 'chemspiderid', 'ChEBI': 'chebiid',

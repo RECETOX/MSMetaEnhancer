@@ -1,11 +1,11 @@
 import json
 
-from MSMetaEnhancer.libs.services.Converter import Converter
+from MSMetaEnhancer.libs.converters.web.WebConverter import WebConverter
 
 
-class CTS(Converter):
+class CTS(WebConverter):
     """
-    Chemical Translation Service performs batch conversions of the most common compound identifiers.
+    Chemical Translation WebConverter performs batch conversions of the most common compound identifiers.
 
     Available online at: http://cts.fiehnlab.ucdavis.edu
 
@@ -14,9 +14,9 @@ class CTS(Converter):
     def __init__(self, session):
         super().__init__(session)
         # service URLs
-        self.services = {'CTS': 'https://cts.fiehnlab.ucdavis.edu/rest/convert/',
-                         'CTS_compound': 'http://cts.fiehnlab.ucdavis.edu/service/compound/'
-                         }
+        self.endpoints = {'CTS': 'https://cts.fiehnlab.ucdavis.edu/rest/convert/',
+                          'CTS_compound': 'http://cts.fiehnlab.ucdavis.edu/service/compound/'
+                          }
 
         # generate top level methods defining allowed conversions
         conversions = [('inchikey', 'inchi', 'from_inchikey'),

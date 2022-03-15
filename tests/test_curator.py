@@ -19,7 +19,7 @@ def test_fix_cas_number():
 ])
 def test_filter_invalid_metadata(metadata, validated_metadata, warnings_size):
     warning = LogWarning(dict())
-    job = Job(('smiles', 'inchi', 'service'))
+    job = Job(('smiles', 'inchi', 'converter'))
     curator = Curator()
     assert curator.filter_invalid_metadata(metadata, warning, job) == validated_metadata
     assert len(warning.warnings) == warnings_size

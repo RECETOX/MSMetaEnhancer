@@ -1,7 +1,7 @@
 import asyncio
 import pytest
 
-from MSMetaEnhancer.libs.services.CIR import CIR
+from MSMetaEnhancer.libs.converters.web import CIR
 from tests.utils import wrap_with_session
 
 

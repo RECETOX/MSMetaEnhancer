@@ -1,12 +1,12 @@
 import asyncio
 
-from MSMetaEnhancer.libs.services.Converter import Converter
+from MSMetaEnhancer.libs.converters.web.WebConverter import WebConverter
 from frozendict import frozendict
 
 
-class IDSM(Converter):
+class IDSM(WebConverter):
     """
-    IDSM provides unique source of fast similarity and structural search functionality 
+    IDSM provides unique source of fast similarity and structural search functionality
     in databases such as ChEMBL, ChEBI or PubChem.
     Currently, PubChem fragment is supported.
 
@@ -15,7 +15,7 @@ class IDSM(Converter):
     def __init__(self, session):
         super().__init__(session)
         # service URLs
-        self.services = {'IDSM': 'https://idsm.elixir-czech.cz/sparql/endpoint/idsm'}
+        self.endpoints = {'IDSM': 'https://idsm.elixir-czech.cz/sparql/endpoint/idsm'}
         self.header = frozendict({"Accept": "application/sparql-results+json"})
 
         self.attributes = [{'code': 'inchi', 'label': 'CHEMINF_000396'},
