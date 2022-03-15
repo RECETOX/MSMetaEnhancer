@@ -21,3 +21,11 @@ Spectra
    :members:
    :undoc-members:
    :show-inheritance:
+
+Converter
+---------
+
+.. automodule:: MSMetaEnhancer.libs.Converter
+   :members:
+   :undoc-members:
+   :show-inheritance:

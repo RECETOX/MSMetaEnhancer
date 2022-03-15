@@ -6,7 +6,7 @@ class TargetAttributeNotRetrieved(Exception):
     pass
 
 
-class UnknownService(Exception):
+class UnknownConverter(Exception):
     pass
 
 

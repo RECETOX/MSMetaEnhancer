@@ -1,13 +1,13 @@
 import json
 
-from MSMetaEnhancer.libs.services.Converter import Converter
+from MSMetaEnhancer.libs.converters.web.WebConverter import WebConverter
 from frozendict import frozendict
 
 from MSMetaEnhancer.libs.utils.Errors import UnknownResponse
 from MSMetaEnhancer.libs.utils.Throttler import Throttler
 
 
-class PubChem(Converter):
+class PubChem(WebConverter):
     """
     PubChem is the world's largest collection of freely accessible chemical information.
 
@@ -16,7 +16,7 @@ class PubChem(Converter):
     def __init__(self, session):
         super().__init__(session)
         # service URLs
-        self.services = {'PubChem': 'https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/'}
+        self.endpoints = {'PubChem': 'https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/'}
 
         self.attributes = [{'code': 'inchi', 'label': 'InChI', 'extra': None},
                            {'code': 'inchikey', 'label': 'InChIKey', 'extra': None},
@@ -115,7 +115,7 @@ class PubChem(Converter):
             Parse PubChem header regarding Dynamic Request Throttling.
 
             It has the following form of three indicators:
-            Request Count status: Green (0%), Request Time status: Green (0%), Service status: Green (20%)
+            Request Count status: Green (0%), Request Time status: Green (0%), WebConverter status: Green (20%)
 
             :param header: given PubChem header with Throttling info
             :return: most critical indicator value (maximum of three) with possible complete blacklist indicator
@@ -154,5 +154,3 @@ class PubChem(Converter):
                     else:
                         result[att['code']] = prop['value']['sval']
         return result
-
-

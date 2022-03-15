@@ -54,7 +54,7 @@ def test_execute_job_with_cache():
     job = Job(('smiles', 'formula', 'CTS'))
     job.validate = mock.Mock(return_value=(cts, None))
 
-    cache = {job.service: {'formula': '$FORMULA'}}
+    cache = {job.converter: {'formula': '$FORMULA'}}
 
     annotator = Annotator({'CTS': cts})
     annotator.curator = curator

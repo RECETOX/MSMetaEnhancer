@@ -5,13 +5,13 @@ import pytest
 from aiohttp import ServerDisconnectedError
 from aiohttp import web
 
-from MSMetaEnhancer.libs.services.Converter import Converter
+from MSMetaEnhancer.libs.converters.web.WebConverter import WebConverter
 from MSMetaEnhancer.libs.utils.Errors import TargetAttributeNotRetrieved, UnknownResponse
 
 
 def test_query_the_service():
-    converter = Converter(mock.Mock())
-    converter.services = {'CTS': 'what a service'}
+    converter = WebConverter(mock.Mock())
+    converter.endpoints = {'CTS': 'what a converter'}
     converter.loop_request = mock.AsyncMock(return_value={'smiles': '$SMILES'})
 
     result = asyncio.run(converter.query_the_service('CTS', 'arg'))
@@ -43,7 +43,7 @@ async def test_loop_request(test_client):
         return app
 
     session = await test_client(create_app)
-    converter = Converter(session)
+    converter = WebConverter(session)
     converter.process_request = mock.AsyncMock(return_value=response)
 
     result = await converter.loop_request('/', 'GET', None, None)
@@ -60,14 +60,14 @@ async def test_loop_request_fail(test_client):
         return app
 
     session = await test_client(create_app)
-    converter = Converter(session)
+    converter = WebConverter(session)
 
     with pytest.raises(UnknownResponse):
         await converter.loop_request('/', 'GET', None, None)
 
 
 def test_process_request():
-    converter = Converter(mock.Mock())
+    converter = WebConverter(mock.Mock())
     converter.loop_request = mock.AsyncMock(return_value=None)
 
     response = mock.AsyncMock()
@@ -84,7 +84,7 @@ def test_process_request():
     [False, 503]
 ])
 def test_process_request_exception(ok, status):
-    converter = Converter(mock.Mock())
+    converter = WebConverter(mock.Mock())
     converter.loop_request = mock.AsyncMock(return_value=None)
 
     response = mock.AsyncMock()
@@ -97,7 +97,7 @@ def test_process_request_exception(ok, status):
 
 
 def test_convert():
-    converter = Converter(mock.Mock())
+    converter = WebConverter(mock.Mock())
     converter.A_to_B = mock.AsyncMock()
     converter.A_to_B.side_effect = ['value']
 
@@ -118,8 +118,8 @@ async def test_lru_cache(test_client):
         return app
 
     session = await test_client(create_app)
-    converter = Converter(session)
-    converter.services = {'/': '/'}
+    converter = WebConverter(session)
+    converter.endpoints = {'/': '/'}
     converter.loop_request = mock.AsyncMock(return_value=(1, 2, 3))
 
     converter.query_the_service.cache_clear()

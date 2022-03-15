@@ -37,3 +37,11 @@ Throttler
    :members:
    :undoc-members:
    :show-inheritance:
+
+ConverterBuilder
+----------------
+
+.. automodule:: MSMetaEnhancer.libs.utils.ConverterBuilder
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -3,7 +3,7 @@ from io import StringIO
 import pandas as pd
 import pytest
 
-from MSMetaEnhancer.libs.services.NLM import NLM
+from MSMetaEnhancer.libs.converters.web import NLM
 from tests.utils import wrap_with_session
 
 

@@ -6,8 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [dev] - unreleased
 ### Added
+* ComputeConverter class for conversions based on computation instead of querying 
+* ConverterBuilder which validates and initialises converters
 * reintroduced PubChem service using direct REST web interface
 ### Changed
+* reorganised Converter class to support computation approach [#75](https://github.com/RECETOX/MSMetaEnhancer/issues/75)
 * renamed PubChem service to IDSM to avoid confusion
 ### Removed
 
