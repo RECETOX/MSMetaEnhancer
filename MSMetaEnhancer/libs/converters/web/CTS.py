@@ -26,6 +26,30 @@ class CTS(WebConverter):
 
     # top level methods defining allowed conversions
 
+    async def hmdbid_to_inchi(self, hmdbid):
+        """
+        Convert HMDB ID number to InChi using CTS web service
+
+        :param hmdbid: given HMDB ID
+        :return: obtained InChi
+        """
+        args = f'Human%20Metabolome%20Database/InChI%20Code/{hmdbid}'
+        response = await self.query_the_service('CTS', args)
+        if response:
+            return self.parse_single_response(response, 'inchi')
+
+    async def casno_to_inchi(self, cas_number):
+        """
+        Convert CAS number to InChi using CTS web service
+
+        :param cas_number: given CAS number
+        :return: obtained InChi
+        """
+        args = f'CAS/InChI%20Code/{cas_number}'
+        response = await self.query_the_service('CTS', args)
+        if response:
+            return self.parse_single_response(response, 'inchi')
+
     async def casno_to_inchikey(self, cas_number):
         """
         Convert CAS number to InChiKey using CTS web service
@@ -38,7 +62,7 @@ class CTS(WebConverter):
         args = f'CAS/InChIKey/{cas_number}'
         response = await self.query_the_service('CTS', args)
         if response:
-            return self.parse_inchikey(response)
+            return self.parse_single_response(response, 'inchikey')
 
     async def compound_name_to_inchikey(self, name):
         """
@@ -50,7 +74,7 @@ class CTS(WebConverter):
         args = f'Chemical%20Name/InChIKey/{name}'
         response = await self.query_the_service('CTS', args)
         if response:
-            return self.parse_inchikey(response)
+            return self.parse_single_response(response, 'inchikey')
 
     async def from_inchikey(self, inchikey):
         """
@@ -64,16 +88,17 @@ class CTS(WebConverter):
         if response:
             return self.parse_attributes(response)
 
-    def parse_inchikey(self, response):
+    def parse_single_response(self, response, attribute):
         """
         Parse InChiKey attribute obtained from given key.
 
         :param response: CTS conversion response to given key
+        :param attribute: expected attribute name in the response
         :return: parsed InChiKey
         """
         response_json = json.loads(response)
         if len(response_json[0]['results']) != 0:
-            return {'inchikey': response_json[0]['results'][0]}
+            return {attribute: response_json[0]['results'][0]}
 
     def parse_attributes(self, response):
         """
