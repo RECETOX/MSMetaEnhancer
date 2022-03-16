@@ -65,6 +65,7 @@ Create your development environment using the provided [script](conda/environmen
 
 We appreciate contributions - feel free to open an issue on our repository, create your own fork, work on the problem and post a PR. 
 Please add your contributions to the [changelog](CHANGELOG.md) and to adhere to the [versioning](https://semver.org/spec/v2.0.0.html).
+For more information see [here](CONTRIBUTING.md).
 
 #### Testing
 
