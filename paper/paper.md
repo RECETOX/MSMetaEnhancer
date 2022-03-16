@@ -48,7 +48,7 @@ Moreso, manual curation and addition of metadata while creating a compound libra
 There are several packages within Python and R ecosystems which support querying external databases. 
 For example, there are R packages that provide an interface to PubChem [@guha2016; @cao2008chemminer], and a package with interface to wikidata [@keys2021]. 
 Then, there are packages unifying several sources -- `webchem` [@szocs2020webchem] allows to automatically query chemical data from several web sources (similar to MSMetaEnhancer) and to interconvert between identifiers.
-The `MetaFetcheR`[@yones2021metafetcher] package focuses on database-specific identifiers and links metabolite data from several small-compound databases (e.g., PubChem, the Human Metabolome Database (HMDB)[@Wishart2022]), trying to resolve inconsistencies.
+The `MetaFetcheR` [@yones2021metafetcher] package focuses on database-specific identifiers and links metabolite data from several small-compound databases (e.g., PubChem, the Human Metabolome Database (HMDB) [@Wishart2022]), trying to resolve inconsistencies.
 Similarly, RaMP cross-references multiple database specific identifiers via their internal RaMP_ID to integrate various pathway and compound databases [@Zhang2018c].
 BridgeDb is an ELIXIR project providing mapping functionality of different identifiers present in HMDB (e.g., PubChemCID, ChEBI and InChIKey), gene information and several pathway databases in an organism centric manner, exposing a Java and REST API [@VanIersel2010; @Willighagen2022].
 
@@ -67,7 +67,7 @@ The supported services include, among others, CIR, CTS, ChemIDplus, and IDSM.
 To improve the performance of the tool, we use services with high-throughput APIs when available (e.g. IDSM [@galgonek2021idsm], which can be used to access PubChem database).
 The supported metadata attributes include InChI, InChIKey, SMILES, IUPAC chemical name, chemical formula, CAS number, and others. 
 The particular available conversions can be found in the documentation via https://msmetaenhancer.readthedocs.io/ and are open to extension.
-Finally, the obtained metadata are validated to ensure their correct form (currently, matchms [@Huber2020] validators are employed for this task).
+Finally, the obtained metadata are validated to ensure their correct form (currently, `matchms` validators are employed for this task).
 
 ![Schematic overview of MSMetaEnhancer annotation workflow. \label{fig:scheme}](scheme.png)
 
