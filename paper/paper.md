@@ -32,8 +32,8 @@ MSMetaEnhancer is a Python software package for the metadata enrichment of recor
 Those contain spectral information such as peak mass to charge (m/z) ratios and intensities, alongside chemical & structural metadata information.
 The package uses matchms [@Huber2020] for data IO and supports the open, text-based `.msp` format.
 It annotates given mass spectra records in the library file by adding missing metadata such as SMILES, InChI, and CAS numbers to the individual entries.
-The package retrieves the respective information by querying several external databases using existing metadata (e.g., SMILES or CAS number), 
-currently supporting the chemical identifier resolver (CIR), chemical translation service (CTS) [@Wohlgemuth2010], ChemIDplus [@tomasulo2002chemidplus], the Integrated Database for Small Molecules (IDSM) [@galgonek2021idsm], PubChem [@kim2021pubchem], and BridgeDB [@van2010bridgedb].
+The package retrieves the respective information by querying several external databases using existing metadata (e.g., SMILES or CAS number), converting different representations or database identifiers.
+Multiple databases and services are included, currently supporting the chemical identifier resolver (CIR), chemical translation service (CTS) [@Wohlgemuth2010], ChemIDplus [@tomasulo2002chemidplus], the Integrated Database for Small Molecules (IDSM) [@galgonek2021idsm], PubChem [@kim2021pubchem], and BridgeDB [@van2010bridgedb].
 
 # Statement of need
 
@@ -48,7 +48,7 @@ Moreso, manual curation and addition of metadata while creating a compound libra
 There are several packages within Python and R ecosystems which support querying external databases. 
 For example, there are R packages that provide an interface to PubChem [@guha2016; @cao2008chemminer], and a package with interface to wikidata [@keys2021]. 
 Then, there are packages unifying several sources -- `webchem` [@szocs2020webchem] allows to automatically query chemical data from several web sources (similar to MSMetaEnhancer) and to interconvert between identifiers.
-The `MetaFetcheR` [@yones2021metafetcher] package focuses on database-specific identifiers and links metabolite data from several small-compound databases (e.g., PubChem, the Human Metabolome Database (HMDB) [@Wishart2022]), trying to resolve inconsistencies.
+The `MetaFetcheR`[@yones2021metafetcher] package focuses on database-specific identifiers and links metabolite data from several small-compound databases (e.g., PubChem, the Human Metabolome Database (HMDB)[@Wishart2022]), trying to resolve inconsistencies.
 Similarly, RaMP cross-references multiple database specific identifiers via their internal RaMP_ID to integrate various pathway and compound databases [@Zhang2018c].
 BridgeDb is an ELIXIR project providing mapping functionality of different identifiers present in HMDB (e.g., PubChemCID, ChEBI and InChIKey), gene information and several pathway databases in an organism centric manner, exposing a Java and REST API [@VanIersel2010; @Willighagen2022].
 
@@ -56,6 +56,7 @@ On the Python side, there are packages providing direct API access for PubChem [
 PubChem's public API limits programmatic access to less than ~5 requests per second, limiting the ability of advanced users to effectively mine the database.
 
 However, to the best of our knowledge, there is no Python package connecting these sources into a single tool, allowing straightforward metadata annotation of large mass spectral libraries with various identifiers and cross-references to different databases in a user-friendly way.
+
 
 # The software package
 
