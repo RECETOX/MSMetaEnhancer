@@ -28,10 +28,10 @@ bibliography: paper.bib
 
 # Summary
 
-MSMetaEnhancer is a Python software package for the metadata enrichment of entries in spectral library files. 
+MSMetaEnhancer is a Python software package for the metadata enrichment of records in mass spectral library files. 
+Those contain spectral information such as peak mass to charge (m/z) ratios and intensities, alongside chemical & structural metadata information.
 The package uses matchms [@Huber2020] for data IO and supports the open, text-based `.msp` format.
-Entries contain mass spectral information such as peak mass to charge (m/z) ratios and intensities, alongside metadata information.
-It annotates given mass spectra in the library file by adding missing metadata such as SMILES, InChI, and CAS numbers to the individual entries.
+It annotates given mass spectra records in the library file by adding missing metadata such as SMILES, InChI, and CAS numbers to the individual entries.
 The package retrieves the respective information by querying several external databases using existing metadata (e.g., SMILES or CAS number), 
 currently supporting the chemical identifier resolver (CIR), chemical translation service (CTS) [@Wohlgemuth2010], ChemIDplus [@tomasulo2002chemidplus], the Integrated Database for Small Molecules (IDSM) [@galgonek2021idsm], PubChem [@kim2021pubchem], and BridgeDB [@van2010bridgedb].
 
