@@ -8,7 +8,7 @@ authors:
   - name: Matej Troják
     orcid: 0000-0003-0841-2707
     affiliation: 1
-  - name: Helge Hecht
+  - name: Helge Hecht^[corresponding author]
     orcid: 0000-0001-6744-996X
     affiliation: 1
   - name: Martin Čech
@@ -28,8 +28,8 @@ bibliography: paper.bib
 
 # Summary
 
-MSMetaEnhancer is a Python software package for the metadata enrichment of records in mass spectral library files. 
-Those contain spectral information such as peak mass to charge (m/z) ratios and intensities, alongside chemical & structural metadata information.
+MSMetaEnhancer is a Python software package for the metadata enrichment of records in mass spectral library files commonly used as reference for chemical identification via mass spectrometry.
+Each record contains spectral information i.e. peak mass to charge ratio (m/z) and intensities, alongside chemical & structural metadata e.g. identifiers.
 The package uses matchms [@Huber2020] for data IO and supports the open, text-based `.msp` format.
 It annotates given mass spectra records in the library file by adding missing metadata such as SMILES, InChI, and CAS numbers to the individual entries.
 The package retrieves the respective information by querying several external databases using existing metadata (e.g., SMILES or CAS number), converting different representations or database identifiers.
@@ -38,10 +38,10 @@ Multiple databases and services are included, currently supporting the chemical 
 # Statement of need
 
 Mass spectra stored in a library need to be enriched with metadata (e.g chemical formula, SMILES code, InChI, the origin of the spectrum, etc.) to (1) combine spectral and structural information, (2) make the identification process more robust and reproducible and (3) leverage the interoperability capabilities of chemical databases [@Wallace2017].
-While this metadata is mostly accessible from public chemical databases, they are not always present in mass spectral libraries. 
-Therefore, the data needs to be post-processed and appropriate metadata gathered from reliable sources.
+While this metadata is mostly accessible from public chemical databases, they are not always present in mass spectral library records.
+Therefore, the data needs to be post-processed via enhancement with metadata.
 Such a process usually cannot be fully automated, and assistance from the user is required to specify particular annotation steps and sources [@Ausloos1999].
-Moreso, manual curation and addition of metadata while creating a compound library is labour intensive and error-prone [@Price2021].
+Moreso, manual curation and addition of metadata while creating a compound library is labour intensive and error-prone [@Stravs2013;@Price2021].
 
 # State of the field
 
@@ -60,10 +60,9 @@ However, to the best of our knowledge, there is no Python package connecting the
 
 # The software package
 
-MSMetaEnhancer is an annotation tool for mass spectra files.
+MSMetaEnhancer is is tool to enhance the metadata content of records in mass spectral library files.
 It takes as input a single `.msp` file with multiple mass spectra records and a list of annotation steps.
 These steps consist of specifying what service should be used to obtain a particular metadata attribute based on another already existing attribute.
-The supported services include, among others, CIR, CTS, ChemIDplus, and IDSM.
 To improve the performance of the tool, we use services with high-throughput APIs when available (e.g. IDSM [@galgonek2021idsm], which can be used to access PubChem database).
 The supported metadata attributes include InChI, InChIKey, SMILES, IUPAC chemical name, chemical formula, CAS number, and others. 
 The particular available conversions can be found in the documentation via https://msmetaenhancer.readthedocs.io/ and are open to extension.
@@ -72,7 +71,7 @@ Finally, the obtained metadata are validated to ensure their correct form (curre
 ![Schematic overview of MSMetaEnhancer annotation workflow. \label{fig:scheme}](scheme.png)
 
 The tool processes the spectral library by iteratively executing all steps for each entry until no new metadata is found. 
-This happens for each spectra record in the provided file. 
+This happens for each spectral record in the provided file. 
 Since it takes some non-trivial time for the services to respond to a query, this task is suitable for the asynchronous approach, making the tool computationally efficient.
 Additionally, results containing all metadata related to a compound are cached, making access to all available metadata for a compound result in only a single query.
 For services with limited access rate (i.e., PubChem), we implemented a throttling mechanism -- maximizing performance while mitigating restrictions from the requested webservice.
