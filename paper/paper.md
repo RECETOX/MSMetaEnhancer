@@ -33,14 +33,14 @@ Those contain spectral information such as peak mass to charge (m/z) ratios and 
 The package uses matchms [@Huber2020] for data IO and supports the open, text-based `.msp` format.
 It annotates given mass spectra records in the library file by adding missing metadata such as SMILES, InChI, and CAS numbers to the individual entries.
 The package retrieves the respective information by querying several external databases using existing metadata (e.g., SMILES or CAS number), converting different representations or database identifiers.
-Multiple databases and services are included, currently supporting the chemical identifier resolver (CIR), chemical translation service (CTS) [@Wohlgemuth2010], ChemIDplus [@tomasulo2002chemidplus], the Integrated Database for Small Molecules (IDSM) [@galgonek2021idsm], PubChem [@kim2021pubchem], and BridgeDB [@van2010bridgedb].
+Multiple databases and services are included, currently supporting the chemical identifier resolver (CIR), chemical translation service (CTS) [@Wohlgemuth2010], ChemIDplus [@tomasulo2002chemidplus], the Integrated Database for Small Molecules (IDSM) [@galgonek2021idsm], PubChem [@kim2021pubchem], and BridgeDB [@VanIersel2010].
 
 # Statement of need
 
 Mass spectra stored in a library need to be enriched with metadata (e.g chemical formula, SMILES code, InChI, the origin of the spectrum, etc.) to (1) combine spectral and structural information, (2) make the identification process more robust and reproducible and (3) leverage the interoperability capabilities of chemical databases [@Wallace2017].
 While this metadata is mostly accessible from public chemical databases, they are not always present in mass spectral libraries. 
 Therefore, the data needs to be post-processed and appropriate metadata gathered from reliable sources.
-Such a process usually cannot be fully automated, and assistance from the user is required to specify particular annotation steps and sources.
+Such a process usually cannot be fully automated, and assistance from the user is required to specify particular annotation steps and sources [@Ausloos1999].
 Moreso, manual curation and addition of metadata while creating a compound library is labour intensive and error-prone [@Price2021].
 
 # State of the field
