@@ -6,14 +6,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [dev] - unreleased
 ### Added
-* BridgeDB supporting conversion of several database IDs
-* ComputeConverter class for conversions based on computation instead of querying 
-* ConverterBuilder which validates and initialises converters
-* reintroduced PubChem service using direct REST web interface
+### Changed
+### Removed
+
+## [0.2.0] - 2022-03-19
+### Added
+* BridgeDB supporting conversion of several database IDs [#76](https://github.com/RECETOX/MSMetaEnhancer/issues/76)
+* ComputeConverter class for conversions based on computation instead of querying [#75](https://github.com/RECETOX/MSMetaEnhancer/issues/75)
+* ConverterBuilder which validates and initialises converters [#75](https://github.com/RECETOX/MSMetaEnhancer/issues/75)
+* reintroduced PubChem service using direct REST web interface [#76](https://github.com/RECETOX/MSMetaEnhancer/issues/76)
 ### Changed
 * reorganised Converter class to support computation approach [#75](https://github.com/RECETOX/MSMetaEnhancer/issues/75)
-* renamed PubChem service to IDSM to avoid confusion
-### Removed
+* renamed PubChem service to IDSM to avoid confusion [#73](https://github.com/RECETOX/MSMetaEnhancer/issues/73)
 
 ## [0.1.3] - 2022-02-15
 ### Added
