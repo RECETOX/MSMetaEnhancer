@@ -34,10 +34,11 @@ The package uses matchms [@Huber2020] for data IO and supports the open, text-ba
 It annotates given mass spectra records in the library file by adding missing metadata such as SMILES, InChI, and CAS numbers to the individual entries.
 The package retrieves the respective information by querying several external databases using existing metadata (e.g., SMILES or CAS number), converting different representations or database identifiers.
 Multiple databases and services are included, currently supporting the chemical identifier resolver (CIR), chemical translation service (CTS) [@Wohlgemuth2010], ChemIDplus [@tomasulo2002chemidplus], the Integrated Database for Small Molecules (IDSM) [@galgonek2021idsm], PubChem [@kim2021pubchem], and BridgeDB [@VanIersel2010].
+Additionally, instead of querying external databases, computing the identifiers is also supported (e.g. molecular weight from SMILES).
 
 # Statement of need
 
-Mass spectra stored in a library need to be enriched with metadata (e.g chemical formula, SMILES code, InChI, the origin of the spectrum, etc.) to (1) combine spectral and structural information, (2) make the identification process more robust and reproducible and (3) leverage the interoperability capabilities of chemical databases [@Wallace2017].
+Mass spectra stored in a library need to be enriched with metadata (e.g chemical formula, SMILES code, InChI, the origin of the spectrum, etc.) to (1) combine spectral and structural information, (2) make the identification process more robust and reproducible, and (3) leverage the interoperability capabilities of chemical databases [@Wallace2017].
 While this metadata is mostly accessible from public chemical databases, they are not always present in mass spectral library records.
 Therefore, the data needs to be post-processed via enhancement with metadata.
 Such a process usually cannot be fully automated, and assistance from the user is required to specify particular annotation steps and sources [@Ausloos1999].
@@ -60,7 +61,7 @@ However, to the best of our knowledge, there is no Python package connecting the
 
 # The software package
 
-MSMetaEnhancer is is tool to enhance the metadata content of records in mass spectral library files.
+MSMetaEnhancer is a tool to enhance the metadata content of records in mass spectral library files.
 It takes as input a single `.msp` file with multiple mass spectra records and a list of annotation steps.
 These steps consist of specifying what service should be used to obtain a particular metadata attribute based on another already existing attribute.
 To improve the performance of the tool, we use services with high-throughput APIs when available (e.g. IDSM [@galgonek2021idsm], which can be used to access PubChem database).
@@ -75,6 +76,8 @@ This happens for each spectral record in the provided file.
 Since it takes some non-trivial time for the services to respond to a query, this task is suitable for the asynchronous approach, making the tool computationally efficient.
 Additionally, results containing all metadata related to a compound are cached, making access to all available metadata for a compound result in only a single query.
 For services with limited access rate (i.e., PubChem), we implemented a throttling mechanism -- maximizing performance while mitigating restrictions from the requested webservice.
+Besides querying external services, we also support converters to compute identifiers based on existing ones.
+For demonstration, we employed computation of molecular weight from SMILES using RDKit [@landrum2006rdkit].
 Any issues regarding the annotation process (such as the absence of target data or unavailability of a service) are recorded in a detailed log file, which can be specified as an optional output of the tool.
 
 To improve the usability of the tool, a Galaxy [@galaxy] wrapper was created to provide a user-friendly interface and a simple way of reproducible data processing and analysis.
