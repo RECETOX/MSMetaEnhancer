@@ -67,23 +67,24 @@ class Application:
             annotator = Annotator(converters)
 
             # start converters status checker and wait for first status
-            monitor = Monitor(web_converters)
-            monitor.start()
-            monitor.first_check.wait()
+            try:
+                monitor = Monitor(web_converters)
+                monitor.start()
+                monitor.first_check.wait()
 
-            # create all possible jobs if not given
-            if not jobs:
-                jobs = []
-                for converter in converters.values():
-                    jobs += converter.get_conversion_functions()
-            jobs = convert_to_jobs(jobs)
+                # create all possible jobs if not given
+                if not jobs:
+                    jobs = []
+                    for converter in converters.values():
+                        jobs += converter.get_conversion_functions()
+                jobs = convert_to_jobs(jobs)
 
-            logger.set_target_attributes(jobs, len(self.spectra.spectrums))
+                logger.set_target_attributes(jobs, len(self.spectra.spectrums))
 
-            results = await asyncio.gather(*[annotator.annotate(spectra, jobs, repeat)
-                                             for spectra in self.spectra.spectrums])
-
-            monitor.join()
+                results = await asyncio.gather(*[annotator.annotate(spectra, jobs, repeat)
+                                                 for spectra in self.spectra.spectrums])
+            finally:
+                monitor.join()
 
         self.spectra.spectrums = results
         logger.write_log(self.log_level, self.log_file)
