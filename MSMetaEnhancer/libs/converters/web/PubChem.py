@@ -177,15 +177,21 @@ class PubChem(WebConverter):
         response_json = json.loads(response)
         result = dict()
 
-        result['pubchemid'] = response_json['PC_Compounds'][0]['id']['id']['cid']
+        if 'PC_Compounds' in response_json:
+            if len(response_json['PC_Compounds']) > 0:
+                first_hit = response_json['PC_Compounds'][0]
 
-        for prop in response_json['PC_Compounds'][0]['props']:
-            label = prop['urn']['label']
-            for att in self.attributes:
-                if label == att['label']:
-                    if att['extra']:
-                        if prop['urn']['name'] == att['extra']:
-                            result[att['code']] = prop['value']['sval']
-                    else:
-                        result[att['code']] = prop['value']['sval']
+                pubchemid = first_hit.get('id', {}).get('id', {}).get('cid', None)
+                if pubchemid:
+                    result['pubchemid'] = pubchemid
+
+                for prop in first_hit.get('props', {}):
+                    label = prop['urn']['label']
+                    for att in self.attributes:
+                        if label == att['label']:
+                            if att['extra']:
+                                if prop['urn']['name'] == att['extra']:
+                                    result[att['code']] = prop['value']['sval']
+                            else:
+                                result[att['code']] = prop['value']['sval']
         return result
