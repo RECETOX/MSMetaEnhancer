@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [dev] - unreleased
 ### Added
 ### Changed
+* improved parsing of PubChem responses [#84](https://github.com/RECETOX/MSMetaEnhancer/issues/84)
 ### Removed
 
 ## [0.2.0] - 2022-03-19

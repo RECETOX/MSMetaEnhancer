@@ -36,3 +36,14 @@ def test_get_conversions():
     loop.close()
 
     assert ('inchi', 'iupac_name', 'PubChem') in jobs
+
+
+@pytest.mark.parametrize('response, expected', [
+    [{"PC_Compounds": [{"id": {"id": {"cid": "123"}},
+                        "props": [{"urn": {"label": "InChI"}, "value": {"sval": "random_inchi"}}]}]},
+     {"pubchemid": "123", "inchi": "random_inchi"}],
+    [{"PC_Compounds": [{"id": {}, "props": []}]}, dict()]
+])
+def test_parse_attributes(response, expected):
+    actual = PubChem(None).parse_attributes(json.dumps(response))
+    assert actual == expected
