@@ -49,7 +49,7 @@ class Application:
         """
         self.spectra = Curator().curate_spectra(self.spectra)
 
-    async def annotate_spectra(self, converters, jobs=None, repeat=False):
+    async def annotate_spectra(self, converters, jobs=None, repeat=False, monitor=None, annotator=None):
         """
         Annotates current Spectra data by specified jobs.
 
@@ -59,16 +59,24 @@ class Application:
         :param converters: given list of converters names
         :param jobs: list specifying jobs to be executed
         :param repeat: if some metadata was added, all jobs are executed again
+        :param monitor: given Monitor object to observe status of services
+        :param annotator: given Annotator object to run the actual annotation
         """
         async with aiohttp.ClientSession() as session:
             builder = ConverterBuilder()
             builder.validate_converters(converters)
             converters, web_converters = builder.build_converters(session, converters)
-            annotator = Annotator(converters)
+
+            if annotator is None:
+                annotator = Annotator()
+            annotator.set_converters(converters)
+
+            if monitor is None:
+                monitor = Monitor()
+            monitor.set_converters(web_converters)
 
             # start converters status checker and wait for first status
             try:
-                monitor = Monitor(web_converters)
                 monitor.start()
                 monitor.first_check.wait()
 

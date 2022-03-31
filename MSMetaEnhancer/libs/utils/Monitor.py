@@ -8,11 +8,14 @@ class Monitor(Thread):
     """
     Class to periodically monitor status of used web.
     """
-    def __init__(self, converters):
+    def __init__(self):
         super(Monitor, self).__init__()
-        self.converters = converters
+        self.converters = None
         self.stop_request = Event()
         self.first_check = Event()
+
+    def set_converters(self, converters):
+        self.converters = converters
 
     @staticmethod
     def get_base_url(converter):
