@@ -10,7 +10,7 @@ class Monitor(Thread):
     """
     def __init__(self):
         super(Monitor, self).__init__()
-        self.converters = None
+        self.converters = dict()
         self.stop_request = Event()
         self.first_check = Event()
 

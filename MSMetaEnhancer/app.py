@@ -49,7 +49,7 @@ class Application:
         """
         self.spectra = Curator().curate_spectra(self.spectra)
 
-    async def annotate_spectra(self, converters, jobs=None, repeat=False, monitor=None, annotator=None):
+    async def annotate_spectra(self, converters, jobs=None, repeat=False, monitor=Monitor(), annotator=Annotator()):
         """
         Annotates current Spectra data by specified jobs.
 
@@ -67,12 +67,7 @@ class Application:
             builder.validate_converters(converters)
             converters, web_converters = builder.build_converters(session, converters)
 
-            if annotator is None:
-                annotator = Annotator()
             annotator.set_converters(converters)
-
-            if monitor is None:
-                monitor = Monitor()
             monitor.set_converters(web_converters)
 
             # start converters status checker and wait for first status
