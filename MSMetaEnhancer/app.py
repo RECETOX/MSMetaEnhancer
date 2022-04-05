@@ -49,7 +49,7 @@ class Application:
         """
         self.spectra = Curator().curate_spectra(self.spectra)
 
-    async def annotate_spectra(self, converters, jobs=None, repeat=False):
+    async def annotate_spectra(self, converters, jobs=None, repeat=False, monitor=Monitor(), annotator=Annotator()):
         """
         Annotates current Spectra data by specified jobs.
 
@@ -59,31 +59,35 @@ class Application:
         :param converters: given list of converters names
         :param jobs: list specifying jobs to be executed
         :param repeat: if some metadata was added, all jobs are executed again
+        :param monitor: given Monitor object to observe status of services
+        :param annotator: given Annotator object to run the actual annotation
         """
         async with aiohttp.ClientSession() as session:
             builder = ConverterBuilder()
             builder.validate_converters(converters)
             converters, web_converters = builder.build_converters(session, converters)
-            annotator = Annotator(converters)
+
+            annotator.set_converters(converters)
+            monitor.set_converters(web_converters)
 
             # start converters status checker and wait for first status
-            monitor = Monitor(web_converters)
-            monitor.start()
-            monitor.first_check.wait()
+            try:
+                monitor.start()
+                monitor.first_check.wait()
 
-            # create all possible jobs if not given
-            if not jobs:
-                jobs = []
-                for converter in converters.values():
-                    jobs += converter.get_conversion_functions()
-            jobs = convert_to_jobs(jobs)
+                # create all possible jobs if not given
+                if not jobs:
+                    jobs = []
+                    for converter in converters.values():
+                        jobs += converter.get_conversion_functions()
+                jobs = convert_to_jobs(jobs)
 
-            logger.set_target_attributes(jobs, len(self.spectra.spectrums))
+                logger.set_target_attributes(jobs, len(self.spectra.spectrums))
 
-            results = await asyncio.gather(*[annotator.annotate(spectra, jobs, repeat)
-                                             for spectra in self.spectra.spectrums])
-
-            monitor.join()
+                results = await asyncio.gather(*[annotator.annotate(spectra, jobs, repeat)
+                                                 for spectra in self.spectra.spectrums])
+            finally:
+                monitor.join()
 
         self.spectra.spectrums = results
         logger.write_log(self.log_level, self.log_file)

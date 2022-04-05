@@ -9,9 +9,12 @@ class Annotator:
     """
     Annotator is responsible for annotation process of single spectra.
     """
-    def __init__(self, converters):
-        self.converters = converters
+    def __init__(self):
+        self.converters = dict()
         self.curator = Curator()
+
+    def set_converters(self, converters):
+        self.converters = converters
 
     async def annotate(self, spectra, jobs, repeat=False):
         """

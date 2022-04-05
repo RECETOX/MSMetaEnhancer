@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [dev] - unreleased
 ### Added
+* try-finally block to ensure the Monitor thread is always terminated [#86](https://github.com/RECETOX/MSMetaEnhancer/issues/86)
 ### Changed
 * improved parsing of PubChem responses [#84](https://github.com/RECETOX/MSMetaEnhancer/issues/84)
 ### Removed

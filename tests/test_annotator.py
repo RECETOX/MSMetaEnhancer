@@ -18,7 +18,8 @@ def test_annotate(data, expected, repeat, mocked):
     jobs = [Job(('inchi', 'smiles', 'IDSM')),
             Job(('name', 'inchi', 'IDSM'))]
 
-    annotator = Annotator(dict())
+    annotator = Annotator()
+    annotator.set_converters(dict())
     annotator.execute_job_with_cache = mock.AsyncMock()
     annotator.execute_job_with_cache.side_effect = mocked
 
@@ -41,7 +42,8 @@ def test_execute_job_with_cache():
     job = Job(('inchi', 'smiles', 'IDSM'))
     job.validate = mock.Mock(return_value=(idsm, None))
 
-    annotator = Annotator({'IDSM': idsm})
+    annotator = Annotator()
+    annotator.set_converters({'IDSM': idsm})
     annotator.curator = curator
     metadata, cache = asyncio.run(annotator.execute_job_with_cache(job, {'inchi': '$InChi'}, dict(), warning))
     assert metadata == {'inchi': '$InChi', 'smiles': '$SMILES'}
@@ -56,7 +58,8 @@ def test_execute_job_with_cache():
 
     cache = {job.converter: {'formula': '$FORMULA'}}
 
-    annotator = Annotator({'CTS': cts})
+    annotator = Annotator()
+    annotator.set_converters({'CTS': cts})
     annotator.curator = curator
     metadata, cache = asyncio.run(annotator.execute_job_with_cache(job, {'smiles': '$SMILES'}, cache, warning))
     assert metadata == {'smiles': '$SMILES', 'formula': '$FORMULA'}
@@ -66,7 +69,8 @@ def test_execute_job_with_cache():
     cir = mock.Mock()
     cir.convert = mock.AsyncMock(return_value=dict())
 
-    annotator = Annotator({'CIR': cir})
+    annotator = Annotator()
+    annotator.set_converters({'CIR': cir})
     annotator.curator = curator
 
     with pytest.raises(TargetAttributeNotRetrieved):
