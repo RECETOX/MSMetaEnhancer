@@ -1,7 +1,7 @@
 from MSMetaEnhancer.libs.Curator import Curator
 from MSMetaEnhancer.libs.utils import logger
 from MSMetaEnhancer.libs.utils.Errors import ConversionNotSupported, TargetAttributeNotRetrieved, \
-    SourceAttributeNotAvailable, ServiceNotAvailable, UnknownResponse
+    SourceAttributeNotAvailable, ServiceNotAvailable, UnknownResponse, UnknownError
 from MSMetaEnhancer.libs.utils.Logger import LogWarning
 
 
@@ -49,6 +49,8 @@ class Annotator:
                         warning.add_info(exc)
                     except ServiceNotAvailable:
                         warning.add_warning(ServiceNotAvailable(f'Service {job.converter} not available.'))
+                    except Exception as e:
+                        logger.error(UnknownError(e))
                 else:
                     warning.add_info(f'Conversion ({job.converter}) {job.source} -> {job.target}: Requested '
                                      f'attribute {job.target} already present in given metadata.')
