@@ -28,3 +28,7 @@ class UnknownResponse(Exception):
 
 class InvalidAttributeFormat(Exception):
     pass
+
+
+class UnknownError(Exception):
+    pass
