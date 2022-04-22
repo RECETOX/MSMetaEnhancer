@@ -43,17 +43,12 @@ class Annotator:
                         metadata, cache = await self.execute_job_with_cache(job, metadata, cache, warning)
                         if repeat:
                             added_metadata = True
-                    except (ConversionNotSupported, TargetAttributeNotRetrieved, UnknownResponse) as exc:
-                        warning.add_warning(exc)
                     except SourceAttributeNotAvailable as exc:
                         warning.add_info(exc)
-                    except ServiceNotAvailable:
-                        warning.add_warning(ServiceNotAvailable(f'Service {job.converter} not available.'))
-                    except Exception as e:
-                        logger.error(UnknownError(e))
+                    except Exception as exc:
+                        warning.add_warning(type(exc)((f'{job}:\n' + str(exc))))
                 else:
-                    warning.add_info(f'Conversion ({job.converter}) {job.source} -> {job.target}: Requested '
-                                     f'attribute {job.target} already present in given metadata.')
+                    warning.add_info(f'{job}: Requested attribute {job.target} already present in given metadata.')
 
         logger.add_warning(warning)
         logger.add_coverage_after(metadata.keys())
@@ -88,7 +83,7 @@ class Annotator:
                 if job.target in cache[job.converter]:
                     metadata[job.target] = cache[job.converter][job.target]
                 else:
-                    raise TargetAttributeNotRetrieved(f'{job} - conversion retrieved no data.')
+                    raise TargetAttributeNotRetrieved(f'No data retrieved.')
             else:
-                raise ServiceNotAvailable
+                raise ServiceNotAvailable(f'Service {job.converter} not available.')
         return metadata, cache

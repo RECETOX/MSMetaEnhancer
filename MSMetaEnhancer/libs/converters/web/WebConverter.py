@@ -24,8 +24,7 @@ class WebConverter(Converter):
         if result:
             return result
         else:
-            raise TargetAttributeNotRetrieved(f'{self.converter_name}: {source} -> {target} '
-                                              f'- conversion retrieved no data.')
+            raise TargetAttributeNotRetrieved(f'No data retrieved.')
 
     @lru_cache
     async def query_the_service(self, service, args, method='GET', data=None, headers=None):
@@ -72,7 +71,7 @@ class WebConverter(Converter):
                 logger.error(ServiceNotAvailable(f'Service {self.converter_name} '
                                                  f'temporarily unavailable, trying again...'))
                 return await self.loop_request(url, method, data, headers, depth - 1)
-            raise ServiceNotAvailable
+            raise ServiceNotAvailable(f'Service {self.converter_name} not available.')
 
     async def process_request(self, response, url, method):
         """
