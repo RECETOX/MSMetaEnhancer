@@ -1,6 +1,5 @@
 from datetime import datetime
 import logging
-from asyncio import Queue
 
 from MSMetaEnhancer.libs.utils.Metrics import Metrics
 
@@ -8,10 +7,8 @@ from MSMetaEnhancer.libs.utils.Metrics import Metrics
 class Logger:
     def __init__(self):
         self.logger = logging.getLogger('log')
-        self.logger.setLevel('INFO')
-
-        # to store logs before emitting them to a file
-        self.queue = Queue()
+        self.log_level = 'INFO'
+        self.logger.setLevel(self.log_level)
 
         # statistical values
         self.metrics = Metrics()
@@ -20,6 +17,11 @@ class Logger:
 
         # to avoid stacking the same errors
         self.last_error = ''
+
+    def setup(self, log_level, log_file):
+        self.log_level = log_level
+        self.logger.setLevel(self.LEVELS[self.log_level])
+        self.add_filehandler(log_file)
 
     def add_filehandler(self, file_name):
         if file_name is None:
@@ -55,7 +57,8 @@ class Logger:
         :param exc: given Exception
         """
         if str(exc) != self.last_error:
-            self.queue.put_nowait(f'{exc}')
+            message = self.process_log(str(exc))
+            self.logger.error(message)
             self.last_error = str(exc)
 
     def add_warning(self, warning):
@@ -65,7 +68,9 @@ class Logger:
         :param warning: LogWarning
         """
         self.last_error = ''
-        self.queue.put_nowait(warning)
+        message = self.process_log(warning)
+        if message:
+            self.logger.warning(message)
 
     def add_coverage_before(self, metadata_keys):
         """
@@ -83,53 +88,31 @@ class Logger:
         """
         self.metrics.update_after_annotation(metadata_keys)
 
-    def write_logs(self, logs):
-        """
-        Writes all logs from queue.
-        """
-        for level, log in logs:
-            if level == 'warning':
-                self.logger.warning(log)
-            else:
-                self.logger.error(log)
-
-    def process_log(self, log, log_level):
+    def process_log(self, log):
         """
         Pretty format single log and compute global attribute discovery rate
 
         :param log: given log
-        :param log_level: level of issues to be included in log
         :return: level and formatted message
         """
         if isinstance(log, LogWarning):
             message = f'Errors related to metadata:\n\n{log.metadata}\n\n'
 
-            filtered_warnings = [w['msg'] for w in log.warnings if w['level'] >= self.LEVELS[log_level]]
+            filtered_warnings = [w['msg'] for w in log.warnings if w['level'] >= self.LEVELS[self.log_level]]
             if filtered_warnings:
                 for warning in filtered_warnings:
                     message += f'{warning}\n'
             else:
                 return None
-            return 'warning', f'{message}\n'
+            return f'{message}\n'
         else:
-            return 'error', f'{log}\n'
+            return f'{log}\n'
 
-    def write_log(self, log_level, log_file):
+    def write_metrics(self):
         """
-        Preprocess all logs and write obtained statistical values.
+        Write obtained statistical values.
         """
-        logs = []
-        while not self.queue.empty():
-            log = self.queue.get_nowait()
-            processed_log = self.process_log(log, log_level)
-            if processed_log:
-                logs.append(processed_log)
-
-        self.add_filehandler(log_file)
-
-        # write obtained metrics
         self.logger.info(str(self.metrics))
-        self.write_logs(logs)
 
 
 class LogWarning:
