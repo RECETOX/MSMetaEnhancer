@@ -1,7 +1,7 @@
 from MSMetaEnhancer.libs.Curator import Curator
 from MSMetaEnhancer.libs.utils import logger
-from MSMetaEnhancer.libs.utils.Errors import ConversionNotSupported, TargetAttributeNotRetrieved, \
-    SourceAttributeNotAvailable, ServiceNotAvailable, UnknownResponse, UnknownError
+from MSMetaEnhancer.libs.utils.Errors import TargetAttributeNotRetrieved, SourceAttributeNotAvailable, \
+    ServiceNotAvailable
 from MSMetaEnhancer.libs.utils.Logger import LogWarning
 
 
