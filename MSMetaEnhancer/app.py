@@ -13,9 +13,8 @@ from MSMetaEnhancer.libs.utils.Monitor import Monitor
 
 class Application:
     def __init__(self, log_level='warning', log_file=None):
-        self.log_level = log_level
-        self.log_file = log_file
         self.spectra = Spectra()
+        logger.setup(log_level, log_file)
 
     def load_spectra(self, filename, file_format):
         """
@@ -90,4 +89,4 @@ class Application:
                 monitor.join()
 
         self.spectra.spectrums = results
-        logger.write_log(self.log_level, self.log_file)
+        logger.write_metrics()
