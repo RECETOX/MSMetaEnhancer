@@ -6,8 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [dev] - unreleased
 ### Added
+* introduced `error` level into logging [#95](https://github.com/RECETOX/MSMetaEnhancer/issues/95)
 * logging of unknown errors in Annotator [#90](https://github.com/RECETOX/MSMetaEnhancer/issues/90) 
 ### Changed
+* the log file is now written continuously during annotation and the metrics added at the end of the file [#92](https://github.com/RECETOX/MSMetaEnhancer/issues/92)
 ### Removed
 
 ## [0.2.1] - 2022-04-05

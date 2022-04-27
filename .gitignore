@@ -1,0 +1,7 @@
+**__pycache__
+MSMetaEnhancer_*.log
+.pytest_cache
+.coverage
+dist
+MSMetaEnhancer.egg-info
+.vscode

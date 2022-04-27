@@ -1,13 +1,13 @@
+from typing import Any, Union
 import aiohttp
 from asyncstdlib import lru_cache
 from multidict import MultiDict
 
 
-from aiohttp.client_exceptions import ServerDisconnectedError
+from aiohttp.client_exceptions import ServerDisconnectedError, ClientConnectorError
 from asyncio.exceptions import TimeoutError
 
 from MSMetaEnhancer.libs.Converter import Converter
-from MSMetaEnhancer.libs.utils import logger
 from MSMetaEnhancer.libs.utils.Errors import ServiceNotAvailable, UnknownResponse, TargetAttributeNotRetrieved
 
 
@@ -15,11 +15,30 @@ class WebConverter(Converter):
     """
     General class for web conversions.
     """
-    def __init__(self, session):
-        super().__init__()
-        self.session = session
+    def __init__(self, session: aiohttp.ClientSession):
+        """Constructor for Webconverter.
 
-    async def convert(self, source, target, data):
+        Args:
+            session (aiohttp.ClientSession): Session to use for web IO.
+        """
+        super().__init__()
+        self.session: aiohttp.ClientSession = session
+        self.endpoints = dict()
+
+    async def convert(self, source: str, target: str, data: Union[str, int, float]):
+        """Convert data from source attribute to target attribute.
+
+        Args:
+            source (str): Source attribute name.
+            target (str): Target attribute name.
+            data (Union[str, int, float]): Data to use for the conversion
+
+        Raises:
+            TargetAttributeNotRetrieved: Exception raised if the target attribute is not retrieved from the converter.
+
+        Returns:
+            _type_: Data retrieved from the service.
+        """
         result = await getattr(self, f'{source}_to_{target}')(data)
         if result:
             return result
@@ -27,7 +46,7 @@ class WebConverter(Converter):
             raise TargetAttributeNotRetrieved(f'No data retrieved.')
 
     @lru_cache
-    async def query_the_service(self, service, args, method='GET', data=None, headers=None):
+    async def query_the_service(self, service: str, args: str, method: str = 'GET', data=None, headers=None) -> str:
         """
         Make get request to given converter with arguments.
         Raises ConnectionError if converter is not available.
@@ -43,9 +62,9 @@ class WebConverter(Converter):
             result = await self.loop_request(self.endpoints[service] + args, method, data, headers)
             return result
         except TypeError:
-            logger.error(TypeError(f'Incorrect argument {args} for converter {service}.'))
+            raise TypeError(f'Incorrect argument {args} for converter {service}.')
 
-    async def loop_request(self, url, method, data, headers, depth=10):
+    async def loop_request(self, url: str, method: str, data: Any, headers: dict, depth: int = 10) -> str:
         """
         Execute request with type depending on specified method.
 
@@ -66,14 +85,12 @@ class WebConverter(Converter):
                 data = MultiDict(data)
                 async with self.session.post(url, data=data, headers=headers) as response:
                     return await self.process_request(response, url, method)
-        except (ServerDisconnectedError, aiohttp.client_exceptions.ClientConnectorError, TimeoutError):
+        except (ServerDisconnectedError, ClientConnectorError, TimeoutError):
             if depth > 0:
-                logger.error(ServiceNotAvailable(f'Service {self.converter_name} '
-                                                 f'temporarily unavailable, trying again...'))
                 return await self.loop_request(url, method, data, headers, depth - 1)
             raise ServiceNotAvailable(f'Service {self.converter_name} not available.')
 
-    async def process_request(self, response, url, method):
+    async def process_request(self, response: aiohttp.ClientResponse, url: str, method: str) -> str:
         """
         Method to wrap response handling (same for POST and GET requests).
 

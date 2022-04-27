@@ -1,5 +1,8 @@
-from matchms.importing import load_from_msp
+from typing import List
+
+from matchms import Spectrum
 from matchms.exporting import save_as_msp
+from matchms.importing import load_from_msp
 
 
 class Spectra:
@@ -8,7 +11,7 @@ class Spectra:
     It is using `matchms` package to load and save MSP files.
     """
     def __init__(self):
-        self.spectrums = []
+        self.spectrums: List[Spectrum] = []
 
     def __eq__(self, other):
         if len(self.spectrums) == len(other.spectrums):
@@ -16,7 +19,7 @@ class Spectra:
         else:
             return False
 
-    def load_from_msp(self, filename):
+    def load_from_msp(self, filename: str):
         """
         Loads given MSP filename as a list of matchms.Spectra objects and
         stores them in self.spectrums attribute
@@ -25,7 +28,7 @@ class Spectra:
         """
         self.spectrums = list(load_from_msp(filename))
 
-    def save_to_msp(self, filename):
+    def save_to_msp(self, filename: str):
         """
         Exports all matchms.Spectra objects stored in self.spectrums to
         a file given by filename
@@ -35,7 +38,7 @@ class Spectra:
         save_as_msp(self.spectrums, filename)
 
 
-def spectra_eq(first, second):
+def spectra_eq(first: Spectrum, second: Spectrum):
     """
     Compare two Spectra objects.
     Native __eq__ definition does not work properly.

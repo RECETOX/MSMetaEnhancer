@@ -45,4 +45,4 @@ class Metrics:
                           for key in self.coverage_before_annotation],
                          headers=['Target\nattribute', 'Coverage\nbefore', 'Coverage\nafter'])
 
-        return f'Attribute discovery rates:\n\n{table}\n' + '='*50 + '\n'
+        return f'\nAttribute discovery rates:\n\n{table}\n' + '='*50 + '\n'

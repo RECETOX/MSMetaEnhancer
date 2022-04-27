@@ -1,8 +1,13 @@
-from MSMetaEnhancer.libs.utils.Errors import ConversionNotSupported, SourceAttributeNotAvailable
+from typing import Any, Tuple
+
+from matchms import Metadata
+from MSMetaEnhancer.libs.Converter import Converter
+from MSMetaEnhancer.libs.utils.Errors import (ConversionNotSupported,
+                                              SourceAttributeNotAvailable)
 
 
 class Job:
-    def __init__(self, data):
+    def __init__(self, data: Tuple[str, str, str]):
         self.source, self.target, self.converter = data
 
     def __str__(self):
@@ -11,7 +16,7 @@ class Job:
     def __repr__(self):
         return f'Job(({self.source}, {self.target}, {self.converter}))'
 
-    def validate(self, converters, metadata):
+    def validate(self, converters: dict, metadata: Metadata) -> Tuple[Converter, Any]:
         """
         Makes sure to job is supported or possible to execute on given metadata.
 
@@ -31,5 +36,5 @@ class Job:
             return converter, data
 
 
-def convert_to_jobs(jobs):
+def convert_to_jobs(jobs: Tuple[str, str, str]):
     return [Job(data) for data in jobs]

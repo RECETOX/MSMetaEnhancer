@@ -1,7 +1,9 @@
 import asyncio
+
 import aiohttp
 
 from MSMetaEnhancer.libs.Annotator import Annotator
+from MSMetaEnhancer.libs.Converter import Converter
 from MSMetaEnhancer.libs.Curator import Curator
 from MSMetaEnhancer.libs.Spectra import Spectra
 from MSMetaEnhancer.libs.utils import logger
@@ -12,10 +14,9 @@ from MSMetaEnhancer.libs.utils.Monitor import Monitor
 
 
 class Application:
-    def __init__(self, log_level='warning', log_file=None):
-        self.log_level = log_level
-        self.log_file = log_file
+    def __init__(self, log_level='info', log_file=None):
         self.spectra = Spectra()
+        logger.setup(log_level, log_file)
 
     def load_spectra(self, filename, file_format):
         """
@@ -78,6 +79,7 @@ class Application:
                 # create all possible jobs if not given
                 if not jobs:
                     jobs = []
+                    converter: Converter
                     for converter in converters.values():
                         jobs += converter.get_conversion_functions()
                 jobs = convert_to_jobs(jobs)
@@ -90,4 +92,4 @@ class Application:
                 monitor.join()
 
         self.spectra.spectrums = results
-        logger.write_log(self.log_level, self.log_file)
+        logger.write_metrics()

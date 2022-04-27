@@ -19,8 +19,8 @@ def test_query_the_service():
     converter.loop_request.assert_called()
 
     # test wrong arg type
-    result = asyncio.run(converter.query_the_service('CTS', 10))
-    assert result is None
+    with pytest.raises(TypeError):
+        _ = asyncio.run(converter.query_the_service('CTS', 10))
 
     # test lru_cache
     converter.executed = False
@@ -31,7 +31,7 @@ def test_query_the_service():
     converter.loop_request.assert_not_called()
 
 
-async def test_loop_request(test_client):
+async def test_loop_request(aiohttp_client):
     response = {'smiles': '$SMILES'}
 
     async def fake_request(request):
@@ -42,7 +42,7 @@ async def test_loop_request(test_client):
         app.router.add_route('GET', '/', fake_request)
         return app
 
-    session = await test_client(create_app)
+    session = await aiohttp_client(create_app)
     converter = WebConverter(session)
     converter.process_request = mock.AsyncMock(return_value=response)
 
@@ -50,7 +50,7 @@ async def test_loop_request(test_client):
     assert result == response
 
 
-async def test_loop_request_fail(test_client):
+async def test_loop_request_fail(aiohttp_client):
     async def fake_request(request):
         raise ServerDisconnectedError()
 
@@ -59,7 +59,7 @@ async def test_loop_request_fail(test_client):
         app.router.add_route('GET', '/', fake_request)
         return app
 
-    session = await test_client(create_app)
+    session = await aiohttp_client(create_app)
     converter = WebConverter(session)
 
     with pytest.raises(UnknownResponse):
@@ -112,12 +112,12 @@ def test_convert():
         _ = asyncio.run(converter.convert('B', 'C', None))
 
 
-async def test_lru_cache(test_client):
+async def test_lru_cache(aiohttp_client):
     def create_app(loop):
         app = web.Application(loop=loop)
         return app
 
-    session = await test_client(create_app)
+    session = await aiohttp_client(create_app)
     converter = WebConverter(session)
     converter.endpoints = {'/': '/'}
     converter.loop_request = mock.AsyncMock(return_value=(1, 2, 3))
