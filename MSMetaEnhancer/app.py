@@ -1,4 +1,5 @@
 import asyncio
+
 import aiohttp
 
 from MSMetaEnhancer.libs.Annotator import Annotator
