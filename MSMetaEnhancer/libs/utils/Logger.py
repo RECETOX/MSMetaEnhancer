@@ -1,7 +1,10 @@
-from datetime import datetime
 import logging
+from datetime import datetime
+from typing import List
 
+from MSMetaEnhancer.libs.utils.LogRecord import LogRecord
 from MSMetaEnhancer.libs.utils.Metrics import Metrics
+from MSMetaEnhancer.libs.utils.Job import Job
 
 
 class Logger:
@@ -35,7 +38,7 @@ class Logger:
         # Add handlers to logger
         self.logger.addHandler(filehandler_dbg)
 
-    def set_target_attributes(self, jobs, length):
+    def set_target_attributes(self, jobs: List[Job], length: int):
         """
         Gather all target attributes from specified jobs
 
@@ -45,9 +48,11 @@ class Logger:
         target_attributes = {job.target for job in jobs}
         self.metrics.set_params(target_attributes, length)
 
-    def add_logs(self, log_record):
+    def add_logs(self, log_record: LogRecord):
         """
         Flush logs to log file.
+
+        :param log_record: log record to write and format to file
         """
         message = log_record.format_log(self.log_level)
         if message:
@@ -61,7 +66,7 @@ class Logger:
         """
         self.metrics.update_before_annotation(metadata_keys)
 
-    def add_coverage_after(self, metadata_keys):
+    def add_coverage_after(self, metadata_keys: List[str]):
         """
         Increase counts of annotated attributes
 
@@ -74,29 +79,3 @@ class Logger:
         Write obtained statistical values.
         """
         self.logger.info(str(self.metrics))
-
-
-class LogRecord:
-    def __init__(self, metadata):
-        self.metadata = metadata
-        self.logs = []
-
-    def format_log(self, level):
-        message = f'Issues related to metadata:\n\n{self.metadata}\n\n'
-        filtered_logs = [log['msg'] for log in self.logs if level >= log['level']]
-        if filtered_logs:
-            for log in filtered_logs:
-                message += f'{log}\n'
-        else:
-            return None
-        return f'{message}\n'
-
-    def update(self, exc, job, level):
-        """
-        Process given log record.
-
-        :param exc: exception
-        :param job: related job
-        :param level: log level
-        """
-        self.logs.append({'level': level, 'msg': f'-> {type(exc).__name__} - {job}:\n{exc}'})
