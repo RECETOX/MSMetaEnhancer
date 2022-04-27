@@ -1,8 +1,10 @@
+import traceback
+
 from MSMetaEnhancer.libs.Curator import Curator
 from MSMetaEnhancer.libs.utils import logger
 from MSMetaEnhancer.libs.utils.Errors import TargetAttributeNotRetrieved, SourceAttributeNotAvailable, \
-    ServiceNotAvailable
-from MSMetaEnhancer.libs.utils.Logger import LogWarning
+    ServiceNotAvailable, UnknownResponse, DataAlreadyPresent
+from MSMetaEnhancer.libs.utils.Logger import LogRecord
 
 
 class Annotator:
@@ -31,7 +33,7 @@ class Annotator:
         """
         metadata = spectra.metadata
         cache = dict()
-        warning = LogWarning(dict(metadata))
+        log = LogRecord(dict(metadata))
         logger.add_coverage_before(metadata.keys())
 
         added_metadata = True
@@ -40,17 +42,19 @@ class Annotator:
             for job in jobs:
                 if job.target not in metadata:
                     try:
-                        metadata, cache = await self.execute_job_with_cache(job, metadata, cache, warning)
+                        metadata, cache = await self.execute_job_with_cache(job, metadata, cache, log)
                         if repeat:
                             added_metadata = True
-                    except SourceAttributeNotAvailable as exc:
-                        warning.add_info(exc)
-                    except Exception as exc:
-                        warning.add_warning(type(exc)((f'{job}:\n' + str(exc))))
+                    except (SourceAttributeNotAvailable, TargetAttributeNotRetrieved) as exc:
+                        log.update(exc, job, level=3)
+                    except (ServiceNotAvailable, UnknownResponse) as exc:
+                        log.update(exc, job, level=2)
+                    except Exception:
+                        log.update(Exception(traceback.format_exc()), job, level=1)
                 else:
-                    warning.add_info(f'{job}: Requested attribute {job.target} already present in given metadata.')
+                    log.update(DataAlreadyPresent(f'Requested attribute {job.target} already present.'), job, level=2)
 
-        logger.add_warning(warning)
+        logger.add_logs(log)
         logger.add_coverage_after(metadata.keys())
 
         spectra.metadata = metadata

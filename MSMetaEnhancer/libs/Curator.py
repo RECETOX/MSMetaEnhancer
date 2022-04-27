@@ -44,12 +44,12 @@ class Curator:
         return cas_number
 
     @staticmethod
-    def filter_invalid_metadata(metadata, warning, job):
+    def filter_invalid_metadata(metadata, log, job):
         """
         Validates metadata and filters out invalid ones.
 
         :param metadata: metadata content
-        :param warning: object storing warnings related to current metadata
+        :param log: object storing logs related to current metadata
         :param job: executed job
         :return: only valid metadata
         """
@@ -67,8 +67,7 @@ class Curator:
                 if filters[attribute](value):
                     valid_metadata[attribute] = value
                 else:
-                    warning.add_warning(
-                        InvalidAttributeFormat(f'{job}:\n Obtained {attribute} in invalid format: {value}'))
+                    log.update(InvalidAttributeFormat(f'Obtained {attribute} in invalid format: {value}'), job, level=2)
             else:
                 valid_metadata[attribute] = value
         return valid_metadata

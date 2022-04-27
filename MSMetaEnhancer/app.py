@@ -12,7 +12,7 @@ from MSMetaEnhancer.libs.utils.Monitor import Monitor
 
 
 class Application:
-    def __init__(self, log_level='warning', log_file=None):
+    def __init__(self, log_level='info', log_file=None):
         self.spectra = Spectra()
         logger.setup(log_level, log_file)
 

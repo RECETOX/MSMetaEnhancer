@@ -7,7 +7,6 @@ from aiohttp.client_exceptions import ServerDisconnectedError
 from asyncio.exceptions import TimeoutError
 
 from MSMetaEnhancer.libs.Converter import Converter
-from MSMetaEnhancer.libs.utils import logger
 from MSMetaEnhancer.libs.utils.Errors import ServiceNotAvailable, UnknownResponse, TargetAttributeNotRetrieved
 
 
@@ -43,7 +42,7 @@ class WebConverter(Converter):
             result = await self.loop_request(self.endpoints[service] + args, method, data, headers)
             return result
         except TypeError:
-            logger.error(TypeError(f'Incorrect argument {args} for converter {service}.'))
+            raise TypeError(f'Incorrect argument {args} for converter {service}.')
 
     async def loop_request(self, url, method, data, headers, depth=10):
         """
@@ -68,8 +67,6 @@ class WebConverter(Converter):
                     return await self.process_request(response, url, method)
         except (ServerDisconnectedError, aiohttp.client_exceptions.ClientConnectorError, TimeoutError):
             if depth > 0:
-                logger.error(ServiceNotAvailable(f'Service {self.converter_name} '
-                                                 f'temporarily unavailable, trying again...'))
                 return await self.loop_request(url, method, data, headers, depth - 1)
             raise ServiceNotAvailable(f'Service {self.converter_name} not available.')
 
