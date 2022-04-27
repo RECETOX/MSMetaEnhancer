@@ -7,20 +7,17 @@ from MSMetaEnhancer.libs.utils.Metrics import Metrics
 class Logger:
     def __init__(self):
         self.logger = logging.getLogger('log')
-        self.log_level = 'INFO'
-        self.logger.setLevel(self.log_level)
+        self.logger.setLevel('INFO')
 
         # statistical values
         self.metrics = Metrics()
 
-        self.LEVELS = {'warning': 2, 'info': 1}
+        self.LEVELS = {'error': 1, 'warning': 2, 'info': 3}
 
-        # to avoid stacking the same errors
-        self.last_error = ''
+        self.log_level = 3
 
     def setup(self, log_level, log_file):
-        self.log_level = log_level
-        self.logger.setLevel(self.LEVELS[self.log_level])
+        self.log_level = self.LEVELS[log_level]
         self.add_filehandler(log_file)
 
     def add_filehandler(self, file_name):
@@ -48,27 +45,11 @@ class Logger:
         target_attributes = {job.target for job in jobs}
         self.metrics.set_params(target_attributes, length)
 
-    def error(self, exc: Exception):
+    def add_logs(self, log_record):
         """
-        Log an error message.
-
-        Store the last error to avoid stacking the same errors.
-
-        :param exc: given Exception
+        Flush logs to log file.
         """
-        if str(exc) != self.last_error:
-            message = self.process_log(str(exc))
-            self.logger.error(message)
-            self.last_error = str(exc)
-
-    def add_warning(self, warning):
-        """
-        Logs given exception as a Warning.
-
-        :param warning: LogWarning
-        """
-        self.last_error = ''
-        message = self.process_log(warning)
+        message = log_record.format_log(self.log_level)
         if message:
             self.logger.warning(message)
 
@@ -88,26 +69,6 @@ class Logger:
         """
         self.metrics.update_after_annotation(metadata_keys)
 
-    def process_log(self, log):
-        """
-        Pretty format single log and compute global attribute discovery rate
-
-        :param log: given log
-        :return: level and formatted message
-        """
-        if isinstance(log, LogWarning):
-            message = f'Errors related to metadata:\n\n{log.metadata}\n\n'
-
-            filtered_warnings = [w['msg'] for w in log.warnings if w['level'] >= self.LEVELS[self.log_level]]
-            if filtered_warnings:
-                for warning in filtered_warnings:
-                    message += f'{warning}\n'
-            else:
-                return None
-            return f'{message}\n'
-        else:
-            return f'{log}\n'
-
     def write_metrics(self):
         """
         Write obtained statistical values.
@@ -115,23 +76,27 @@ class Logger:
         self.logger.info(str(self.metrics))
 
 
-class LogWarning:
+class LogRecord:
     def __init__(self, metadata):
         self.metadata = metadata
-        self.warnings = []
+        self.logs = []
 
-    def add_warning(self, exc: Exception):
-        """
-        Logs given exception as a Warning.
+    def format_log(self, level):
+        message = f'Issues related to metadata:\n\n{self.metadata}\n\n'
+        filtered_logs = [log['msg'] for log in self.logs if level >= log['level']]
+        if filtered_logs:
+            for log in filtered_logs:
+                message += f'{log}\n'
+        else:
+            return None
+        return f'{message}\n'
 
-        :param exc: given exception
+    def update(self, exc, job, level):
         """
-        self.warnings.append({'level': 2, 'msg': f'-> {type(exc).__name__} - {exc}'})
+        Process given log record.
 
-    def add_info(self, info):
+        :param exc: exception
+        :param job: related job
+        :param level: log level
         """
-        Logs given info.
-
-        :param info: given info message
-        """
-        self.warnings.append({'level': 1, 'msg': f'-> {type(info).__name__} - {info}'})
+        self.logs.append({'level': level, 'msg': f'-> {type(exc).__name__} - {job}:\n{exc}'})
