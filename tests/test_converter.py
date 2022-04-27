@@ -19,8 +19,8 @@ def test_query_the_service():
     converter.loop_request.assert_called()
 
     # test wrong arg type
-    result = asyncio.run(converter.query_the_service('CTS', 10))
-    assert result is None
+    with pytest.raises(TypeError):
+        _ = asyncio.run(converter.query_the_service('CTS', 10))
 
     # test lru_cache
     converter.executed = False
