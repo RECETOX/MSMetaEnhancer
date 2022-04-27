@@ -19,11 +19,22 @@ class Logger:
 
         self.log_level = 3
 
-    def setup(self, log_level, log_file):
+    def setup(self, log_level: int, log_file: str):
+        """Initialize log level and log file.
+
+        Args:
+            log_level (int): Log level to set ['error': 1, 'warning': 2, 'info': 3]
+            log_file (str): Path to log file.
+        """
         self.log_level = self.LEVELS[log_level]
         self.add_filehandler(log_file)
 
-    def add_filehandler(self, file_name):
+    def add_filehandler(self, file_name: str = None):
+        """Initialize filehandler for logfile.
+
+        Args:
+            file_name (str, optional): Log filename. Defaults to None.
+        """
         if file_name is None:
             file_name = datetime.now().strftime('MSMetaEnhancer_%Y%m%d%H%M%S.log')
 
@@ -58,7 +69,7 @@ class Logger:
         if message:
             self.logger.warning(message)
 
-    def add_coverage_before(self, metadata_keys):
+    def add_coverage_before(self, metadata_keys: List[str]):
         """
         Increase counts of already present attributes.
 
