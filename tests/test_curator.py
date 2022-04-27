@@ -2,7 +2,7 @@ import pytest
 
 from MSMetaEnhancer.libs.Curator import Curator
 from MSMetaEnhancer.libs.utils.Job import Job
-from MSMetaEnhancer.libs.utils.Logger import LogRecord
+from MSMetaEnhancer.libs.utils.LogRecord import LogRecord
 
 
 def test_fix_cas_number():
