@@ -7,6 +7,8 @@ setup(name='MSMetaEnhancer',
       url='https://github.com/RECETOX/MSMetaEnhancer',
       author='Matej Trojak',
       author_email='matej.trojak@recetox.muni.cz',
+      maintainer="RECETOX",
+      maintainer_email="GalaxyToolsDevelopmentandDeployment@space.muni.cz",
       license='MIT',
       packages=find_packages(exclude=['*tests*']),
       zip_safe=False,
@@ -20,5 +22,11 @@ setup(name='MSMetaEnhancer',
             "asyncstdlib",
             "frozendict",
             "tabulate"
-      ]
+      ],
+      extras_require={
+        'test': [
+            'pytest',
+            'pytest-cov'
+        ]
+      },
       )
