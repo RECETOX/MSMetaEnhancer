@@ -26,8 +26,7 @@ class Job:
             raise ConversionNotSupported(f'Conversion ({self.converter}) {self.source} -> {self.target}: '
                                          f'is not supported')
         elif data is None:
-            raise SourceAttributeNotAvailable(f'Conversion ({self.converter}) {self.source} -> {self.target}: '
-                                              f'Attribute {self.source} missing in given metadata.')
+            raise SourceAttributeNotAvailable(f'{self}:\n Attribute {self.source} missing in given metadata.')
         else:
             return converter, data
 

@@ -125,7 +125,8 @@ class PubChem(WebConverter):
         :return: processed response
         """
         result = await response.text()
-        self.adjust_throttling(response.headers['X-Throttling-Control'])
+        if 'X-Throttling-Control' in response.headers:
+            self.adjust_throttling(response.headers['X-Throttling-Control'])
         if response.ok:
             return result
         else:

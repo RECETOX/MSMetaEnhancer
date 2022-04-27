@@ -68,7 +68,7 @@ class Curator:
                     valid_metadata[attribute] = value
                 else:
                     warning.add_warning(
-                        InvalidAttributeFormat(f'Job {job} obtained {attribute} in invalid format: {value}'))
+                        InvalidAttributeFormat(f'{job}:\n Obtained {attribute} in invalid format: {value}'))
             else:
                 valid_metadata[attribute] = value
         return valid_metadata
