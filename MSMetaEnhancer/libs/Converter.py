@@ -37,7 +37,7 @@ class Converter(ABC):
         for conversion in conversions:
             create_top_level_method(self, *conversion, asynch)
 
-    def get_conversion_functions(self):
+    def get_conversion_functions(self) -> list:
         """
         Method to compute all available conversion functions.
 
@@ -45,14 +45,14 @@ class Converter(ABC):
 
         :return: a list of available conversion functions
         """
-        jobs = []
+        available_conversions = []
         methods = [method_name for method_name in dir(self) if '_to_' in method_name]
         for method in methods:
-            jobs.append((*method.split('_to_'), self.converter_name))
-        return jobs
+            available_conversions.append((*method.split('_to_'), self.converter_name))
+        return available_conversions
 
 
-def create_top_level_method(obj, source, target, method, asynch=True):
+def create_top_level_method(obj: Converter, source: str, target: str, method: str, asynch: bool = True):
     """
     Assign a new method to {obj} called {source}_to_{target} which calls {method}.
 
