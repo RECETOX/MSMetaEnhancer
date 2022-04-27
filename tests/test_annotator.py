@@ -75,3 +75,21 @@ def test_execute_job_with_cache():
 
     with pytest.raises(TargetAttributeNotRetrieved):
         metadata, cache = asyncio.run(annotator.execute_job_with_cache(job, {'smiles': '$SMILES'}, dict(), warning))
+
+
+def test_catch_exception():
+    metadata = {'inchi': 'a value', 'compound_name': 'a molecule'}
+    result_metadata = {'inchi': 'a value', 'compound_name': 'a molecule',  'atr1': 'val1',  'atr2': 'val2'}
+    spectra = mock.Mock()
+    spectra.metadata = metadata
+    jobs = [mock.Mock(target='a target')] * 3
+    annotator = Annotator()
+    annotator.set_converters(dict())
+    mocked = [({'inchi': 'a value', 'compound_name': 'a molecule', 'atr1': 'val1'}, dict()),
+              Exception(),
+              (result_metadata, dict())]
+    annotator.execute_job_with_cache = mock.AsyncMock()
+    annotator.execute_job_with_cache.side_effect = mocked
+
+    result = asyncio.run(annotator.annotate(spectra, jobs))
+    assert result.metadata == result_metadata

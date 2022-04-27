@@ -143,7 +143,7 @@ class LogWarning:
 
         :param exc: given exception
         """
-        self.warnings.append({'level': 2, 'msg': f'-> {exc}'})
+        self.warnings.append({'level': 2, 'msg': f'-> {type(exc).__name__} - {exc}'})
 
     def add_info(self, info):
         """
@@ -151,4 +151,4 @@ class LogWarning:
 
         :param info: given info message
         """
-        self.warnings.append({'level': 1, 'msg': f'-> {info}'})
+        self.warnings.append({'level': 1, 'msg': f'-> {type(info).__name__} - {info}'})
