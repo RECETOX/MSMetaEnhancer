@@ -21,4 +21,5 @@ dependencies:
   - rdkit
   - multidict
   - twine
+  - sphinx
 
