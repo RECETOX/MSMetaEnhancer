@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [dev] - unreleased
+### Added
+* KEGG ID conversions support to BridgeDB service [#101](https://github.com/RECETOX/MSMetaEnhancer/issues/101)
+### Changed
+### Removed
+
 ## [0.2.2] - 2022-04-27
 ### Added
 * introduced `error` level into logging [#95](https://github.com/RECETOX/MSMetaEnhancer/issues/95)
