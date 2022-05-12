@@ -55,7 +55,7 @@ class IDSM(WebConverter):
           ?attribute sio:has-value ?value.
           ?compound sio:has-attribute ?attribute.
           ?compound sio:has-attribute ?descriptor.
-          ?descriptor sio:has-value "{iupac_name.lower()}"@en.
+          ?descriptor sio:has-value '{iupac_name.lower()}'@en.
         }}
         """
         return await self.call_service(query)
@@ -75,7 +75,7 @@ class IDSM(WebConverter):
           ?inchikey rdf:type ?type.
           ?inchikey sio:is-attribute-of ?compound.
           ?synonym sio:is-attribute-of ?compound.
-          ?synonym sio:has-value "{name.lower()}"@en.
+          ?synonym sio:has-value '{name.lower()}'@en.
         }}
         """
         return await self.call_service(query)
@@ -95,7 +95,7 @@ class IDSM(WebConverter):
           ?inchikey rdf:type ?type.
           ?inchikey sio:is-attribute-of ?compound.
           ?compound sio:has-attribute ?inchi.
-          ?inchi sio:has-value "{inchi}"@en.
+          ?inchi sio:has-value '{inchi}'@en.
         }}
         """
         return await self.call_service(query)
@@ -115,7 +115,7 @@ class IDSM(WebConverter):
           ?attribute sio:has-value ?value.
           ?compound sio:has-attribute ?attribute.
           ?synonym sio:is-attribute-of ?compound.
-          ?synonym sio:has-value "{name.lower()}"@en.
+          ?synonym sio:has-value '{name.lower()}'@en.
         }}
         """
         return await self.call_service(query)
@@ -135,7 +135,7 @@ class IDSM(WebConverter):
           ?attribute sio:has-value ?value.
           ?compound sio:has-attribute ?attribute.
           ?compound sio:has-attribute ?inchi.
-          ?inchi sio:has-value "{inchi}"@en.
+          ?inchi sio:has-value '{inchi}'@en.
         }}
         """
         return await self.call_service(query)
