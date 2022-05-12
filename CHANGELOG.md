@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 ### Changed
 * double quotes to single quotes in IDSM [#102](https://github.com/RECETOX/MSMetaEnhancer/issues/102)
+* KEGG ID conversions support to BridgeDB service [#101](https://github.com/RECETOX/MSMetaEnhancer/issues/101)
 ### Removed
 
 ## [0.2.2] - 2022-04-27
