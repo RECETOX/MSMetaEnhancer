@@ -3,6 +3,8 @@ import asyncio
 from MSMetaEnhancer.libs.converters.web.WebConverter import WebConverter
 from frozendict import frozendict
 
+from MSMetaEnhancer.libs.utils.Generic import escape_arg
+
 
 class IDSM(WebConverter):
     """
@@ -40,6 +42,7 @@ class IDSM(WebConverter):
         # used to limit the maximal number of simultaneous requests being processed
         self.semaphore = asyncio.Semaphore(10)
 
+    @escape_arg
     async def iupac_name_to_inchi(self, iupac_name):
         """
         Convert IUPAC name to InChI using IDSM service
@@ -60,6 +63,7 @@ class IDSM(WebConverter):
         """
         return await self.call_service(query)
 
+    @escape_arg
     async def compound_name_to_inchikey(self, name):
         """
         Convert Chemical name to InChIKey using IDSM service
@@ -80,6 +84,7 @@ class IDSM(WebConverter):
         """
         return await self.call_service(query)
 
+    @escape_arg
     async def inchi_to_inchikey(self, inchi):
         """
         Convert InChi to InChIKey using IDSM service
@@ -100,6 +105,7 @@ class IDSM(WebConverter):
         """
         return await self.call_service(query)
 
+    @escape_arg
     async def from_name(self, name):
         """
         Convert Chemical name to all possible attributes using IDSM service
@@ -120,6 +126,7 @@ class IDSM(WebConverter):
         """
         return await self.call_service(query)
 
+    @escape_arg
     async def from_inchi(self, inchi):
         """
         Convert InChi to to all possible attributes using IDSM service
