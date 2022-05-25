@@ -51,7 +51,7 @@ For example, there are R packages that provide an interface to PubChem [@guha201
 Then, there are packages unifying several sources -- `webchem` [@szocs2020webchem] allows to automatically query chemical data from several web sources (similar to MSMetaEnhancer) and to interconvert between identifiers.
 The `MetaFetcheR` [@yones2021metafetcher] package focuses on database-specific identifiers and links metabolite data from several small-compound databases (e.g., PubChem, the Human Metabolome Database (HMDB) [@Wishart2022]), trying to resolve inconsistencies.
 Similarly, RaMP cross-references multiple database specific identifiers via their internal RaMP_ID to integrate various pathway and compound databases [@Zhang2018c].
-BridgeDb is an ELIXIR project providing mapping functionality of different identifiers present in HMDB (e.g., PubChemCID, ChEBI and InChIKey), gene information and several pathway databases in an organism centric manner, exposing a Java and REST API [@VanIersel2010; @Willighagen2022].
+BridgeDB is an ELIXIR project providing mapping functionality of different identifiers present in HMDB (e.g., PubChemCID, ChEBI and InChIKey), gene information and several pathway databases in an organism centric manner, exposing a Java and REST API [@VanIersel2010; @Willighagen2022].
 
 On the Python side, there are packages providing direct API access for PubChem [@swain2017], ChemSpider [@swain2018], or CIR [@swain2016].
 PubChem's public API limits programmatic access to less than ~5 requests per second, limiting the ability of advanced users to effectively mine the database.
@@ -68,6 +68,7 @@ To improve the performance of the tool, we use services with high-throughput API
 The supported metadata attributes include InChI, InChIKey, SMILES, IUPAC chemical name, chemical formula, CAS number, and others. 
 The particular available conversions can be found in the documentation via https://msmetaenhancer.readthedocs.io/ and are open to extension.
 Finally, the obtained metadata are validated to ensure their correct form (currently, `matchms` validators are employed for this task).
+For an overview of the annotation process, see Figure 1.
 
 ![Schematic overview of MSMetaEnhancer annotation workflow. \label{fig:scheme}](scheme.png)
 
