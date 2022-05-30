@@ -120,6 +120,6 @@ EJP provided conceptual oversight and contributed to the manuscript.
 Authors thank to Research Infrastructure RECETOX RI (No LM2018121) financed by the Ministry of Education, Youth and Sports, and OP RDE project CETOCOEN EXCELLENCE (No CZ.02.1.01/0.0/0.0/17_043/0009632) for supportive background.
 EJP was supported from OP RDE - Project \"MSCAfellow4\@MUNI\" (No. CZ.02.2.69/0.0/0.0/20_079/0017045).
 This project was supported from the European Union’s Horizon 2020 research and innovation programme under grant agreement No 857560.
-This publication reflects only the author’s view and the European Commission is not responsible for any use that may be made of the information it contains
+This publication reflects only the author’s view and the European Commission is not responsible for any use that may be made of the information it contains.
 
 # References
