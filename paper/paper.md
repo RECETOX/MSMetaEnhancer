@@ -21,7 +21,7 @@ authors:
 affiliations:
  - name: RECETOX, Faculty of Science, Masaryk University, Kotlářská 2, Brno, Czech Republic
    index: 1
-date: 11 January 2022
+date: 30 May 2022
 bibliography: paper.bib
  
 ---
