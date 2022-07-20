@@ -33,9 +33,6 @@ jobs = [('name', 'inchi', 'IDSM'), ('inchi', 'formula', 'IDSM'), ('inchi', 'inch
 # run asynchronous annotations of spectra data
 asyncio.run(app.annotate_spectra(services, jobs))
 
-# execute without jobs parameter to run all possible jobs
-asyncio.run(app.annotate_spectra(services))
-
 # export .msp file 
 app.save_spectra('tests/test_data/sample_out.msp', file_format='msp')
 ```
