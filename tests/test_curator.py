@@ -12,8 +12,6 @@ def test_fix_cas_number():
 
 
 @pytest.mark.parametrize('metadata, validated_metadata, logs_size', [
-    [{'formula': 'CH4', 'smiles': 'C', 'iupac_name': 'methane', 'inchi': 'InChI=1S/CH4/h1H4'},
-     {'formula': 'CH4', 'iupac_name': 'methane', 'inchi': 'InChI=1S/CH4/h1H4'}, 1],
     [{'inchikey': '<html>random content</html>'}, {}, 1],
     [{'smiles': 'CC(NC(C)=O)C#N'}, {'smiles': 'CC(NC(C)=O)C#N'}, 0]
 ])
