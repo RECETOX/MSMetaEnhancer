@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 * escaping of single quotes in IDSM arguments [#102](https://github.com/RECETOX/MSMetaEnhancer/issues/102)
 ### Removed
+* removed test case from curator which fails in matchms > 0.14 [#112](https://github.com/RECETOX/MSMetaEnhancer/issues/112)
 
 ## [0.2.3] - 2022-05-12
 ### Added
