@@ -15,10 +15,10 @@ build:
 
 requirements:
   host:
-    - python >=3.7,<3.9
+    - python >=3.7
     - pip
   run:
-    - python >=3.7,<3.9
+    - python >=3.7
     - matchms >=0.14.0
     - pandas
     - scipy
