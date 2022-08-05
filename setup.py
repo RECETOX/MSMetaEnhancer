@@ -1,5 +1,17 @@
 from setuptools import setup, find_packages
 
+
+def read_requirements_from_file(filepath):
+    with open(filepath, 'r') as req_file:
+        return req_file.readlines()
+
+
+setup_args = dict(
+    install_requires=read_requirements_from_file('requirements.txt'),
+    tests_require=read_requirements_from_file('requirements-dev.txt')
+)
+
+
 with open("README.md") as readme_file:
     readme = readme_file.read()
 
@@ -19,19 +31,6 @@ setup(name='MSMetaEnhancer',
       zip_safe=False,
       test_suite="tests",
       python_requires='>=3.7',
-      install_requires=[
-            "matchms",
-            "requests",
-            "pandas",
-            "aiohttp",
-            "asyncstdlib",
-            "frozendict",
-            "tabulate"
-      ],
-      extras_require={
-        'test': [
-            'pytest',
-            'pytest-cov'
-        ]
-      },
+      install_requires=setup_args['install_requires'],
+      extras_require={'test': setup_args['tests_require']},
       )

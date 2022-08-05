@@ -41,7 +41,7 @@ app.save_spectra('tests/test_data/sample_out.msp', file_format='msp')
 
 Prerequisites:
 
-- Python 3.7 or 3.8
+- Python 3.7+
 - Anaconda
 
 Install `MSMetaEnhancer` from Bioconda with:

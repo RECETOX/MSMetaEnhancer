@@ -6,13 +6,6 @@ aiohttp
 asyncstdlib
 frozendict
 twine
-mock
-pytest
-pytest-aiohttp
-pytest-cov
-pytest-dependency
 tabulate
-sphinx
-sphinx_rtd_theme
 rdkit-pypi
 multidict
