@@ -5,21 +5,6 @@ channels:
   - defaults
 dependencies:
   - python >=3.7
-  - matchms >=0.14.0
-  - pandas
-  - scipy
-  - requests
-  - aiohttp
-  - asyncstdlib
-  - frozendict
-  - tabulate
-  - mock
-  - pytest
-  - pytest-aiohttp
-  - pytest-cov
-  - pytest-dependency
-  - rdkit
-  - multidict
-  - twine
-  - sphinx
-
+  - pip
+  - pip:
+    - -r ../requirements.txt
