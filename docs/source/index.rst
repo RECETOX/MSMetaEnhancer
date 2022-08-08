@@ -11,7 +11,7 @@ Welcome to MSMetaEnhancer's documentation!
 
    Documentation <MSMetaEnhancer>
    Readme <readme>
-   changelog
+   CHANGELOG
 
 Indices and tables
 ==================
