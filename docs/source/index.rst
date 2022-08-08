@@ -9,9 +9,9 @@ Welcome to MSMetaEnhancer's documentation!
 .. toctree::
    :maxdepth: 1
 
-   Documentation <MSMetaEnhancer>
    Readme <readme>
-   changelog
+   Documentation <MSMetaEnhancer>
+   CHANGELOG
 
 Indices and tables
 ==================
