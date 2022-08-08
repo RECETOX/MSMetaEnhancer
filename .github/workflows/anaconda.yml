@@ -1,0 +1,56 @@
+name: Anaconda Build
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  anaconda_build:
+    name: Anaconda build / python-3.8 / ubuntu-latest
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: "0"
+      - name: Create MSMetaEnhancer-build environment
+        uses: conda-incubator/setup-miniconda@v2
+        with:
+          activate-environment: MSMetaEnhancer-build
+          auto-update-conda: true
+          environment-file: conda/environment-build.yml
+          python-version: 3.8
+      - name: Show conda config
+        shell: bash -l {0}
+        run: |
+          conda info
+          conda list
+          conda config --show-sources
+          conda config --show
+          conda env list
+      - name: Python info
+        shell: bash -l {0}
+        run: |
+          which python
+          python --version
+      - name: Show environment variables
+        shell: bash -l {0}
+        run: |
+          env | sort
+      - name: Build the conda package
+        shell: bash -l {0}
+        run: |
+          export BUILDDIR=$RUNNER_TEMP/MSMetaEnhancer/_build
+          [ "$RUNNING_OS" = "Windows" ] && export BUILDDIR=$RUNNER_TEMP\\MSMetaEnhancer\\_build\\
+          conda config --set anaconda_upload no
+          conda build --numpy 1.18.1 --no-include-recipe \
+            --channel bioconda --channel conda-forge \
+            --croot ${BUILDDIR} \
+            ./conda
+      - name: Upload package artifact from build
+        uses: actions/upload-artifact@v2
+        with:
+          name: conda-package-artifact
+          path: ${{ runner.temp }}/MSMetaEnhancer/_build
