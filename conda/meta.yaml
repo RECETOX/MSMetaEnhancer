@@ -6,7 +6,7 @@ package:
   version: {{ version }}
 
 source:
-  url: https://pypi.python.org/packages/source/M/MSMetaEnhancer/MSMetaEnhancer-{{ version }}.tar.gz
+  path: ..
 
 build:
   number: 0
@@ -19,6 +19,16 @@ requirements:
     - pip
   run:
     - python >=3.7
+    - matchms >=0.14.0
+    - pandas
+    - scipy
+    - requests
+    - aiohttp
+    - asyncstdlib
+    - frozendict
+    - tabulate
+    - rdkit
+    - multidict
 
 test:
   imports:
@@ -27,7 +37,7 @@ test:
 about:
   home: https://github.com/RECETOX/MSMetaEnhancer
   license: MIT
-  license_file: ../LICENSE
+  license_file: LICENSE
   summary: "MSMetaEnhancer is a python tool that adds more annotations (e.g. SMILES, InChI, CAS number) to MSP files."
   dev_url: "https://github.com/RECETOX/MSMetaEnhancer"
 
