@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 ### Changed
 * escaping of single quotes in IDSM arguments [#102](https://github.com/RECETOX/MSMetaEnhancer/issues/102)
+* unified environment and packaging management [#115](https://github.com/RECETOX/MSMetaEnhancer/issues/115)
 ### Removed
 * removed test case from curator which fails in matchms > 0.14 [#112](https://github.com/RECETOX/MSMetaEnhancer/issues/112)
 
