@@ -3,8 +3,10 @@ import asyncio
 import mock
 import pytest
 from aiohttp import web
-from aiohttp.client_exceptions import ServerDisconnectedError, ClientConnectorError
+from aiohttp.client_exceptions import ServerDisconnectedError
+from aiohttp import ClientConnectorError
 from asyncio.exceptions import TimeoutError
+import os
 
 from MSMetaEnhancer.libs.converters.web.WebConverter import WebConverter
 from MSMetaEnhancer.libs.utils.Errors import TargetAttributeNotRetrieved, UnknownResponse, ServiceNotAvailable
@@ -67,7 +69,7 @@ async def test_loop_request_fail(aiohttp_client):
         await converter.loop_request('/', 'GET', None, None)
 
 
-@pytest.mark.parametrize('exception', [TimeoutError, ServerDisconnectedError])
+@pytest.mark.parametrize('exception', [TimeoutError, ServerDisconnectedError, ClientConnectorError(None, OSError())])
 async def test_loop_request_circuit_breaker(exception):
     session = mock.AsyncMock()
     session.get = mock.Mock(side_effect=exception)
