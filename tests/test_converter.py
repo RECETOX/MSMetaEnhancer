@@ -2,11 +2,12 @@ import asyncio
 
 import mock
 import pytest
-from aiohttp import ServerDisconnectedError
 from aiohttp import web
+from aiohttp.client_exceptions import ServerDisconnectedError, ClientConnectorError
+from asyncio.exceptions import TimeoutError
 
 from MSMetaEnhancer.libs.converters.web.WebConverter import WebConverter
-from MSMetaEnhancer.libs.utils.Errors import TargetAttributeNotRetrieved, UnknownResponse
+from MSMetaEnhancer.libs.utils.Errors import TargetAttributeNotRetrieved, UnknownResponse, ServiceNotAvailable
 
 
 def test_query_the_service():
@@ -63,6 +64,17 @@ async def test_loop_request_fail(aiohttp_client):
     converter = WebConverter(session)
 
     with pytest.raises(UnknownResponse):
+        await converter.loop_request('/', 'GET', None, None)
+
+
+@pytest.mark.parametrize('exception', [TimeoutError, ServerDisconnectedError])
+async def test_loop_request_circuit_breaker(exception):
+    session = mock.AsyncMock()
+    session.get = mock.Mock(side_effect=exception)
+
+    converter = WebConverter(session)
+
+    with pytest.raises(ServiceNotAvailable):
         await converter.loop_request('/', 'GET', None, None)
 
 
