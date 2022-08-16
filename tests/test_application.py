@@ -13,7 +13,7 @@ def test_annotate_spectra_monitor_stops():
     app.load_spectra('tests/test_data/sample.msp', file_format='msp')
 
     asyncio.run(app.annotate_spectra([], monitor=monitor, annotator=annotator))
-    assert monitor.stop_request.isSet()
+    assert monitor.stop_request.is_set()
 
 
 def test_annotate_spectra_monitor_stops_after_exception():
@@ -26,4 +26,4 @@ def test_annotate_spectra_monitor_stops_after_exception():
     with pytest.raises(Exception):
         asyncio.run(app.annotate_spectra([], monitor=monitor, annotator=annotator))
 
-    assert monitor.stop_request.isSet()
+    assert monitor.stop_request.is_set()
