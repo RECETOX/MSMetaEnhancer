@@ -3,18 +3,25 @@ import aiohttp
 from asyncstdlib import lru_cache
 from multidict import MultiDict
 
-
 from aiohttp.client_exceptions import ServerDisconnectedError, ClientConnectorError
 from asyncio.exceptions import TimeoutError
+from aiocircuitbreaker import circuit
+from typing import Union
 
 from MSMetaEnhancer.libs.Converter import Converter
 from MSMetaEnhancer.libs.utils.Errors import ServiceNotAvailable, UnknownResponse, TargetAttributeNotRetrieved
+
+
+async def raise_exception(*args, **kwargs):
+    print('here')
+    raise ServiceNotAvailable
 
 
 class WebConverter(Converter):
     """
     General class for web conversions.
     """
+
     def __init__(self, session: aiohttp.ClientSession):
         """Constructor for Webconverter.
 
@@ -64,7 +71,21 @@ class WebConverter(Converter):
         except TypeError:
             raise TypeError(f'Incorrect argument {args} for converter {service}.')
 
-    async def loop_request(self, url: str, method: str, data: Any, headers: dict, depth: int = 10) -> str:
+    @circuit(failure_threshold=10,
+             expected_exception=Union[TimeoutError, ServerDisconnectedError, ClientConnectorError],
+             fallback_function=ServiceNotAvailable.raise_exception)
+    async def make_request(self, url, method, data, headers):
+        if headers is None:
+            headers = dict()
+        if method == 'GET':
+            async with self.session.get(url, headers=headers) as response:
+                return await self.process_request(response, url, method)
+        else:
+            data = MultiDict(data)
+            async with self.session.post(url, data=data, headers=headers) as response:
+                return await self.process_request(response, url, method)
+
+    async def loop_request(self, url: str, method: str, data: Any, headers: dict) -> str:
         """
         Execute request with type depending on specified method.
 
@@ -75,20 +96,10 @@ class WebConverter(Converter):
         :param headers: optional headers for the request
         :return: obtained response
         """
-        if headers is None:
-            headers = dict()
         try:
-            if method == 'GET':
-                async with self.session.get(url, headers=headers) as response:
-                    return await self.process_request(response, url, method)
-            else:
-                data = MultiDict(data)
-                async with self.session.post(url, data=data, headers=headers) as response:
-                    return await self.process_request(response, url, method)
+            return await self.make_request(url, method, data, headers)
         except (ServerDisconnectedError, ClientConnectorError, TimeoutError):
-            if depth > 0:
-                return await self.loop_request(url, method, data, headers, depth - 1)
-            raise ServiceNotAvailable(f'Service {self.converter_name} not available.')
+            return await self.loop_request(url, method, data, headers)
 
     async def process_request(self, response: aiohttp.ClientResponse, url: str, method: str) -> str:
         """

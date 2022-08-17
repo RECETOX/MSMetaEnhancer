@@ -19,7 +19,9 @@ class SourceAttributeNotAvailable(Exception):
 
 
 class ServiceNotAvailable(Exception):
-    pass
+    @staticmethod
+    async def raise_exception(*args, **kwargs):
+        raise ServiceNotAvailable('Service not available.')
 
 
 class UnknownResponse(Exception):
