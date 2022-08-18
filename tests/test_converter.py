@@ -70,15 +70,10 @@ async def test_loop_request_fail(aiohttp_client):
 
 
 @pytest.fixture(params=[TimeoutError, ServerDisconnectedError, ClientConnectorError(None, OSError())])
-def exception(request):
-    yield request.param
-
-
-@pytest.fixture
-def failing_session_mock(exception):
+def failing_session_mock(request):
     session = mock.AsyncMock()
-    session.get = mock.Mock(side_effect=exception)
-    session.post = mock.Mock(side_effect=exception)
+    session.get = mock.Mock(side_effect=request.param)
+    session.post = mock.Mock(side_effect=request.param)
     yield session
 
 
