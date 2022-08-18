@@ -69,7 +69,7 @@ class WebConverter(Converter):
 
     @circuit(failure_threshold=FAILURE_THRESHOLD,
              expected_exception=Union[TimeoutError, ServerDisconnectedError, ClientConnectorError],
-             fallback_function=ServiceNotAvailable.async_raise)
+             fallback_function=ServiceNotAvailable.raise_circuitbreaker)
     async def make_request(self, url, method, data, headers):
         """
         Enter a circuit breaker loop and execute request with type depending on specified method.
