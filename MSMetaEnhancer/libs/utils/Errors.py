@@ -20,7 +20,7 @@ class SourceAttributeNotAvailable(Exception):
 
 class ServiceNotAvailable(Exception):
     @staticmethod
-    async def raise_exception(*args, **kwargs):
+    async def async_raise(*args, **kwargs):
         raise ServiceNotAvailable('Service not available.')
 
 
