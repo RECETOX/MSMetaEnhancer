@@ -26,7 +26,8 @@ setup(name='MSMetaEnhancer',
             "aiohttp",
             "asyncstdlib",
             "frozendict",
-            "tabulate"
+            "tabulate",
+            "aiocircuitbreaker"
       ],
       extras_require={
         'test': [
