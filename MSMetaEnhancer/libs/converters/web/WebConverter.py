@@ -12,15 +12,12 @@ from MSMetaEnhancer.libs.Converter import Converter
 from MSMetaEnhancer.libs.utils.Errors import ServiceNotAvailable, UnknownResponse, TargetAttributeNotRetrieved
 
 
-async def raise_exception(*args, **kwargs):
-    print('here')
-    raise ServiceNotAvailable
-
-
 class WebConverter(Converter):
     """
     General class for web conversions.
     """
+    FAILURE_THRESHOLD: int = 10
+    """Number of consecutive failures before circuit breaker is opened."""
 
     def __init__(self, session: aiohttp.ClientSession):
         """Constructor for Webconverter.
@@ -71,7 +68,7 @@ class WebConverter(Converter):
         except TypeError:
             raise TypeError(f'Incorrect argument {args} for converter {service}.')
 
-    @circuit(failure_threshold=10,
+    @circuit(failure_threshold=FAILURE_THRESHOLD,
              expected_exception=Union[TimeoutError, ServerDisconnectedError, ClientConnectorError],
              fallback_function=ServiceNotAvailable.raise_exception)
     async def make_request(self, url, method, data, headers):
@@ -92,7 +89,6 @@ class WebConverter(Converter):
         :param url: converter URL
         :param method: GET/POST
         :param data: given arguments for POST request
-        :param depth: allowed recursion depth for unsuccessful requests
         :param headers: optional headers for the request
         :return: obtained response
         """
