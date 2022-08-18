@@ -6,7 +6,6 @@ from multidict import MultiDict
 from aiohttp.client_exceptions import ServerDisconnectedError, ClientConnectorError
 from asyncio.exceptions import TimeoutError
 from aiocircuitbreaker import circuit
-from typing import Union
 
 from MSMetaEnhancer.libs.Converter import Converter
 from MSMetaEnhancer.libs.utils.Errors import ServiceNotAvailable, UnknownResponse, TargetAttributeNotRetrieved
