@@ -72,6 +72,15 @@ class WebConverter(Converter):
              expected_exception=Union[TimeoutError, ServerDisconnectedError, ClientConnectorError],
              fallback_function=ServiceNotAvailable.raise_exception)
     async def make_request(self, url, method, data, headers):
+        """
+        Enter a circuit breaker loop and execute request with type depending on specified method.
+
+        :param url: converter URL
+        :param method: GET/POST
+        :param data: given arguments for POST request
+        :param headers: optional headers for the request
+        :return: obtained response
+        """
         if headers is None:
             headers = dict()
         if method == 'GET':
@@ -84,7 +93,8 @@ class WebConverter(Converter):
 
     async def loop_request(self, url: str, method: str, data: Any, headers: dict) -> str:
         """
-        Execute request with type depending on specified method.
+        Execute request in a circuit breaker loop. If the request fails multiple times in a row,
+        the circuit breaker is opened and an exception is raised.
 
         :param url: converter URL
         :param method: GET/POST
