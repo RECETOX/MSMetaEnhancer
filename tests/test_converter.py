@@ -69,15 +69,32 @@ async def test_loop_request_fail(aiohttp_client):
         await converter.loop_request('/', 'GET', None, None)
 
 
-@pytest.mark.parametrize('exception', [TimeoutError, ServerDisconnectedError, ClientConnectorError(None, OSError())])
-async def test_loop_request_circuit_breaker(exception):
+@pytest.fixture(params=[TimeoutError, ServerDisconnectedError, ClientConnectorError(None, OSError())])
+def exception(request):
+    yield request.param
+
+
+@pytest.fixture
+def failing_session_mock(exception):
     session = mock.AsyncMock()
     session.get = mock.Mock(side_effect=exception)
+    session.post = mock.Mock(side_effect=exception)
+    yield session
 
-    converter = WebConverter(session)
+
+async def test_loop_request_circuit_breaker_get(failing_session_mock):
+    converter = WebConverter(failing_session_mock)
 
     with pytest.raises(ServiceNotAvailable):
         await converter.loop_request('/', 'GET', None, None)
+
+
+async def test_loop_request_circuit_breaker_post(failing_session_mock):
+    converter = WebConverter(failing_session_mock)
+    data = {'inchi': 'inchi'}
+
+    with pytest.raises(ServiceNotAvailable):
+        await converter.loop_request('/', 'POST', data, None)
 
 
 def test_process_request():
