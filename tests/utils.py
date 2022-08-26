@@ -23,7 +23,7 @@ class FakeMonitor(Thread):
         self.converters = converters
 
     def run(self):
-        while not self.stop_request.isSet():
+        while not self.stop_request.is_set():
             self.first_check.set()
             time.sleep(10)
 
