@@ -93,7 +93,7 @@ class WebConverter(Converter):
     async def loop_request(self, url: str, method: str, data: Any, headers: dict) -> str:
         """
         Execute request in a circuit breaker loop. If the request fails multiple times in a row,
-        the circuit breaker is opened and an exception is raised.
+        the circuit breaker is opened and ServiceNotAvailable exception is raised.
 
         :param url: converter URL
         :param method: GET/POST
