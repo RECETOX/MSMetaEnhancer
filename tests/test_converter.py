@@ -2,11 +2,14 @@ import asyncio
 
 import mock
 import pytest
-from aiohttp import ServerDisconnectedError
 from aiohttp import web
+from aiohttp.client_exceptions import ServerDisconnectedError
+from aiohttp import ClientConnectorError
+from asyncio.exceptions import TimeoutError
+import os
 
 from MSMetaEnhancer.libs.converters.web.WebConverter import WebConverter
-from MSMetaEnhancer.libs.utils.Errors import TargetAttributeNotRetrieved, UnknownResponse
+from MSMetaEnhancer.libs.utils.Errors import TargetAttributeNotRetrieved, UnknownResponse, ServiceNotAvailable
 
 
 def test_query_the_service():
@@ -66,6 +69,29 @@ async def test_loop_request_fail(aiohttp_client):
 
     with pytest.raises(UnknownResponse):
         await converter.loop_request('/', 'GET', None, None)
+
+
+@pytest.fixture(params=[TimeoutError, ServerDisconnectedError, ClientConnectorError(None, OSError())])
+def failing_session_mock(request):
+    session = mock.AsyncMock()
+    session.get = mock.Mock(side_effect=request.param)
+    session.post = mock.Mock(side_effect=request.param)
+    yield session
+
+
+async def test_loop_request_circuit_breaker_get(failing_session_mock):
+    converter = WebConverter(failing_session_mock)
+
+    with pytest.raises(ServiceNotAvailable):
+        await converter.loop_request('/', 'GET', None, None)
+
+
+async def test_loop_request_circuit_breaker_post(failing_session_mock):
+    converter = WebConverter(failing_session_mock)
+    data = {'inchi': 'inchi'}
+
+    with pytest.raises(ServiceNotAvailable):
+        await converter.loop_request('/', 'POST', data, None)
 
 
 def test_process_request():

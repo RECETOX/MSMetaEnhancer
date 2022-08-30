@@ -9,3 +9,4 @@ twine
 tabulate
 rdkit-pypi
 multidict
+aiocircuitbreaker

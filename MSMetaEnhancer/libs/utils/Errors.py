@@ -19,7 +19,10 @@ class SourceAttributeNotAvailable(Exception):
 
 
 class ServiceNotAvailable(Exception):
-    pass
+    @staticmethod
+    async def raise_circuitbreaker(*args):
+        converter_name = args[0].converter_name
+        raise ServiceNotAvailable(f'Service {converter_name} not available.')
 
 
 class UnknownResponse(Exception):

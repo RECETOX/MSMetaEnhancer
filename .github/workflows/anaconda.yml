@@ -7,7 +7,7 @@ on:
 
 jobs:
   anaconda_build:
-    name: Anaconda build / python-3.8 / ubuntu-latest
+    name: Anaconda build / python-3.9 / ubuntu-latest
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -21,7 +21,7 @@ jobs:
           activate-environment: MSMetaEnhancer-build
           auto-update-conda: true
           environment-file: conda/environment-build.yml
-          python-version: 3.8
+          python-version: 3.9
       - name: Show conda config
         shell: bash -l {0}
         run: |
