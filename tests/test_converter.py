@@ -37,15 +37,13 @@ def test_query_the_service():
 async def test_loop_request(aiohttp_client):
     response = {'smiles': '$SMILES'}
 
-    async def fake_request(request):
+    async def fake_request():
         return web.Response(body=response)
 
-    def create_app(loop):
-        app = web.Application(loop=loop)
-        app.router.add_route('GET', '/', fake_request)
-        return app
+    app = web.Application()
+    app.router.add_route('GET', '/', fake_request)
 
-    session = await aiohttp_client(create_app)
+    session = await aiohttp_client(app)
     converter = WebConverter(session)
     converter.process_request = mock.AsyncMock(return_value=response)
 
