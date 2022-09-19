@@ -139,11 +139,9 @@ def test_convert():
 
 
 async def test_lru_cache(aiohttp_client):
-    def create_app(loop):
-        app = web.Application(loop=loop)
-        return app
+    app = web.Application()
 
-    session = await aiohttp_client(create_app)
+    session = await aiohttp_client(app)
     converter = WebConverter(session)
     converter.endpoints = {'/': '/'}
     converter.loop_request = mock.AsyncMock(return_value=(1, 2, 3))
