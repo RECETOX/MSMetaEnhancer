@@ -34,7 +34,6 @@ def test_query_the_service():
     converter.loop_request.assert_not_called()
 
 
-@pytest.fixture
 async def test_loop_request(aiohttp_client):
     response = {'smiles': '$SMILES'}
 
@@ -54,7 +53,6 @@ async def test_loop_request(aiohttp_client):
     assert result == response
 
 
-@pytest.fixture
 async def test_loop_request_fail(aiohttp_client):
     async def fake_request(request):
         raise ServerDisconnectedError()
@@ -140,7 +138,6 @@ def test_convert():
         _ = asyncio.run(converter.convert('B', 'C', None))
 
 
-@pytest.fixture
 async def test_lru_cache(aiohttp_client):
     def create_app(loop):
         app = web.Application(loop=loop)
