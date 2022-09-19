@@ -77,6 +77,7 @@ def failing_session_mock(request):
     yield session
 
 
+@pytest.mark.asyncio
 async def test_loop_request_circuit_breaker_get(failing_session_mock):
     converter = WebConverter(failing_session_mock)
 
@@ -84,6 +85,7 @@ async def test_loop_request_circuit_breaker_get(failing_session_mock):
         await converter.loop_request('/', 'GET', None, None)
 
 
+@pytest.mark.asyncio
 async def test_loop_request_circuit_breaker_post(failing_session_mock):
     converter = WebConverter(failing_session_mock)
     data = {'inchi': 'inchi'}
@@ -138,6 +140,7 @@ def test_convert():
         _ = asyncio.run(converter.convert('B', 'C', None))
 
 
+@pytest.mark.asyncio
 async def test_lru_cache(aiohttp_client):
     def create_app(loop):
         app = web.Application(loop=loop)
