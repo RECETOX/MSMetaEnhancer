@@ -68,7 +68,7 @@ class WebConverter(Converter):
             raise TypeError(f'Incorrect argument {args} for converter {service}.')
 
     @circuit(failure_threshold=FAILURE_THRESHOLD,
-             expected_exception=Union[TimeoutError, ServerDisconnectedError, ClientConnectorError],
+             expected_exception=Union[TimeoutError, ServerDisconnectedError, ClientConnectorError].__args__,
              fallback_function=ServiceNotAvailable.raise_circuitbreaker)
     async def make_request(self, url, method, data, headers):
         """
