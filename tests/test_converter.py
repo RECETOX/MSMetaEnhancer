@@ -6,7 +6,6 @@ from aiohttp import web
 from aiohttp.client_exceptions import ServerDisconnectedError
 from aiohttp import ClientConnectorError
 from asyncio.exceptions import TimeoutError
-import os
 
 from MSMetaEnhancer.libs.converters.web.WebConverter import WebConverter
 from MSMetaEnhancer.libs.utils.Errors import TargetAttributeNotRetrieved, UnknownResponse, ServiceNotAvailable
