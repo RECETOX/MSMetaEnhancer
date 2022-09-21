@@ -6,7 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [dev] - unreleased
 ### Added
+* added Pytest config file `pytest.ini` and set it to automatically detect asynchronous tests [#124](https://github.com/RECETOX/MSMetaEnhancer/pull/124)
 ### Changed
+* fixed Circuit Breaker implementation to be compatible with Python 3.9 [#124](https://github.com/RECETOX/MSMetaEnhancer/pull/124)
 ### Removed
 
 ## [0.2.4] - 2022-08-30

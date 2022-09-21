@@ -6,7 +6,6 @@ from aiohttp import web
 from aiohttp.client_exceptions import ServerDisconnectedError
 from aiohttp import ClientConnectorError
 from asyncio.exceptions import TimeoutError
-import os
 
 from MSMetaEnhancer.libs.converters.web.WebConverter import WebConverter
 from MSMetaEnhancer.libs.utils.Errors import TargetAttributeNotRetrieved, UnknownResponse, ServiceNotAvailable
@@ -34,19 +33,16 @@ def test_query_the_service():
     converter.loop_request.assert_not_called()
 
 
-@pytest.fixture
 async def test_loop_request(aiohttp_client):
     response = {'smiles': '$SMILES'}
 
-    async def fake_request(request):
+    async def fake_request():
         return web.Response(body=response)
 
-    def create_app(loop):
-        app = web.Application(loop=loop)
-        app.router.add_route('GET', '/', fake_request)
-        return app
+    app = web.Application()
+    app.router.add_route('GET', '/', fake_request)
 
-    session = await aiohttp_client(create_app)
+    session = await aiohttp_client(app)
     converter = WebConverter(session)
     converter.process_request = mock.AsyncMock(return_value=response)
 
@@ -54,17 +50,14 @@ async def test_loop_request(aiohttp_client):
     assert result == response
 
 
-@pytest.fixture
 async def test_loop_request_fail(aiohttp_client):
-    async def fake_request(request):
+    async def fake_request():
         raise ServerDisconnectedError()
 
-    def create_app(loop):
-        app = web.Application(loop=loop)
-        app.router.add_route('GET', '/', fake_request)
-        return app
+    app = web.Application()
+    app.router.add_route('GET', '/', fake_request)
 
-    session = await aiohttp_client(create_app)
+    session = await aiohttp_client(app)
     converter = WebConverter(session)
 
     with pytest.raises(UnknownResponse):
@@ -140,13 +133,10 @@ def test_convert():
         _ = asyncio.run(converter.convert('B', 'C', None))
 
 
-@pytest.fixture
 async def test_lru_cache(aiohttp_client):
-    def create_app(loop):
-        app = web.Application(loop=loop)
-        return app
+    app = web.Application()
 
-    session = await aiohttp_client(create_app)
+    session = await aiohttp_client(app)
     converter = WebConverter(session)
     converter.endpoints = {'/': '/'}
     converter.loop_request = mock.AsyncMock(return_value=(1, 2, 3))
