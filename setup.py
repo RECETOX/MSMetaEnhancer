@@ -16,7 +16,7 @@ with open("README.md") as readme_file:
     readme = readme_file.read()
 
 setup(name='MSMetaEnhancer',
-      version='0.2.3',
+      version='0.2.4',
       description='Repository for tool that adds more annotations '
                   '(e.g. SMILES, InChI, CAS number) to MSP files (Python version).',
       long_description=readme,
