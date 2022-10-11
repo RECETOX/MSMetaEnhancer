@@ -29,7 +29,7 @@ bibliography: paper.bib
 # Summary
 
 MSMetaEnhancer is a Python software package for the metadata enrichment of records in mass spectral library files commonly used as reference for chemical identification via mass spectrometry.
-Each record contains spectral information i.e. peak mass to charge ratio (m/z) and intensities, alongside chemical & structural metadata e.g. identifiers.
+Each record contains spectral information, i.e., peak mass to charge ratio (m/z) and intensities, alongside chemical & structural metadata, e.g., identifiers.
 The package uses matchms [@Huber2020] for data IO and supports the open, text-based `.msp` format.
 It annotates given mass spectra records in the library file by adding missing metadata such as SMILES, InChI, and CAS numbers to the individual entries.
 The package retrieves the respective information by querying several external databases using existing metadata (e.g., SMILES or CAS number), converting different representations or database identifiers.
@@ -46,7 +46,7 @@ Moreso, manual curation and addition of metadata while creating a compound libra
 
 # State of the field
 
-There are several packages within Python and R ecosystems which support querying external databases. 
+There are several packages within the Python and R ecosystems which support querying external databases. 
 For example, there are R packages that provide an interface to PubChem [@guha2016; @cao2008chemminer], and a package with interface to wikidata [@keys2021]. 
 Then, there are packages unifying several sources -- `webchem` [@szocs2020webchem] allows to automatically query chemical data from several web sources (similar to MSMetaEnhancer) and to interconvert between identifiers.
 The `MetaFetcheR` [@yones2021metafetcher] package focuses on database-specific identifiers and links metabolite data from several small-compound databases (e.g., PubChem, the Human Metabolome Database (HMDB) [@Wishart2022]), trying to resolve inconsistencies.
@@ -64,7 +64,7 @@ However, to the best of our knowledge, there is no Python package connecting the
 MSMetaEnhancer is a tool to enhance the metadata content of records in mass spectral library files.
 It takes as input a single `.msp` file with multiple mass spectra records and a list of annotation steps.
 These steps consist of specifying what service should be used to obtain a particular metadata attribute based on another already existing attribute.
-To improve the performance of the tool, we use services with high-throughput APIs when available (e.g. IDSM [@galgonek2021idsm], which can be used to access PubChem database).
+To improve the performance of the tool, we use services with high-throughput APIs when available (e.g. IDSM [@galgonek2021idsm], which can be used to access the PubChem database).
 The supported metadata attributes include InChI, InChIKey, SMILES, IUPAC chemical name, chemical formula, CAS number, and others. 
 The particular available conversions can be found in the documentation via https://msmetaenhancer.readthedocs.io/ and are open to extension.
 Finally, the obtained metadata are validated to ensure their correct form (currently, `matchms` validators are employed for this task).
