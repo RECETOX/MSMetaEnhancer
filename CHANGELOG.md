@@ -4,7 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+
 ## [dev] - unreleased
+### Added
+### Changed
+### Removed
+
+## [0.2.5] - 2022-10-15
 ### Added
 * added Pytest config file `pytest.ini` and set it to automatically detect asynchronous tests [#124](https://github.com/RECETOX/MSMetaEnhancer/pull/124)
 ### Changed
