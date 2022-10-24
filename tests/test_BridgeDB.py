@@ -16,7 +16,7 @@ def test_service_available():
 @pytest.mark.dependency(depends=["test_service_available"])
 def test_format():
     args = f'Ch/{HMDBID}'
-    response = asyncio.run(wrap_with_session(BridgeDb, 'query_the_service', ['BridgeDB', args]))
+    response = asyncio.run(wrap_with_session(BridgeDb, 'query_the_service', ['BridgeDb', args]))
 
     assert type(response) == str
     lines = response.split('\n')
@@ -26,4 +26,4 @@ def test_format():
 
 def test_get_conversions():
     jobs = BridgeDb(None).get_conversion_functions()
-    assert ('wikidataid', 'pubchemid', 'BridgeDB') in jobs
+    assert ('wikidataid', 'pubchemid', 'BridgeDb') in jobs
