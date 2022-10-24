@@ -1,7 +1,7 @@
 from MSMetaEnhancer.libs.converters.web.WebConverter import WebConverter
 
 
-class BridgeDB(WebConverter):
+class BridgeDb(WebConverter):
     """
     BridgeDb is a framework to map identifiers between various biological databases. These mappings are provided for
     genes, proteins, genetic variants, metabolites, and metabolic reactions
