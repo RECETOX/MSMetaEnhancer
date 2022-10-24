@@ -27,7 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.2.3] - 2022-05-12
 ### Added
-* KEGG ID conversions support to BridgeDB service [#101](https://github.com/RECETOX/MSMetaEnhancer/issues/101)
+* KEGG ID conversions support to BridgeDb service [#101](https://github.com/RECETOX/MSMetaEnhancer/issues/101)
 ### Changed
 * double quotes to single quotes in IDSM [#102](https://github.com/RECETOX/MSMetaEnhancer/issues/102)
 
@@ -47,7 +47,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.2.0] - 2022-03-19
 ### Added
-* BridgeDB supporting conversion of several database IDs [#76](https://github.com/RECETOX/MSMetaEnhancer/issues/76)
+* BridgeDb supporting conversion of several database IDs [#76](https://github.com/RECETOX/MSMetaEnhancer/issues/76)
 * ComputeConverter class for conversions based on computation instead of querying [#75](https://github.com/RECETOX/MSMetaEnhancer/issues/75)
 * ConverterBuilder which validates and initialises converters [#75](https://github.com/RECETOX/MSMetaEnhancer/issues/75)
 * reintroduced PubChem service using direct REST web interface [#76](https://github.com/RECETOX/MSMetaEnhancer/issues/76)

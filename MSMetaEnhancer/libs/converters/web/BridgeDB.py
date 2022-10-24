@@ -1,7 +1,7 @@
 from MSMetaEnhancer.libs.converters.web.WebConverter import WebConverter
 
 
-class BridgeDB(WebConverter):
+class BridgeDb(WebConverter):
     """
     BridgeDb is a framework to map identifiers between various biological databases. These mappings are provided for
     genes, proteins, genetic variants, metabolites, and metabolic reactions
@@ -11,7 +11,7 @@ class BridgeDB(WebConverter):
     def __init__(self, session):
         super().__init__(session)
         # service URLs
-        self.endpoints = {'BridgeDB': 'https://webservice.bridgedb.org/Human/xrefs/'}
+        self.endpoints = {'BridgeDb': 'https://webservice.bridgedb.org/Human/xrefs/'}
 
         self.codes = {'hmdbid': 'Ch', 'pubchemid': 'Cpc', 'chemspiderid': 'Cs', 'wikidataid': 'Wd', 'chebiid': 'Ce',
                       'keggid': 'Ck'}
@@ -54,7 +54,7 @@ class BridgeDB(WebConverter):
 
     async def from_hmdbid(self, hmdbid):
         """
-        Convert HMDB ID to all possible IDs using BridgeDB web service
+        Convert HMDB ID to all possible IDs using BridgeDb web service
 
         :param hmdbid: given HMDB ID number
         :return: obtained IDs
@@ -64,7 +64,7 @@ class BridgeDB(WebConverter):
 
     async def from_pubchemid(self, pubchemid):
         """
-        Convert PubChem ID to all possible IDs using BridgeDB web service
+        Convert PubChem ID to all possible IDs using BridgeDb web service
 
         :param pubchemid: given PubChem ID number
         :return: obtained IDs
@@ -74,7 +74,7 @@ class BridgeDB(WebConverter):
 
     async def from_chemspiderid(self, chemspiderid):
         """
-        Convert ChemSpider ID to all possible IDs using BridgeDB web service
+        Convert ChemSpider ID to all possible IDs using BridgeDb web service
 
         :param chemspiderid: given ChemSpider ID number
         :return: obtained IDs
@@ -84,7 +84,7 @@ class BridgeDB(WebConverter):
 
     async def from_wikidataid(self, wikidataid):
         """
-        Convert WikiData ID to all possible IDs using BridgeDB web service
+        Convert WikiData ID to all possible IDs using BridgeDb web service
 
         :param wikidataid: given WikiData ID number
         :return: obtained IDs
@@ -94,7 +94,7 @@ class BridgeDB(WebConverter):
 
     async def from_chebiid(self, chebiid):
         """
-        Convert ChEBI ID to all possible IDs using BridgeDB web service
+        Convert ChEBI ID to all possible IDs using BridgeDb web service
 
         :param chebiid: given ChEBI ID number
         :return: obtained IDs
@@ -104,7 +104,7 @@ class BridgeDB(WebConverter):
 
     async def from_keggid(self, keggid):
         """
-        Convert KEGG ID to all possible IDs using BridgeDB web service
+        Convert KEGG ID to all possible IDs using BridgeDb web service
 
         :param keggid: given KEGG ID number
         :return: obtained IDs
@@ -113,15 +113,15 @@ class BridgeDB(WebConverter):
         return await self.call_service(args)
 
     async def call_service(self, args):
-        response = await self.query_the_service('BridgeDB', args)
+        response = await self.query_the_service('BridgeDb', args)
         if response:
             return self.parse_attributes(response)
 
     def parse_attributes(self, response):
         """
-        Parse all available attributes obtained using BridgeDB.
+        Parse all available attributes obtained using BridgeDb.
 
-        :param response: BridgeDB response to given ID
+        :param response: BridgeDb response to given ID
         :return: all parsed data
         """
         result = dict()

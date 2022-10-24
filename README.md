@@ -5,7 +5,7 @@
 [![Conda](https://img.shields.io/conda/v/bioconda/msmetaenhancer)](https://anaconda.org/bioconda/msmetaenhancer)
 
 **MSMetaEnhancer** is a tool used for `.msp` files annotation.
-It adds metadata like SMILES, InChI, and CAS number fetched from the following services: [CIR](https://cactus.nci.nih.gov/chemical/structure_documentation), [CTS](https://cts.fiehnlab.ucdavis.edu/), [NLM](https://chem.nlm.nih.gov), [PubChem](https://pubchem.ncbi.nlm.nih.gov/), [IDSM](https://idsm.elixir-czech.cz/), and [BridgeDB](https://bridgedb.github.io/).
+It adds metadata like SMILES, InChI, and CAS number fetched from the following services: [CIR](https://cactus.nci.nih.gov/chemical/structure_documentation), [CTS](https://cts.fiehnlab.ucdavis.edu/), [NLM](https://chem.nlm.nih.gov), [PubChem](https://pubchem.ncbi.nlm.nih.gov/), [IDSM](https://idsm.elixir-czech.cz/), and [BridgeDb](https://bridgedb.github.io/).
 The app uses asynchronous implementation of annotation process allowing for optimal fetching speed.
 
 ### Usage
@@ -24,7 +24,7 @@ app.load_spectra('tests/test_data/sample.msp', file_format='msp')
 app.curate_spectra()
 
 # specify requested services (these are supported)
-services = ['CTS', 'CIR', 'NLM', 'IDSM', 'PubChem', 'BridgeDB', 'RDKit']
+services = ['CTS', 'CIR', 'NLM', 'IDSM', 'PubChem', 'BridgeDb', 'RDKit']
 
 # specify requested jobs
 jobs = [('name', 'inchi', 'IDSM'), ('inchi', 'formula', 'IDSM'), ('inchi', 'inchikey', 'IDSM'),
