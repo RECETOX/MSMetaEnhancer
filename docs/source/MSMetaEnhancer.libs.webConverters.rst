@@ -41,6 +41,14 @@ PubChem
    :undoc-members:
    :show-inheritance:
 
+BridgeDb
+--------
+
+.. automodule:: MSMetaEnhancer.libs.converters.web.BridgeDb
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 General Web Converter
 ---------------------
 
