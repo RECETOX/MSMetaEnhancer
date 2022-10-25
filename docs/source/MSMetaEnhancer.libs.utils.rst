@@ -45,3 +45,11 @@ ConverterBuilder
    :members:
    :undoc-members:
    :show-inheritance:
+
+Monitor
+-------
+
+.. automodule:: MSMetaEnhancer.libs.utils.Monitor
+   :members:
+   :undoc-members:
+   :show-inheritance:
