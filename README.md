@@ -9,6 +9,9 @@
 It adds metadata like SMILES, InChI, and CAS number fetched from the following services: [CIR](https://cactus.nci.nih.gov/chemical/structure_documentation), [CTS](https://cts.fiehnlab.ucdavis.edu/), [NLM](https://chem.nlm.nih.gov), [PubChem](https://pubchem.ncbi.nlm.nih.gov/), [IDSM](https://idsm.elixir-czech.cz/), and [BridgeDb](https://bridgedb.github.io/).
 The app uses asynchronous implementation of annotation process allowing for optimal fetching speed.
 
+If you use MSMetaEnhancer in your work, please cite the following publication:
+
+Troják et al., (2022). MSMetaEnhancer: A Python package for mass spectra metadata annotation. Journal of Open Source Software, 7(79), 4494, https://doi.org/10.21105/joss.04494
 ### Usage
 
 ```python
