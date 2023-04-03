@@ -1,5 +1,7 @@
 from rdkit.Chem.Descriptors import ExactMolWt
-from rdkit.Chem import MolFromSmiles
+from rdkit.Chem import MolFromSmiles, MolToSmiles
+from rdkit.Chem.inchi import MolFromInchi
+
 
 from MSMetaEnhancer.libs.converters.compute.ComputeConverter import ComputeConverter
 
@@ -25,3 +27,13 @@ class RDKit(ComputeConverter):
         """
         weight = ExactMolWt(MolFromSmiles(smiles))
         return {'mw': weight}
+
+    def inchi_to_canonical_smiles(self, inchi):
+        """
+        Compute canonical SMILES from InChI.
+
+        :param inchi: given InChI
+        :return: computed canonical SMILES
+        """
+        smiles = MolToSmiles(MolFromInchi(inchi), isomericSmiles=False)
+        return {'canonical_smiles': smiles}
