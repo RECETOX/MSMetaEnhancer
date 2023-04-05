@@ -37,3 +37,13 @@ class RDKit(ComputeConverter):
         """
         smiles = MolToSmiles(MolFromInchi(inchi), isomericSmiles=False)
         return {'canonical_smiles': smiles}
+
+    def inchi_to_isomeric_smiles(self, inchi):
+        """
+        Compute isomeric SMILES from InChI.
+
+        :param inchi: given InChI
+        :return: computed isomeric SMILES
+        """
+        smiles = MolToSmiles(MolFromInchi(inchi))
+        return {'isomeric_smiles': smiles}
