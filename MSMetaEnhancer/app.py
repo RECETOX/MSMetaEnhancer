@@ -5,7 +5,7 @@ import aiohttp
 from MSMetaEnhancer.libs.Annotator import Annotator
 from MSMetaEnhancer.libs.Converter import Converter
 from MSMetaEnhancer.libs.Curator import Curator
-from MSMetaEnhancer.libs.Spectra import Spectra
+from MSMetaEnhancer.libs.data import Spectra, DataFrame
 from MSMetaEnhancer.libs.utils import logger
 from MSMetaEnhancer.libs.utils.ConverterBuilder import ConverterBuilder
 from MSMetaEnhancer.libs.utils.Errors import UnknownSpectraFormat
@@ -15,22 +15,25 @@ from MSMetaEnhancer.libs.utils.Monitor import Monitor
 
 class Application:
     def __init__(self, log_level='info', log_file=None):
-        self.spectra = Spectra()
+        self.data = None
         logger.setup(log_level, log_file)
 
-    def load_spectra(self, filename, file_format):
+    def load_data(self, filename, file_format):
         """
         High level method to load Spectra data from given file.
 
         :param filename: path to source spectra file
         :param file_format: format of spectra
         """
-        try:
-            getattr(self.spectra, f'load_from_{file_format}')(filename)
-        except AttributeError:
+        if file_format in ['msp']:
+            self.data = Spectra()
+        elif file_format in ['csv']:
+            self.data = DataFrame()
+        else:
             raise UnknownSpectraFormat(f'Format {file_format} not supported.')
+        getattr(self.data, f'load_from_{file_format}')(filename)
 
-    def save_spectra(self, filename, file_format):
+    def save_data(self, filename, file_format):
         """
         High level method to save Spectra data to given file.
 
@@ -38,17 +41,18 @@ class Application:
         :param file_format: desired format of spectra
         """
         try:
-            getattr(self.spectra, f'save_to_{file_format}')(filename)
+            getattr(self.data, f'save_to_{file_format}')(filename)
         except Exception:
             raise UnknownSpectraFormat(f'Format {file_format} not supported.')
 
-    def curate_spectra(self):
+    def curate_metadata(self):
         """
-        Updates current Spectra data by curation process.
+        Updates metadata by curation process.
 
         This includes e.g. normalisation of CAS numbers.
         """
-        self.spectra = Curator().curate_spectra(self.spectra)
+        curated_metadata = Curator().curate_metadata(self.data.get_metadata())
+        self.data.fuse_metadata(curated_metadata)
 
     async def annotate_spectra(self, converters, jobs=None, repeat=False, monitor=Monitor(), annotator=Annotator()):
         """
@@ -84,12 +88,14 @@ class Application:
                         jobs += converter.get_conversion_functions()
                 jobs = convert_to_jobs(jobs)
 
-                logger.set_target_attributes(jobs, len(self.spectra.spectrums))
+                metadata_list = self.data.get_metadata()
 
-                results = await asyncio.gather(*[annotator.annotate(spectra, jobs, repeat)
-                                                 for spectra in self.spectra.spectrums])
+                logger.set_target_attributes(jobs, len(metadata_list))
+
+                results = await asyncio.gather(*[annotator.annotate(metadata, jobs, repeat)
+                                                 for metadata in metadata_list])
             finally:
                 monitor.join()
 
-        self.spectra.spectrums = results
+        self.data.fuse_metadata(results)
         logger.write_metrics()

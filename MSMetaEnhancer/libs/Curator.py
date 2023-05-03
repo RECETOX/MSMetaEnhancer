@@ -9,18 +9,19 @@ class Curator:
 
     Additionally, it supports metadata validation to make sure the produced data are correct.
     """
-    def curate_spectra(self, spectra):
+    def curate_metadata(self, metadata_list):
         """
-        Iterates over given spectrums and curates individual spectra.
+        Iterates over given metadata and curates individual entries.
 
-        :param spectra: given spectrums
-        :return: curated spectrums
+        :param metadata_list: given metadata
+        :return: curated metadata
         """
-        for spectrum in spectra.spectrums:
-            spectrum.metadata = self.curate_metadata(spectrum.metadata)
-        return spectra
+        curated_metadata_list = []
+        for metadata in metadata_list:
+            curated_metadata_list.append(self.curate_casno(metadata))
+        return curated_metadata_list
 
-    def curate_metadata(self, metadata):
+    def curate_casno(self, metadata):
         """
         Curate metadata of particular spectra.
 

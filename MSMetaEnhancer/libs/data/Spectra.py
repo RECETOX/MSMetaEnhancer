@@ -1,21 +1,12 @@
-from typing import List, Dict
-
+from typing import List
 from matchms import Spectrum
 from matchms.exporting import save_as_msp
 from matchms.importing import load_from_msp
 
-
-class Dataframe:
-    def __int__(self):
-        self.metadata: List[Dict] = []
-    def load_from_csv(self):
-        ...
-
-    def get_metadata(self):
-        return self.metadata
+from MSMetaEnhancer.libs.data.Data import Data
 
 
-class Spectra:
+class Spectra(Data):
     """
     Spectra class represents a single spectra dataset as a list.
     It is using `matchms` package to load and save MSP files.
@@ -28,9 +19,6 @@ class Spectra:
             return all([spectra_eq(self.spectrums[i], other.spectrums[i]) for i in range(len(self.spectrums))])
         else:
             return False
-
-    def get_metadata(self):
-        return [spectra.metadata for spectra in self.spectrums]
 
     def load_from_msp(self, filename: str):
         """
@@ -49,6 +37,13 @@ class Spectra:
         :param filename: target MSP file
         """
         save_as_msp(self.spectrums, filename)
+
+    def get_metadata(self):
+        return [spectra.metadata for spectra in self.spectrums]
+
+    def fuse_metadata(self, metadata):
+        for i in range(len(metadata)):
+            self.spectrums[i].metadata = metadata[i]
 
 
 def spectra_eq(first: Spectrum, second: Spectrum):
