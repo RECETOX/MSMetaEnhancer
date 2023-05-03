@@ -19,8 +19,6 @@ def test_service_available():
 
 @pytest.mark.dependency(depends=["test_service_available"])
 def test_format():
-    inchi = 'InChI=1S/C9H10O4/c10-7-3-1-6(2-4-7)5-8(11)9(12)13/h1-4,8,10-11H,5H2,(H,12,13)'
-
     query = f"""
     SELECT DISTINCT ?value ?type
     WHERE
@@ -29,7 +27,7 @@ def test_format():
       ?attribute sio:has-value ?value.
       ?substance sio:has-attribute ?attribute.
       ?substance sio:has-attribute ?inchi.
-      ?inchi sio:has-value "{inchi}"@en.
+      ?inchi sio:has-value "{INCHI}"@en.
     }}
     """
 
