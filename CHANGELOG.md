@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 ### Changed
 ### Removed
+* retired NLM (ChemIDplus) service [#140](https://github.com/RECETOX/MSMetaEnhancer/pull/140)
 
 ## [0.2.5] - 2022-10-15
 ### Added
