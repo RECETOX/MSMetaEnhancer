@@ -17,14 +17,6 @@ CTS
    :undoc-members:
    :show-inheritance:
 
-NLM
----
-
-.. automodule:: MSMetaEnhancer.libs.converters.web.NLM
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 IDSM
 ----
 
