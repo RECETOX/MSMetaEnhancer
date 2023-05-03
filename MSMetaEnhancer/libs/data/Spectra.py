@@ -1,8 +1,18 @@
-from typing import List
+from typing import List, Dict
 
 from matchms import Spectrum
 from matchms.exporting import save_as_msp
 from matchms.importing import load_from_msp
+
+
+class Dataframe:
+    def __int__(self):
+        self.metadata: List[Dict] = []
+    def load_from_csv(self):
+        ...
+
+    def get_metadata(self):
+        return self.metadata
 
 
 class Spectra:
@@ -18,6 +28,9 @@ class Spectra:
             return all([spectra_eq(self.spectrums[i], other.spectrums[i]) for i in range(len(self.spectrums))])
         else:
             return False
+
+    def get_metadata(self):
+        return [spectra.metadata for spectra in self.spectrums]
 
     def load_from_msp(self, filename: str):
         """
