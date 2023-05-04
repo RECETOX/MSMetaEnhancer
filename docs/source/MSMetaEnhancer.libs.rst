@@ -14,14 +14,6 @@ Curator
    :undoc-members:
    :show-inheritance:
 
-Spectra
--------
-
-.. automodule:: MSMetaEnhancer.libs.Spectra
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 Converter
 ---------
 
