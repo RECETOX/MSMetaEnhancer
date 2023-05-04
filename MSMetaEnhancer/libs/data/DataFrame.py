@@ -1,7 +1,9 @@
 import pandas
 
+from MSMetaEnhancer.libs.data.Data import Data
 
-class DataFrame:
+
+class DataFrame(Data):
     def __init__(self):
         self.df = pandas.DataFrame()
 
