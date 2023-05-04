@@ -1,61 +1,46 @@
 import pandas
 
 from MSMetaEnhancer.libs.data.Data import Data
+from MSMetaEnhancer.libs.utils.Errors import UnknownSpectraFormat
 
 
 class DataFrame(Data):
     def __init__(self):
         self.df = pandas.DataFrame()
 
-    def load_from_csv(self, filename, sep=','):
+    def load_data(self, filename: str, file_format: str):
         """
-        Loads metadata from CSV file and stores them in pandas DataFrame.
+        Loads given file as a list of pandas DataFrame.
 
-        :param filename: given CSV file
-        :param sep: data separator
-        """
-        self.df = pandas.read_csv(filename, dtype=str, sep=sep)
+        Supported formats: csv, tsv, xlsx
 
-    def load_from_tsv(self, filename):
+        :param filename: given file
+        :param file_format: format of the input file
         """
-        Loads metadata from TSV file and stores them in pandas DataFrame.
+        if file_format == 'csv':
+            self.df = pandas.read_csv(filename, dtype=str)
+        elif file_format == 'tsv':
+            self.df = pandas.read_csv(filename, dtype=str, sep='\t')
+        else:
+            self.df = pandas.read_excel(filename, dtype=str)
 
-        :param filename: given TSV file
+    def save_data(self, filename: str, file_format: str):
         """
-        self.load_from_csv(filename, sep='\t')
+        Exports DataFrame stored a file given by filename
 
-    def load_from_xlsx(self, filename):
-        """
-        Loads metadata from Excel sheet and stores them in pandas DataFrame.
+        Supported formats: csv, tsv, xlsx
 
-        :param filename: given xlsx file
+        :param filename: target file
+        :param file_format: format of the output file
         """
-        self.df = pandas.read_excel(filename, dtype=str)
-
-    def save_to_csv(self, filename, sep=','):
-        """
-        Store metadata as a table to given CSV file.
-
-        :param filename: target CSV file
-        :param sep: data separator
-        """
-        self.df.to_csv(filename, index=False, sep=sep)
-
-    def save_to_tsv(self, filename):
-        """
-        Store metadata as a table to given TSV file.
-
-        :param filename: target TSV file
-        """
-        self.save_to_csv(filename, sep='\t')
-
-    def save_to_xlsx(self, filename):
-        """
-        Store metadata as an Excel sheet.
-
-        :param filename: target Excel sheet
-        """
-        self.df.to_excel(filename)
+        if file_format == 'csv':
+            self.df.to_csv(filename, index=False)
+        elif file_format == 'tsv':
+            self.df.to_csv(filename, index=False, sep='\t')
+        elif file_format == 'xlsx':
+            self.df.to_excel(filename)
+        else:
+            raise UnknownSpectraFormat(f'Format {file_format} not supported.')
 
     def get_metadata(self):
         return self.df.to_dict('records')

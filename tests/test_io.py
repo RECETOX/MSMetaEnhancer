@@ -17,9 +17,7 @@ DATA = [{'formula': 'H2', 'mw': '2', 'casno': '1333740', 'id': '1', 'num_peaks':
     [DataFrame(), 'xlsx', 'tests/test_data/sample_metadata.xlsx']
 ])
 def test_get_metadata(backend, file_type, filename):
-    getattr(backend, f'load_from_{file_type}')(filename)
-    print(backend.get_metadata())
-    print(DATA)
+    backend.load_data(filename, file_type)
     assert backend.get_metadata() == DATA
 
 
@@ -36,6 +34,6 @@ def test_fuse_metadata_spectra():
     spectra_fused.fuse_metadata(DATA)
 
     spectra_loaded = Spectra()
-    spectra_loaded.load_from_msp('tests/test_data/sample.msp')
+    spectra_loaded.load_data('tests/test_data/sample.msp', 'msp')
 
     assert spectra_fused.get_metadata() == spectra_loaded.get_metadata()

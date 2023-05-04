@@ -1,9 +1,10 @@
 from typing import List
 from matchms import Spectrum
-from matchms.exporting import save_as_msp
-from matchms.importing import load_from_msp
+import matchms.exporting
+import matchms.importing
 
 from MSMetaEnhancer.libs.data.Data import Data
+from MSMetaEnhancer.libs.utils.Errors import UnknownSpectraFormat
 
 
 class Spectra(Data):
@@ -20,23 +21,31 @@ class Spectra(Data):
         else:
             return False
 
-    def load_from_msp(self, filename: str):
+    def load_data(self, filename: str, file_format: str):
         """
-        Loads given MSP filename as a list of matchms.Spectra objects and
-        stores them in self.spectrums attribute
+        Loads given file as a list of matchms.Spectra objects.
 
-        :param filename: given MSP file
+        Supported formats: msp, mgf, json
+
+        :param filename: given file
+        :param file_format: format of the input file
         """
-        self.spectrums = list(load_from_msp(filename))
+        self.spectrums = list(getattr(matchms.importing, f'load_from_{file_format}')(filename))
 
-    def save_to_msp(self, filename: str):
+    def save_data(self, filename: str, file_format: str):
         """
         Exports all matchms.Spectra objects stored in self.spectrums to
         a file given by filename
 
-        :param filename: target MSP file
+        Supported formats: msp, mgf, json
+
+        :param filename: target file
+        :param file_format: format of the output file
         """
-        save_as_msp(self.spectrums, filename)
+        try:
+            getattr(matchms.exporting, f'save_as_{file_format}')(self.spectrums, filename)
+        except Exception:
+            raise UnknownSpectraFormat(f'Format {file_format} not supported.')
 
     def get_metadata(self):
         return [spectra.metadata for spectra in self.spectrums]

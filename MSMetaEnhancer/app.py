@@ -25,13 +25,13 @@ class Application:
         :param filename: path to source spectra file
         :param file_format: format of spectra
         """
-        if file_format in ['msp']:
+        if file_format in ['msp', 'mgf', 'json']:
             self.data = Spectra()
         elif file_format in ['csv', 'tsv', 'xlsx']:
             self.data = DataFrame()
         else:
             raise UnknownSpectraFormat(f'Format {file_format} not supported.')
-        getattr(self.data, f'load_from_{file_format}')(filename)
+        self.data.load_data(filename, file_format)
 
     def save_data(self, filename, file_format):
         """
@@ -40,10 +40,7 @@ class Application:
         :param filename: path to target file
         :param file_format: desired format of spectra
         """
-        try:
-            getattr(self.data, f'save_to_{file_format}')(filename)
-        except Exception:
-            raise UnknownSpectraFormat(f'Format {file_format} not supported.')
+        self.data.save_data(filename, file_format)
 
     def curate_metadata(self):
         """
