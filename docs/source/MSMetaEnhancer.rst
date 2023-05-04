@@ -23,6 +23,13 @@ Converters
    MSMetaEnhancer.libs.webConverters
    MSMetaEnhancer.libs.computeConverters
 
+Data representation
+-------------------
+
+.. toctree::
+
+   MSMetaEnhancer.libs.data
+
 Utils
 -----
 
