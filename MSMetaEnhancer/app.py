@@ -27,7 +27,7 @@ class Application:
         """
         if file_format in ['msp']:
             self.data = Spectra()
-        elif file_format in ['csv']:
+        elif file_format in ['csv', 'tsv', 'xlsx']:
             self.data = DataFrame()
         else:
             raise UnknownSpectraFormat(f'Format {file_format} not supported.')

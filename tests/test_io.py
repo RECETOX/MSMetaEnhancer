@@ -12,10 +12,14 @@ DATA = [{'formula': 'H2', 'mw': '2', 'casno': '1333740', 'id': '1', 'num_peaks':
 
 @pytest.mark.parametrize('backend, file_type, filename', [
     [Spectra(), 'msp', 'tests/test_data/sample.msp'],
-    [DataFrame(), 'csv', 'tests/test_data/sample_metadata.csv']
+    [DataFrame(), 'csv', 'tests/test_data/sample_metadata.csv'],
+    [DataFrame(), 'tsv', 'tests/test_data/sample_metadata.tsv'],
+    [DataFrame(), 'xlsx', 'tests/test_data/sample_metadata.xlsx']
 ])
 def test_get_metadata(backend, file_type, filename):
     getattr(backend, f'load_from_{file_type}')(filename)
+    print(backend.get_metadata())
+    print(DATA)
     assert backend.get_metadata() == DATA
 
 
