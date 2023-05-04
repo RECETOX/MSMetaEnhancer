@@ -7,14 +7,14 @@ from MSMetaEnhancer.libs.utils.Errors import TargetAttributeNotRetrieved
 from MSMetaEnhancer.libs.utils.Job import Job
 
 
-@pytest.mark.parametrize('data, expected, repeat, mocked', [
+@pytest.mark.parametrize('metadata, expected, repeat, mocked', [
     [{'compound_name': '$NAME'}, {'compound_name': '$NAME', 'inchi': '$InChi'}, False,
      [({'compound_name': '$NAME', 'inchi': '$InChi'}, None)]],
     [{'compound_name': '$NAME'}, {'compound_name': '$NAME', 'inchi': '$InChi', 'smiles': '$SMILES'}, True,
      [({'compound_name': '$NAME', 'inchi': '$InChi'}, None),
       ({'compound_name': '$NAME', 'inchi': '$InChi', 'smiles': '$SMILES'}, None)]]
 ])
-def test_annotate(data, expected, repeat, mocked):
+def test_annotate(metadata, expected, repeat, mocked):
     jobs = [Job(('inchi', 'smiles', 'IDSM')),
             Job(('name', 'inchi', 'IDSM'))]
 
@@ -23,12 +23,9 @@ def test_annotate(data, expected, repeat, mocked):
     annotator.execute_job_with_cache = mock.AsyncMock()
     annotator.execute_job_with_cache.side_effect = mocked
 
-    spectra = mock.Mock()
-    spectra.metadata = data
+    results = asyncio.run(annotator.annotate(metadata, jobs, repeat))
 
-    asyncio.run(annotator.annotate(spectra, jobs, repeat))
-
-    assert spectra.metadata == expected
+    assert results == expected
 
 
 def test_execute_job_with_cache():
@@ -80,8 +77,6 @@ def test_execute_job_with_cache():
 def test_catch_exception():
     metadata = {'inchi': 'a value', 'compound_name': 'a molecule'}
     result_metadata = {'inchi': 'a value', 'compound_name': 'a molecule',  'atr1': 'val1',  'atr2': 'val2'}
-    spectra = mock.Mock()
-    spectra.metadata = metadata
     jobs = [mock.Mock(target='a target')] * 3
     annotator = Annotator()
     annotator.set_converters(dict())
@@ -91,5 +86,5 @@ def test_catch_exception():
     annotator.execute_job_with_cache = mock.AsyncMock()
     annotator.execute_job_with_cache.side_effect = mocked
 
-    result = asyncio.run(annotator.annotate(spectra, jobs))
-    assert result.metadata == result_metadata
+    result = asyncio.run(annotator.annotate(metadata, jobs))
+    assert result == result_metadata
