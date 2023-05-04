@@ -6,7 +6,7 @@ class DataFrame:
         self.df = pandas.DataFrame()
 
     def load_from_csv(self, filename):
-        self.df = pandas.read_csv(filename)
+        self.df = pandas.read_csv(filename, dtype=str)
 
     def save_to_csv(self, filename):
         self.df.to_csv(filename, index=False)
