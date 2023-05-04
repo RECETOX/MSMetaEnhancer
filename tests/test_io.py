@@ -12,6 +12,8 @@ DATA = [{'formula': 'H2', 'mw': '2', 'casno': '1333740', 'id': '1', 'num_peaks':
 
 @pytest.mark.parametrize('backend, file_type, filename', [
     [Spectra(), 'msp', 'tests/test_data/sample.msp'],
+    [Spectra(), 'mgf', 'tests/test_data/sample.mgf'],
+    [Spectra(), 'json', 'tests/test_data/sample.json'],
     [DataFrame(), 'csv', 'tests/test_data/sample_metadata.csv'],
     [DataFrame(), 'tsv', 'tests/test_data/sample_metadata.tsv'],
     [DataFrame(), 'xlsx', 'tests/test_data/sample_metadata.xlsx']
@@ -21,8 +23,12 @@ def test_get_metadata(backend, file_type, filename):
     assert backend.get_metadata() == DATA
 
 
-def test_fuse_metadata_dataframe():
-    pandas_df = pandas.read_csv('tests/test_data/sample_metadata.csv', dtype=str)
+@pytest.mark.parametrize('filename, sep', [
+    ['tests/test_data/sample_metadata.csv', ','],
+    ['tests/test_data/sample_metadata.tsv', '\t'],
+])
+def test_fuse_metadata_dataframe(filename, sep):
+    pandas_df = pandas.read_csv(filename, dtype=str, sep=sep)
     df = DataFrame()
     df.fuse_metadata(DATA)
     assert pandas_df.equals(df.df)
