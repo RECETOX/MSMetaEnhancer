@@ -7,7 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [dev] - unreleased
 ### Added
+* general class Data for input handling [#141](https://github.com/RECETOX/MSMetaEnhancer/pull/141)
+* DataFrame class to read and handle tabular metadata input [#141](https://github.com/RECETOX/MSMetaEnhancer/pull/141)
 ### Changed
+* Spectra class is an instantiation of Data class [#141](https://github.com/RECETOX/MSMetaEnhancer/pull/141)
 ### Removed
 * retired NLM (ChemIDplus) service [#140](https://github.com/RECETOX/MSMetaEnhancer/pull/140)
 

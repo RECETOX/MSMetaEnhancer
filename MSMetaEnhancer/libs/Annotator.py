@@ -18,7 +18,7 @@ class Annotator:
     def set_converters(self, converters):
         self.converters = converters
 
-    async def annotate(self, spectra, jobs, repeat=False):
+    async def annotate(self, metadata, jobs, repeat=False):
         """
         Runs all jobs to add annotations to given dictionary containing metadata
 
@@ -26,12 +26,11 @@ class Annotator:
         and tries to obtain 'Target' attribute based on 'Source' attribute using
         'Converter' converter.
 
-        :param spectra: given spectra metadata
+        :param metadata: given metadata
         :param jobs: specified list of jobs to be executed
         :param repeat: if some metadata was added, all jobs are executed again
         :return: annotated dictionary
         """
-        metadata = spectra.metadata
         cache = dict()
         log = LogRecord(dict(metadata))
         logger.add_coverage_before(metadata.keys())
@@ -57,8 +56,7 @@ class Annotator:
         logger.add_logs(log)
         logger.add_coverage_after(metadata.keys())
 
-        spectra.metadata = metadata
-        return spectra
+        return metadata
 
     async def execute_job_with_cache(self, job, metadata, cache, warning):
         """

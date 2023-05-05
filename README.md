@@ -25,7 +25,7 @@ app = Application()
 app.load_spectra('tests/test_data/sample.msp', file_format='msp')
 
 # curate given metadata (e.g. fix CAS numbers)
-app.curate_spectra()
+app.curate_metadata()
 
 # specify requested services (these are supported)
 services = ['CTS', 'CIR', 'IDSM', 'PubChem', 'BridgeDb', 'RDKit']
