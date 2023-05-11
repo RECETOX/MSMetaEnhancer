@@ -27,7 +27,7 @@ class Throttler:
         """
         Decrease rate (must be always positive).
         """
-        if self.rate > 0:
+        if self.rate > 1:
             self.rate -= 1
 
     def flush(self):
