@@ -1,8 +1,9 @@
+import asyncio
 import json
-
-from MSMetaEnhancer.libs.converters.web.WebConverter import WebConverter
 from frozendict import frozendict
 
+from MSMetaEnhancer.libs.converters.web.WebConverter import WebConverter
+from MSMetaEnhancer.libs.utils.Generic import string_to_seconds
 from MSMetaEnhancer.libs.utils.Errors import UnknownResponse
 from MSMetaEnhancer.libs.utils.Throttler import Throttler
 
@@ -126,7 +127,9 @@ class PubChem(WebConverter):
         """
         result = await response.text()
         if 'X-Throttling-Control' in response.headers:
-            self.adjust_throttling(response.headers['X-Throttling-Control'])
+            sleep_time = self.adjust_throttling(response.headers['X-Throttling-Control'])
+            if sleep_time:
+                await asyncio.sleep(sleep_time)
         if response.ok:
             return result
         else:
@@ -156,15 +159,22 @@ class PubChem(WebConverter):
             """
             indicators = header.split(',')
             blocked = False
+            sleep_time = 0
             if 'too many requests per second or blacklisted' in indicators[-1]:
                 blocked = True
-            return {'load': max([parse_status(indicator) for indicator in indicators[:3]]), 'blocked': blocked}
+            if 'Remaining blocking time' in indicators[-1]:
+                sleep_time = string_to_seconds(indicators[-1].split(': ')[1])
+                blocked = True
+            return {'load': max([parse_status(indicator) for indicator in indicators[:3]]), 
+                    'blocked': blocked,
+                    'sleep_time': sleep_time}
 
         status = parse_pubchem_info(throttling_header)
         if status['blocked'] or status['load'] > 75:
             self.throttler.decrease_limit()
         elif status['load'] < 25:
             self.throttler.increase_limit()
+        return status['sleep_time']
 
     def parse_attributes(self, response):
         """

@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 * general class Data for input handling [#141](https://github.com/RECETOX/MSMetaEnhancer/pull/141)
 * DataFrame class to read and handle tabular metadata input [#141](https://github.com/RECETOX/MSMetaEnhancer/pull/141)
+* implementation of blocking time in PubChem [#145](https://github.com/RECETOX/MSMetaEnhancer/pull/145)
 ### Changed
 * Spectra class is an instantiation of Data class [#141](https://github.com/RECETOX/MSMetaEnhancer/pull/141)
 * fix throttling freezing the app [#144](https://github.com/RECETOX/MSMetaEnhancer/pull/144)
