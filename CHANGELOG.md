@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [dev] - unreleased
 ### Added
+### Changed
+### Removed
+
+## [0.3.0] - 2023-05-12
+### Added
 * general class Data for input handling [#141](https://github.com/RECETOX/MSMetaEnhancer/pull/141)
 * DataFrame class to read and handle tabular metadata input [#141](https://github.com/RECETOX/MSMetaEnhancer/pull/141)
 * implementation of blocking time in PubChem [#145](https://github.com/RECETOX/MSMetaEnhancer/pull/145)
