@@ -1,7 +1,0 @@
-name: MSMetaEnhancer-build
-channels:
-  - defaults
-dependencies:
-  - conda-build
-  - conda-verify
-  - python >=3.9
