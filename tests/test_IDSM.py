@@ -21,13 +21,15 @@ def test_service_available():
 def test_format():
     query = f"""
     SELECT DISTINCT ?value ?type
+    FROM pubchem:compound FROM pubchem:inchikey FROM descriptor:compound
     WHERE
     {{
-      ?attribute rdf:type ?type.
-      ?attribute sio:has-value ?value.
-      ?substance sio:has-attribute ?attribute.
-      ?substance sio:has-attribute ?inchi.
-      ?inchi sio:has-value "{INCHI}"@en.
+      ?compound sio:SIO_000008 [
+        rdf:type ?type;
+        sio:SIO_000300 ?value ].
+      ?compound sio:SIO_000008 [
+        rdf:type sio:CHEMINF_000396;
+        sio:SIO_000300 '{INCHI}'@en ].
     }}
     """
 

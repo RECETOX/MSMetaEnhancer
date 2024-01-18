@@ -30,10 +30,12 @@ class IDSM(WebConverter):
         # generate top level methods defining allowed conversions
         conversions = [('compound_name', 'inchi', 'from_name'),
                        ('compound_name', 'iupac_name', 'from_name'),
+                       ('compound_name', 'inchikey', 'from_name'),
                        ('compound_name', 'formula', 'from_name'),
                        ('compound_name', 'canonical_smiles', 'from_name'),
                        ('compound_name', 'isomeric_smiles', 'from_name'),
                        ('inchi', 'iupac_name', 'from_inchi'),
+                       ('inchi', 'inchikey', 'from_inchi'),
                        ('inchi', 'formula', 'from_inchi'),
                        ('inchi', 'canonical_smiles', 'from_inchi'),
                        ('inchi', 'isomeric_smiles', 'from_inchi')]
@@ -51,56 +53,17 @@ class IDSM(WebConverter):
         :return: all found data
         """
         query = f"""
-        SELECT DISTINCT ?value ?type
+        SELECT DISTINCT ?value (sio:CHEMINF_000396 as ?type)
+        FROM pubchem:compound FROM descriptor:compound
         WHERE
         {{
-          ?attribute rdf:type ?type.
-          ?attribute sio:has-value ?value.
-          ?compound sio:has-attribute ?attribute.
-          ?compound sio:has-attribute ?descriptor.
-          ?descriptor sio:has-value '{iupac_name.lower()}'@en.
-        }}
-        """
-        return await self.call_service(query)
-
-    @escape_single_quotes
-    async def compound_name_to_inchikey(self, name):
-        """
-        Convert Chemical name to InChIKey using IDSM service
-
-        :param name: given Chemical name
-        :return: all found data
-        """
-        query = f"""
-        SELECT DISTINCT ?type ?value
-        WHERE
-        {{
-          ?inchikey sio:has-value ?value.
-          ?inchikey rdf:type ?type.
-          ?inchikey sio:is-attribute-of ?compound.
-          ?synonym sio:is-attribute-of ?compound.
-          ?synonym sio:has-value '{name.lower()}'@en.
-        }}
-        """
-        return await self.call_service(query)
-
-    @escape_single_quotes
-    async def inchi_to_inchikey(self, inchi):
-        """
-        Convert InChi to InChIKey using IDSM service
-
-        :param inchi: given InChi
-        :return: all found data
-        """
-        query = f"""
-        SELECT DISTINCT ?type ?value
-        WHERE
-        {{
-          ?inchikey sio:has-value ?value.
-          ?inchikey rdf:type ?type.
-          ?inchikey sio:is-attribute-of ?compound.
-          ?compound sio:has-attribute ?inchi.
-          ?inchi sio:has-value '{inchi}'@en.
+          ?compound sio:SIO_000008 [
+            rdf:type sio:CHEMINF_000396;
+            sio:SIO_000300 ?value ].
+          ?compound sio:SIO_000008 [
+            rdf:type sio:CHEMINF_000382;
+            sio:SIO_000300 ?iupac_name ].
+          filter(lcase(str(?iupac_name)) = '{iupac_name.lower()}')
         }}
         """
         return await self.call_service(query)
@@ -115,13 +78,22 @@ class IDSM(WebConverter):
         """
         query = f"""
         SELECT DISTINCT ?value ?type
+        FROM pubchem:compound FROM pubchem:inchikey FROM descriptor:compound
+        FROM NAMED pubchem:synonym
         WHERE
         {{
-          ?attribute rdf:type ?type.
-          ?attribute sio:has-value ?value.
-          ?compound sio:has-attribute ?attribute.
-          ?synonym sio:is-attribute-of ?compound.
-          ?synonym sio:has-value '{name.lower()}'@en.
+          VALUES ?type {{
+            sio:CHEMINF_000396 sio:CHEMINF_000382
+            sio:CHEMINF_000399 sio:CHEMINF_000335
+            sio:CHEMINF_000376 sio:CHEMINF_000379 }}
+          ?compound sio:SIO_000008 [
+            rdf:type ?type;
+            sio:SIO_000300 ?value ].
+          GRAPH pubchem:synonym {{
+            ?compound sio:SIO_000008 [
+              sio:SIO_000300 ?synonym ]
+            FILTER(lcase(str(?synonym)) = '{name.lower()}')
+          }}
         }}
         """
         return await self.call_service(query)
@@ -136,13 +108,19 @@ class IDSM(WebConverter):
         """
         query = f"""
         SELECT DISTINCT ?value ?type
+        FROM pubchem:compound FROM pubchem:inchikey FROM descriptor:compound
         WHERE
         {{
-          ?attribute rdf:type ?type.
-          ?attribute sio:has-value ?value.
-          ?compound sio:has-attribute ?attribute.
-          ?compound sio:has-attribute ?inchi.
-          ?inchi sio:has-value '{inchi}'@en.
+          VALUES ?type {{
+            sio:CHEMINF_000396 sio:CHEMINF_000382
+            sio:CHEMINF_000399 sio:CHEMINF_000335
+            sio:CHEMINF_000376 sio:CHEMINF_000379 }}
+          ?compound sio:SIO_000008 [
+            rdf:type ?type;
+            sio:SIO_000300 ?value ].
+          ?compound sio:SIO_000008 [
+            rdf:type sio:CHEMINF_000396;
+            sio:SIO_000300 '{inchi}'@en ].
         }}
         """
         return await self.call_service(query)
