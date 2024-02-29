@@ -1,8 +1,0 @@
-mock
-pytest
-pytest-aiohttp
-pytest-cov
-pytest-dependency
-sphinx
-sphinx_rtd_theme
-myst_parser
