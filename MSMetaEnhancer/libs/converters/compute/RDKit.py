@@ -1,6 +1,8 @@
+import re
 from rdkit.Chem.Descriptors import ExactMolWt
 from rdkit.Chem import MolFromSmiles, MolToSmiles
 from rdkit.Chem.inchi import MolFromInchi
+from rdkit.Chem import Atom
 
 
 from MSMetaEnhancer.libs.converters.compute.ComputeConverter import ComputeConverter
@@ -47,3 +49,22 @@ class RDKit(ComputeConverter):
         """
         smiles = MolToSmiles(MolFromInchi(inchi))
         return {'isomeric_smiles': smiles}
+    
+    def formula_to_mw(self, formula):
+        """
+        Compute molecular exact weight from molecular formula.
+
+        :param smiles: given SMILES
+        :return: computed molecular weight
+        """
+        parts = re.findall("[A-Z][a-z]?|[0-9]+", formula)
+        mass = 0
+
+        for index in range(len(parts)):
+            if parts[index].isnumeric():
+                continue
+            
+            atom = Atom(parts[index])
+            multiplier = int(parts[index + 1]) if len(parts) > index + 1 and parts[index + 1].isnumeric() else 1
+            mass += atom.GetMass() * multiplier
+        return {'mw': mass}
