@@ -39,7 +39,19 @@ class PubChem(WebConverter):
                        ('inchi', 'canonical_smiles', 'from_inchi'),
                        ('inchi', 'isomeric_smiles', 'from_inchi'),
                        ('inchi', 'pubchemid', 'from_inchi'),
-                       ('pubchemid', 'inchi', 'from_pubchemid')]
+                       ('inchikey', 'inchi', 'from_inchikey'),
+                       ('inchikey', 'iupac_name', 'from_inchikey'),
+                       ('inchikey', 'formula', 'from_inchikey'),
+                       ('inchikey', 'canonical_smiles', 'from_inchikey'),
+                       ('inchikey', 'isomeric_smiles', 'from_inchikey'),
+                       ('inchikey', 'pubchemid', 'from_inchikey'),
+                       ('pubchemid', 'inchi', 'from_pubchemid'),
+                       ('pubchemid', 'iupac_name', 'from_pubchemid'),
+                       ('pubchemid', 'formula', 'from_pubchemid'),
+                       ('pubchemid', 'canonical_smiles', 'from_pubchemid'),
+                       ('pubchemid', 'isomeric_smiles', 'from_pubchemid'),
+                       ('pubchemid', 'inchikey', 'from_pubchemid')
+                    ]
         self.create_top_level_conversion_methods(conversions)
 
         self.throttler = Throttler(rate_limit=4)
@@ -96,6 +108,17 @@ class PubChem(WebConverter):
         """
         args = "inchi/JSON"
         return await self.call_service(args, 'POST', frozendict({'inchi': inchi}))
+    
+    async def from_inchikey(self, inchikey):
+        """
+        Convert InChiKey to to all possible attributes using PubChem service
+        More info: https://pubchemdocs.ncbi.nlm.nih.gov/pug-rest
+
+        :param inchikey: given InChiKey
+        :return: all found data
+        """
+        args = "inchikey/JSON"
+        return await self.call_service(args, 'POST', frozendict({'inchikey': inchikey}))
 
     async def call_service(self, args, method, data):
         """

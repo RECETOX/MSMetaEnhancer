@@ -47,3 +47,12 @@ def test_get_conversions():
 def test_parse_attributes(response, expected):
     actual = PubChem(None).parse_attributes(json.dumps(response))
     assert actual == expected
+
+
+def test_convert_inchikey_to_inchi():
+    inchikey = "OHCNQFYTLLGNOE-UHFFFAOYSA-N"
+    expected = "InChI=1S/C5H13NSi/c1-7(2,3)6-4-5-6/h4-5H2,1-3H3"
+    data = frozendict({'inchikey': inchikey})
+
+    actual = asyncio.run(wrap_with_session(PubChem, 'inchikey_to_inchi', [inchikey]))
+    assert actual['inchi'] == expected
