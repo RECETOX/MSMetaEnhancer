@@ -18,7 +18,7 @@ def test_format():
     args = f'Ch/{HMDBID}'
     response = asyncio.run(wrap_with_session(BridgeDb, 'query_the_service', ['BridgeDb', args]))
 
-    assert type(response) == str
+    assert isinstance(response, str)
     lines = response.split('\n')
     assert len(lines) != 0
     assert '\t' in response

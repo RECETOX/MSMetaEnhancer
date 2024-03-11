@@ -16,7 +16,7 @@ def test_format():
     args = '{}/smiles?resolver=cas_number'.format(casno)
     response = asyncio.run(wrap_with_session(CIR, 'query_the_service', ['CIR', args]))
 
-    assert type(response) == str
+    assert isinstance(response, str)
 
 
 def test_get_conversions():

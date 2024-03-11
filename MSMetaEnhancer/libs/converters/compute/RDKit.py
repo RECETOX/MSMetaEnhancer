@@ -49,7 +49,7 @@ class RDKit(ComputeConverter):
         """
         smiles = MolToSmiles(MolFromInchi(inchi))
         return {'isomeric_smiles': smiles}
-    
+
     def formula_to_mw(self, formula):
         """
         Compute molecular exact weight from molecular formula.
@@ -63,7 +63,7 @@ class RDKit(ComputeConverter):
         for index in range(len(parts)):
             if parts[index].isnumeric():
                 continue
-            
+
             atom = Atom(parts[index])
             multiplier = int(parts[index + 1]) if len(parts) > index + 1 and parts[index + 1].isnumeric() else 1
             mass += atom.GetMass() * multiplier

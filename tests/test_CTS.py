@@ -20,7 +20,7 @@ def test_format(value, size):
     args = 'CAS/InChIKey/{}'.format(value)
     response = asyncio.run(wrap_with_session(CTS, 'query_the_service', ['CTS', args]))
     response_json = json.loads(response)
-    assert type(response_json) == list
+    assert isinstance(response_json, list)
     assert len(response_json) == 1
     assert 'results' in response_json[0]
     assert len(response_json[0]['results']) == size
