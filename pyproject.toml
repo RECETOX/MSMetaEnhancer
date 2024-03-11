@@ -31,10 +31,14 @@ pytest = "^8.0.2"
 pytest-cov = "^4.1.0"
 pytest-aiohttp = "^1.0.5"
 pytest-dependency = "^0.6.0"
-sphinx = "^7.2.6"
-sphinx-rtd-theme = "^2.0.0"
 myst-parser = "^2.0.0"
 flake8 = "^7.0.0"
+
+
+[tool.poetry.group.docs.dependencies]
+sphinx = "^7.2.6"
+sphinx-rtd-theme = "^2.0.0"
+readthedocs-sphinx-ext = "^2.2.5"
 
 [build-system]
 requires = ["poetry-core"]
