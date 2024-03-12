@@ -112,7 +112,7 @@ class PubChem(WebConverter):
 
     async def from_inchikey(self, inchikey):
         """
-        Convert InChiKey to to all possible attributes using PubChem service
+        Convert InChiKey to all possible attributes using PubChem service
         More info: https://pubchemdocs.ncbi.nlm.nih.gov/pug-rest
 
         :param inchikey: given InChiKey
