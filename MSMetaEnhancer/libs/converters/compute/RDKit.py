@@ -54,7 +54,7 @@ class RDKit(ComputeConverter):
         """
         Compute molecular exact weight from molecular formula.
 
-        :param smiles: given SMILES
+        :param formula: given formula
         :return: computed molecular weight
         """
         parts = re.findall("[A-Z][a-z]?|[0-9]+", formula)
