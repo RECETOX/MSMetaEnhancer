@@ -85,7 +85,7 @@ class Annotator:
                 if job.target in cache[job.converter]:
                     metadata[job.target] = cache[job.converter][job.target]
                 else:
-                    raise TargetAttributeNotRetrieved(f'No data retrieved.')
+                    raise TargetAttributeNotRetrieved('No data retrieved.')
             else:
                 raise ServiceNotAvailable(f'Service {job.converter} not available.')
         return metadata, cache

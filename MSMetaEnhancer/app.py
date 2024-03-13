@@ -51,7 +51,12 @@ class Application:
         curated_metadata = Curator().curate_metadata(self.data.get_metadata())
         self.data.fuse_metadata(curated_metadata)
 
-    async def annotate_spectra(self, converters, jobs=None, repeat=False, monitor=Monitor(), annotator=Annotator()):
+    async def annotate_spectra(self,
+                               converters,
+                               jobs=None,
+                               repeat: bool = False,
+                               monitor: Monitor = Monitor(),
+                               annotator: Annotator = Annotator()):
         """
         Annotates current Spectra data by specified jobs.
 

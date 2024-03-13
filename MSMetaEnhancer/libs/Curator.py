@@ -40,7 +40,7 @@ class Curator:
         :param cas_number: given CAS number
         :return: CAS number enriched by dashes (if needed)
         """
-        if type(cas_number) == str:
+        if isinstance(cas_number, str):
             if "-" not in cas_number:
                 return f'{cas_number[:-3]}-{cas_number[-3:-1]}-{cas_number[-1]}'
         return cas_number
