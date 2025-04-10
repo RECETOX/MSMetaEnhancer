@@ -1,4 +1,15 @@
-from matchms import metadata_utils
+from matchms.filtering.filter_utils.smile_inchi_inchikey_conversions import (
+    is_valid_smiles, is_valid_inchi, is_valid_inchikey
+)
+
+# Example usage
+smiles = "C1=CC=CC=C1"
+inchi = "InChI=1S/CH4/h1H4"
+inchikey = "VNWKTOKETHGBQD-UHFFFAOYSA-N"
+
+print(is_valid_smiles(smiles))  # True if valid SMILES
+print(is_valid_inchi(inchi))    # True if valid InChI
+print(is_valid_inchikey(inchikey))  # True if valid InChIKey
 from MSMetaEnhancer.libs.utils.Errors import InvalidAttributeFormat
 
 
@@ -56,11 +67,11 @@ class Curator:
         :return: only valid metadata
         """
         filters = {
-            'smiles': metadata_utils.is_valid_smiles,
-            'canonical_smiles': metadata_utils.is_valid_smiles,
-            'isomeric_smiles': metadata_utils.is_valid_smiles,
-            'inchi': metadata_utils.is_valid_inchi,
-            'inchikey': metadata_utils.is_valid_inchikey
+            'smiles': is_valid_smiles,
+            'canonical_smiles': is_valid_smiles,
+            'isomeric_smiles': is_valid_smiles,
+            'inchi': is_valid_inchi,
+            'inchikey': is_valid_inchikey
         }
 
         valid_metadata = {}
