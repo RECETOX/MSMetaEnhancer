@@ -9,8 +9,7 @@ from MSMetaEnhancer.libs.utils.Errors import UnknownResponse
 from tests.utils import wrap_with_session
 
 
-# INCHI = 'InChI=1S/C11H8FNO3/c1-13-6-9(10(14)16-11(13)15)7-2-4-8(12)5-3-7/h2-6H,1H3'
-INCHI = 'InChI=1S/C3H6O/c1-3(2)4/h1-2H3'
+INCHI = 'InChI=1S/C11H8FNO3/c1-13-6-9(10(14)16-11(13)15)7-2-4-8(12)5-3-7/h2-6H,1H3'
 
 
 @pytest.mark.xfail(raises=UnknownResponse)
@@ -34,7 +33,6 @@ def test_format():
         sio:SIO_000300 '{INCHI}'@en ].
     }}
     """
-
     data = frozendict({"query": query})
 
     response = asyncio.run(wrap_with_session(IDSM, 'query_the_service',
