@@ -120,7 +120,7 @@ class IDSM(WebConverter):
             sio:SIO_000300 ?value ].
           ?compound sio:SIO_000008 [
             rdf:type sio:CHEMINF_000396;
-            sio:SIO_000300 '{inchi}'@en ].
+            sio:SIO_000300 '{inchi}' ].
         }}
         """
         return await self.call_service(query)
