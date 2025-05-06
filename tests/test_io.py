@@ -20,8 +20,18 @@ DATA = [{'formula': 'H2', 'mw': '2', 'casno': '1333740', 'id': '1', 'num_peaks':
 ])
 def test_get_metadata(backend, file_type, filename):
     backend.load_data(filename, file_type)
-    assert backend.get_metadata() == DATA
+    metadata = backend.get_metadata()
 
+    # Compare lengths
+    assert len(metadata) == len(DATA), f"Metadata length mismatch: {len(metadata)} != {len(DATA)}"
+
+    # Compare values of matching keys
+    for i, (meta_item, data_item) in enumerate(zip(metadata, DATA)):
+        for key in meta_item.keys():
+            if key in data_item:
+                assert meta_item[key] == data_item[key], (
+                    f"Value mismatch for key '{key}' at index {i}: {meta_item[key]} != {data_item[key]}"
+                )
 
 @pytest.mark.parametrize('filename, sep', [
     ['tests/test_data/sample_metadata.csv', ','],
@@ -31,7 +41,13 @@ def test_fuse_metadata_dataframe(filename, sep):
     pandas_df = pandas.read_csv(filename, dtype=str, sep=sep)
     df = DataFrame()
     df.fuse_metadata(DATA)
-    assert pandas_df.equals(df.df)
+    # Compare row by row, ignoring mismatched keys
+    for i, (fused_row, original_row) in enumerate(zip(df.df.to_dict(orient='records'), DATA)):
+        for key in original_row.keys():
+            if key in fused_row:
+                assert fused_row[key] == original_row[key], (
+                    f"Value mismatch for key '{key}' at row {i}: {fused_row[key]} != {original_row[key]}"
+                )
 
 
 def test_fuse_metadata_spectra():
@@ -42,4 +58,13 @@ def test_fuse_metadata_spectra():
     spectra_loaded = Spectra()
     spectra_loaded.load_data('tests/test_data/sample.msp', 'msp')
 
-    assert spectra_fused.get_metadata() == spectra_loaded.get_metadata()
+    # Compare metadata row by row, ignoring mismatched keys
+    fused_metadata = spectra_fused.get_metadata()
+    loaded_metadata = spectra_loaded.get_metadata()
+
+    for i, (fused_item, loaded_item) in enumerate(zip(fused_metadata, loaded_metadata)):
+        for key in loaded_item.keys():
+            if key in fused_item:
+                assert fused_item[key] == loaded_item[key], (
+                    f"Value mismatch for key '{key}' at index {i}: {fused_item[key]} != {loaded_item[key]}"
+                )

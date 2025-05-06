@@ -1,5 +1,6 @@
 import asyncio
 import pytest
+import json
 
 from MSMetaEnhancer.libs.converters.web import IDSM
 from frozendict import frozendict
@@ -11,7 +12,6 @@ from tests.utils import wrap_with_session
 INCHI = 'InChI=1S/C11H8FNO3/c1-13-6-9(10(14)16-11(13)15)7-2-4-8(12)5-3-7/h2-6H,1H3'
 
 
-@pytest.mark.xfail(raises=UnknownResponse)
 @pytest.mark.dependency()
 def test_service_available():
     asyncio.run(wrap_with_session(IDSM, 'inchi_to_inchikey', [INCHI]))
@@ -29,18 +29,21 @@ def test_format():
         sio:SIO_000300 ?value ].
       ?compound sio:SIO_000008 [
         rdf:type sio:CHEMINF_000396;
-        sio:SIO_000300 '{INCHI}'@en ].
+        sio:SIO_000300 '{INCHI}' ].
     }}
     """
-
     data = frozendict({"query": query})
 
     response = asyncio.run(wrap_with_session(IDSM, 'query_the_service',
                                              ['IDSM', '', 'POST', frozendict(data),
                                               frozendict({"Accept": "application/sparql-results+json"})]))
-    response_json = eval(response)
-    assert 'results' in response_json
-    assert 'bindings' in response_json['results']
+    try:
+        response_json = json.loads(response)  # Safely parse JSON
+    except json.JSONDecodeError as e:
+        pytest.fail(f"Failed to decode JSON response: {e}")
+
+    assert 'results' in response_json, "Key 'results' not found in response"
+    assert 'bindings' in response_json['results'], "Key 'bindings' not found in 'results'"
     assert len(response_json['results']['bindings']) > 1
 
 
