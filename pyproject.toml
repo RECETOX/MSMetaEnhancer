@@ -14,7 +14,7 @@ packages = [
 
 [tool.poetry.dependencies]
 python = ">=3.10,<3.13"
-matchms = "0.28.2"
+matchms = ">=0.28.2"
 pandas = "^2.2.1"
 scipy = "^1.12.0"
 requests = "^2.31.0"
