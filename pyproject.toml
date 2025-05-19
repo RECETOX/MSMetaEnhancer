@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "msmetaenhancer"
-version = "0.4.0"
+version = "0.4.1"
 description = "Repository for tool that adds more annotations (e.g. SMILES, InChI, CAS number) to MSP files (Python version)."
 authors = [
     "Helge Hecht <helge.hecht@recetox.muni.cz>",
