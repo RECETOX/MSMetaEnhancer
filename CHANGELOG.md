@@ -5,10 +5,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
-## [dev] - unreleased
-### Added
+## [0.4.1] - 2025-05-19
 ### Changed
-### Removed
+* updated dependencies [#157](https://github.com/RECETOX/MSMetaEnhancer/pull/157)
+
+## [0.4.0] - 2024-03-13
+### Changed
+* Update IDSM SPARQL queries to achieve better performance by @galgonek in [#152](https://github.com/RECETOX/MSMetaEnhancer/pull/152)
+* Switched to poetry and added additional converters by @hechth in [#155](https://github.com/RECETOX/MSMetaEnhancer/pull/155)
+
 
 ## [0.3.0] - 2023-05-12
 ### Added
