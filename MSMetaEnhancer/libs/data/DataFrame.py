@@ -1,7 +1,7 @@
 import pandas
 
 from MSMetaEnhancer.libs.data.Data import Data
-from MSMetaEnhancer.libs.utils.Errors import UnknownSpectraFormat
+from MSMetaEnhancer.libs.utils.Errors import UnknownFileFormat
 
 
 class DataFrame(Data):
@@ -12,17 +12,19 @@ class DataFrame(Data):
         """
         Loads given file as a list of pandas DataFrame.
 
-        Supported formats: csv, tsv, xlsx
+        Supported formats: csv, tsv/tabular, xlsx
 
         :param filename: given file
         :param file_format: format of the input file
         """
         if file_format == 'csv':
             self.df = pandas.read_csv(filename, dtype=str)
-        elif file_format == 'tsv':
+        elif file_format in ['tsv', 'tabular']:
             self.df = pandas.read_csv(filename, dtype=str, sep='\t')
-        else:
+        elif file_format == 'xlsx':
             self.df = pandas.read_excel(filename, dtype=str)
+        else:
+            raise UnknownFileFormat(f'Format {file_format} not supported.')
 
     def save_data(self, filename: str, file_format: str):
         """
@@ -35,12 +37,12 @@ class DataFrame(Data):
         """
         if file_format == 'csv':
             self.df.to_csv(filename, index=False)
-        elif file_format == 'tsv':
+        elif file_format in ['tsv', 'tabular']:
             self.df.to_csv(filename, index=False, sep='\t')
         elif file_format == 'xlsx':
             self.df.to_excel(filename)
         else:
-            raise UnknownSpectraFormat(f'Format {file_format} not supported.')
+            raise UnknownFileFormat(f'Format {file_format} not supported.')
 
     def get_metadata(self):
         return self.df.to_dict('records')

@@ -8,7 +8,7 @@ from MSMetaEnhancer.libs.Curator import Curator
 from MSMetaEnhancer.libs.data import Spectra, DataFrame
 from MSMetaEnhancer.libs.utils import logger
 from MSMetaEnhancer.libs.utils.ConverterBuilder import ConverterBuilder
-from MSMetaEnhancer.libs.utils.Errors import UnknownSpectraFormat
+from MSMetaEnhancer.libs.utils.Errors import UnknownFileFormat
 from MSMetaEnhancer.libs.utils.Job import convert_to_jobs
 from MSMetaEnhancer.libs.utils.Monitor import Monitor
 
@@ -27,10 +27,10 @@ class Application:
         """
         if file_format in ['msp', 'mgf', 'json']:
             self.data = Spectra()
-        elif file_format in ['csv', 'tsv', 'xlsx']:
+        elif file_format in ['csv', 'tsv', 'tabular', 'xlsx']:
             self.data = DataFrame()
         else:
-            raise UnknownSpectraFormat(f'Format {file_format} not supported.')
+            raise UnknownFileFormat(f'Format {file_format} not supported.')
         self.data.load_data(filename, file_format)
 
     def save_data(self, filename, file_format):

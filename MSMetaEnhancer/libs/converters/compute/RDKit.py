@@ -2,6 +2,7 @@ import re
 from rdkit.Chem.Descriptors import ExactMolWt
 from rdkit.Chem import MolFromSmiles, MolToSmiles
 from rdkit.Chem.inchi import MolFromInchi
+from rdkit.Chem.rdMolDescriptors import CalcMolFormula
 from rdkit.Chem import Atom
 
 
@@ -68,3 +69,31 @@ class RDKit(ComputeConverter):
             multiplier = int(parts[index + 1]) if len(parts) > index + 1 and parts[index + 1].isnumeric() else 1
             mass += atom.GetMass() * multiplier
         return {'mw': mass}
+
+    def smiles_to_formula(self, smiles: str) -> dict:
+        """
+        Compute molecular formula from SMILES.
+
+        :param smiles: given SMILES
+        :return: computed molecular formula
+        """
+        mol = MolFromSmiles(smiles)
+        if mol is None:
+            return {'formula': ''}
+
+        formula = CalcMolFormula(mol)
+
+        return {'formula': formula}
+
+    def inchi_to_formula(self, inchi: str) -> dict:
+        """
+        Compute molecular formula from InChI.
+
+        :param inchi: given InChI
+        :return: computed molecular formula
+        """
+        mol = MolFromInchi(inchi)
+        if mol is None:
+            return {'formula': ''}
+        formula = CalcMolFormula(mol)
+        return {'formula': formula}
