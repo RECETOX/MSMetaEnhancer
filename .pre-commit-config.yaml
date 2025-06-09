@@ -20,16 +20,32 @@ repos:
       - id: check-docstring-first
       - id: detect-private-key
 
-  # Run the Ruff linter.
+  # Ruff linter (primary linter)
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.8.3
+    rev: v0.4.4
     hooks:
-      # Linter
       - id: ruff
-        args: [--fix, --exit-non-zero-on-fix]
+        args: [--fix, --exit-non-zero-on-fix, .]
 
-# sets up .pre-commit-ci.yaml to ensure pre-commit dependencies stay up to date
-ci:
-  autoupdate_schedule: weekly
-  skip: []
-  submodules: false
+  # Flake8 (optional, for CI or legacy)
+  - repo: https://github.com/pycqa/flake8
+    rev: 7.0.0
+    hooks:
+      - id: flake8
+        additional_dependencies: []
+        args: [
+          "--count",
+          "--select=E9,F63,F7,F82",
+          "--show-source",
+          "--statistics"
+        ]
+      - id: flake8
+        name: flake8 (warnings)
+        additional_dependencies: []
+        args: [
+          "--count",
+          "--exit-zero",
+          "--max-complexity=10",
+          "--max-line-length=127",
+          "--statistics"
+        ]
