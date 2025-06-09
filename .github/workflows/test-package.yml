@@ -23,7 +23,7 @@ jobs:
           poetry install --with=dev
       - name: Lint with ruff
         run: |
-          poetry run ruff check . --fix --exit-zero-on-fix
+          poetry run ruff check . --fix --exit-non-zero-on-fix
       - name: Lint with flake8
         run: |
           # stop the build if there are Python syntax errors or undefined names
