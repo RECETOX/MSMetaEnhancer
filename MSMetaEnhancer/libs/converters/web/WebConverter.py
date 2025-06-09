@@ -26,7 +26,7 @@ class WebConverter(Converter):
         """
         super().__init__()
         self.session: aiohttp.ClientSession = session
-        self.endpoints = dict()
+        self.endpoints = {}
 
     async def convert(self, source: str, target: str, data: Union[str, int, float]):
         """Convert data from source attribute to target attribute.
@@ -46,7 +46,7 @@ class WebConverter(Converter):
         if result:
             return result
         else:
-            raise TargetAttributeNotRetrieved(f'No data retrieved.')
+            raise TargetAttributeNotRetrieved('No data retrieved.')
 
     @lru_cache
     async def query_the_service(self, service: str, args: str, method: str = 'GET', data=None, headers=None) -> str:
@@ -81,7 +81,7 @@ class WebConverter(Converter):
         :return: obtained response
         """
         if headers is None:
-            headers = dict()
+            headers = {}
         if method == 'GET':
             async with self.session.get(url, headers=headers) as response:
                 return await self.process_request(response, url, method)
