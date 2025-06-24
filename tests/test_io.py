@@ -62,3 +62,24 @@ def test_fuse_metadata_spectra():
                 assert fused_item[key] == loaded_item[key], (
                     f"Value mismatch for key '{key}' at index {i}: {fused_item[key]} != {loaded_item[key]}"
                 )
+
+
+def test_tabular_data():
+    """
+    Test loading and comparing tabular (TSV) data using the DataFrame backend.
+    """
+    df = DataFrame()
+    filename = 'tests/test_data/sample_metadata.tsv'
+    file_type = 'tabular'
+    df.load_data(filename, file_type)
+    metadata = df.get_metadata()
+
+    # Compare lengths
+    assert len(metadata) == len(DATA), f"Metadata length mismatch: {len(metadata)} != {len(DATA)}"
+    # Compare values of matching keys
+    for i, (meta_item, data_item) in enumerate(zip(metadata, DATA)):
+        for key in meta_item.keys():
+            if key in data_item:
+                assert meta_item[key] == data_item[key], (
+                    f"Value mismatch for key '{key}' at index {i}: {meta_item[key]} != {data_item[key]}"
+                )
