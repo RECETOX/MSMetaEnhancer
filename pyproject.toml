@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "msmetaenhancer"
-version = "0.4.1"
+version = "0.5.0"
 description = "Repository for tool that adds more annotations (e.g. SMILES, InChI, CAS number) to MSP files (Python version)."
 authors = [
     "Helge Hecht <helge.hecht@recetox.muni.cz>",
@@ -14,7 +14,7 @@ packages = [
 
 [tool.poetry.dependencies]
 python = ">=3.10,<3.13"
-matchms = ">=0.28.2"
+matchms = ">=0.30.0"
 pandas = "^2.2.1"
 scipy = "^1.12.0"
 requests = "^2.31.0"
@@ -35,7 +35,9 @@ pytest-cov = "^4.1.0"
 pytest-aiohttp = "^1.0.5"
 pytest-dependency = "^0.6.0"
 myst-parser = "^2.0.0"
-flake8 = "^7.0.0"
+ruff = "^0.11.13"
+pre-commit = "^4.2.0"
+flake8 = "^7.2.0"
 
 
 [tool.poetry.group.docs.dependencies]

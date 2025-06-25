@@ -1,6 +1,4 @@
-from MSMetaEnhancer.libs.converters.web import *
 from MSMetaEnhancer.libs.converters.web import __all__ as web_converters
-from MSMetaEnhancer.libs.converters.compute import *
 from MSMetaEnhancer.libs.converters.compute import __all__ as compute_converters
 from MSMetaEnhancer.libs.utils.Errors import UnknownConverter
 
@@ -29,7 +27,7 @@ class ConverterBuilder:
         :param converters: list of converters to be built
         :return: built converters
         """
-        built_web_converters, built_converters = dict(), dict()
+        built_web_converters, built_converters = {}, {}
         for converter in converters:
             if converter in web_converters:
                 built_web_converters[converter] = eval(converter)(session)

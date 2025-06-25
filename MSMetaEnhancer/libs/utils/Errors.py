@@ -10,7 +10,8 @@ class UnknownConverter(Exception):
     pass
 
 
-class UnknownSpectraFormat(Exception):
+class UnknownFileFormat(Exception):
+    """Format not supported."""
     pass
 
 

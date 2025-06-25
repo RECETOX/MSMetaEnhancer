@@ -1,0 +1,51 @@
+exclude: '.*\.(csv|msp)$'
+default_stages: [pre-commit]
+
+default_language_version:
+  python: python3.12
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-json
+      - id: check-toml
+      - id: check-xml
+      - id: check-yaml
+      - id: debug-statements
+      - id: check-builtin-literals
+      - id: check-case-conflict
+      - id: check-docstring-first
+      - id: detect-private-key
+
+  # Ruff linter (primary linter)
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.4.4
+    hooks:
+      - id: ruff
+        args: [--fix, --exit-non-zero-on-fix, .]
+
+  # Flake8 (optional, for CI or legacy)
+  - repo: https://github.com/pycqa/flake8
+    rev: 7.0.0
+    hooks:
+      - id: flake8
+        additional_dependencies: []
+        args: [
+          "--count",
+          "--select=E9,F63,F7,F82",
+          "--show-source",
+          "--statistics"
+        ]
+      - id: flake8
+        name: flake8 (warnings)
+        additional_dependencies: []
+        args: [
+          "--count",
+          "--exit-zero",
+          "--max-complexity=10",
+          "--max-line-length=127",
+          "--statistics"
+        ]

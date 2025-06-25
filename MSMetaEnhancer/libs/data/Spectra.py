@@ -4,7 +4,7 @@ import matchms.exporting
 import matchms.importing
 
 from MSMetaEnhancer.libs.data.Data import Data
-from MSMetaEnhancer.libs.utils.Errors import UnknownSpectraFormat
+from MSMetaEnhancer.libs.utils.Errors import UnknownFileFormat
 
 
 class Spectra(Data):
@@ -45,7 +45,7 @@ class Spectra(Data):
         try:
             getattr(matchms.exporting, f'save_as_{file_format}')(self.spectrums, filename)
         except Exception:
-            raise UnknownSpectraFormat(f'Format {file_format} not supported.')
+            raise UnknownFileFormat(f'Format {file_format} not supported.')
 
     def get_metadata(self):
         return [spectra.metadata for spectra in self.spectrums]

@@ -1,6 +1,8 @@
 from matchms.filtering.filter_utils.smile_inchi_inchikey_conversions import (
     is_valid_smiles, is_valid_inchi, is_valid_inchikey
 )
+from MSMetaEnhancer.libs.utils.Errors import InvalidAttributeFormat
+
 
 # Example usage
 smiles = "C1=CC=CC=C1"
@@ -10,7 +12,6 @@ inchikey = "VNWKTOKETHGBQD-UHFFFAOYSA-N"
 print(is_valid_smiles(smiles))  # True if valid SMILES
 print(is_valid_inchi(inchi))    # True if valid InChI
 print(is_valid_inchikey(inchikey))  # True if valid InChIKey
-from MSMetaEnhancer.libs.utils.Errors import InvalidAttributeFormat
 
 
 class Curator:

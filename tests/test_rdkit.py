@@ -13,7 +13,9 @@ CANONICAL_SMILES = 'CC12CCC(=O)C=C1CCC1C2CCC2(C)C(O)CCC12'
         'isomeric_smiles': 'C[C@]12CC[C@H]3[C@@H](CCC4=CC(=O)CC[C@@]43C)[C@@H]1CC[C@@H]2O'
     }],
     ['from_smiles', CANONICAL_SMILES, {'mw': 288.208930136}],
-    ["formula_to_mw", "C9H15N4O8P", {'mw': 338.21299999999997}]
+    ["formula_to_mw", "C9H15N4O8P", {'mw': 338.21299999999997}],
+    ['smiles_to_formula', CANONICAL_SMILES, {'formula': 'C19H28O2'}],
+    ['inchi_to_formula', INCHI, {'formula': 'C19H28O2'}],
 ])
 def test_convert_methods(method, input, expected):
     func = getattr(RDKit(), method)

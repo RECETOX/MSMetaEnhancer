@@ -5,7 +5,6 @@ import json
 from MSMetaEnhancer.libs.converters.web import IDSM
 from frozendict import frozendict
 
-from MSMetaEnhancer.libs.utils.Errors import UnknownResponse
 from tests.utils import wrap_with_session
 
 
