@@ -15,6 +15,7 @@ class ConverterBuilder:
         for converter in converters:
             try:
                 eval(converter)
+
             except NameError:
                 raise UnknownConverter(f'Converter {converter} unknown.')
 
