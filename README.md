@@ -13,6 +13,7 @@ The app uses asynchronous implementation of annotation process allowing for opti
 If you use MSMetaEnhancer in your work, please cite the following publication:
 
 Troják et al., (2022). MSMetaEnhancer: A Python package for mass spectra metadata annotation. Journal of Open Source Software, 7(79), 4494, https://doi.org/10.21105/joss.04494
+
 ### Usage
 
 ```python
@@ -23,7 +24,7 @@ from MSMetaEnhancer import Application
 app = Application()
 
 # import your .msp file
-app.load_spectra('tests/test_data/sample.msp', file_format='msp')
+app.load_data('sample.msp', file_format='msp')
 
 # curate given metadata (e.g. fix CAS numbers)
 app.curate_metadata()
@@ -38,8 +39,8 @@ jobs = [('name', 'inchi', 'IDSM'), ('inchi', 'formula', 'IDSM'), ('inchi', 'inch
 # run asynchronous annotations of spectra data
 asyncio.run(app.annotate_spectra(services, jobs))
 
-# export .msp file 
-app.save_spectra('tests/test_data/sample_out.msp', file_format='msp')
+# export .msp file
+app.save_data('sample_out.msp', file_format='msp')
 ```
 
 ### Installation
@@ -66,7 +67,7 @@ Create your development environment using the provided [script](conda/environmen
 
 #### Contributing
 
-We appreciate contributions - feel free to open an issue on our repository, create your own fork, work on the problem and post a PR. 
+We appreciate contributions - feel free to open an issue on our repository, create your own fork, work on the problem and post a PR.
 Please add your contributions to the [changelog](CHANGELOG.md) and to adhere to the [versioning](https://semver.org/spec/v2.0.0.html).
 For more information see [here](CONTRIBUTING.md).
 
