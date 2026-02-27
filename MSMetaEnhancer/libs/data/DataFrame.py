@@ -2,6 +2,7 @@ import pandas
 
 from MSMetaEnhancer.libs.data.Data import Data
 from MSMetaEnhancer.libs.utils.Errors import UnknownFileFormat
+from MSMetaEnhancer.libs.utils.Generic import is_na_value
 
 
 class DataFrame(Data):
@@ -45,7 +46,8 @@ class DataFrame(Data):
             raise UnknownFileFormat(f'Format {file_format} not supported.')
 
     def get_metadata(self):
-        return self.df.to_dict('records')
+        records = self.df.to_dict('records')
+        return [{k: v for k, v in record.items() if not is_na_value(v)} for record in records]
 
     def fuse_metadata(self, metadata_list):
         self.df = pandas.DataFrame.from_dict(metadata_list)

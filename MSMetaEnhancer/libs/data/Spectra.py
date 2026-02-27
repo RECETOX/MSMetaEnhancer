@@ -5,6 +5,7 @@ import matchms.importing
 
 from MSMetaEnhancer.libs.data.Data import Data
 from MSMetaEnhancer.libs.utils.Errors import UnknownFileFormat
+from MSMetaEnhancer.libs.utils.Generic import is_na_value
 
 
 class Spectra(Data):
@@ -48,7 +49,8 @@ class Spectra(Data):
             raise UnknownFileFormat(f'Format {file_format} not supported.')
 
     def get_metadata(self):
-        return [spectra.metadata for spectra in self.spectrums]
+        return [{k: v for k, v in spectra.metadata.items() if not is_na_value(v)}
+                for spectra in self.spectrums]
 
     def fuse_metadata(self, metadata):
         for i in range(len(metadata)):

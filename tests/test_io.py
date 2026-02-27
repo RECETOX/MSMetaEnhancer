@@ -83,3 +83,22 @@ def test_tabular_data():
                 assert meta_item[key] == data_item[key], (
                     f"Value mismatch for key '{key}' at index {i}: {meta_item[key]} != {data_item[key]}"
                 )
+
+
+@pytest.mark.parametrize('backend, file_type, filename, absent_keys', [
+    [DataFrame(), 'csv', 'tests/test_data/sample_metadata_with_na.csv', ['inchikey', 'smiles']],
+    [Spectra(), 'msp', 'tests/test_data/sample_with_na.msp', ['inchikey', 'smiles']],
+])
+def test_na_values_filtered_from_metadata(backend, file_type, filename, absent_keys):
+    """NA and empty values in data files should be excluded from metadata dicts."""
+    backend.load_data(filename, file_type)
+    metadata = backend.get_metadata()
+
+    assert len(metadata) == 3
+
+    for i, meta_item in enumerate(metadata):
+        # Keys that had NA values must be absent
+        for key in absent_keys:
+            assert key not in meta_item, (
+                f"NA key '{key}' should not be present at index {i}, got {meta_item.get(key)}"
+            )
