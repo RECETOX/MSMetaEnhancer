@@ -3,6 +3,7 @@ import pytest
 
 from MSMetaEnhancer import Application
 from tests.utils import FakeMonitor, FakeAnnotator
+from MSMetaEnhancer.libs.utils.Generic import is_na_value
 
 
 def test_annotate_spectra_monitor_stops():
@@ -27,3 +28,13 @@ def test_annotate_spectra_monitor_stops_after_exception():
         asyncio.run(app.annotate_spectra([], monitor=monitor, annotator=annotator))
 
     assert monitor.stop_request.is_set()
+
+
+def test_application_sparse():
+    app = Application()
+    app.load_data('tests/test_data/sparse.tsv', file_format='tabular')
+    asyncio.run(app.annotate_spectra(['PubChem', 'IDSM']))
+    
+    actual = [x.get('canonical_smiles') for x in app.data.get_metadata()]
+    assert any([is_na_value(x) for x in actual]) == False
+

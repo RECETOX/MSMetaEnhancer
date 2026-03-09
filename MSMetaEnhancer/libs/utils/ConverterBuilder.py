@@ -1,5 +1,7 @@
 from MSMetaEnhancer.libs.converters.web import __all__ as web_converters
+from MSMetaEnhancer.libs.converters.web import *
 from MSMetaEnhancer.libs.converters.compute import __all__ as compute_converters
+from MSMetaEnhancer.libs.converters.compute import *
 from MSMetaEnhancer.libs.utils.Errors import UnknownConverter
 
 
