@@ -24,7 +24,7 @@ copyfile("../../CONTRIBUTING.md", "CONTRIBUTING.md")
 # -- Project information -----------------------------------------------------
 
 project = "MSMetaEnhancer"
-copyright = "2021, RECETOX"
+copyright = "2026, RECETOX"
 author = "RECETOX"
 
 # -- General configuration ---------------------------------------------------
