@@ -55,7 +55,7 @@ class Monitor(Thread):
         Such a converter is considered available.
         This is checked periodically to always have up-to-date information.
         """
-        while not self.stop_request.isSet():
+        while not self.stop_request.is_set():
             for converter in self.converters.values():
                 url = self.get_base_url(converter)
                 converter.is_available = self.check_service(url)

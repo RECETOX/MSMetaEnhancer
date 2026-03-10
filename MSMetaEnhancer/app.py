@@ -83,7 +83,8 @@ class Application:
 
             # start converters status checker and wait for first status
             try:
-                monitor.start()
+                if not monitor.is_alive():
+                    monitor.start()
                 monitor.first_check.wait()
 
                 # create all possible jobs if not given
