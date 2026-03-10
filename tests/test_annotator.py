@@ -7,16 +7,31 @@ from MSMetaEnhancer.libs.utils.Errors import TargetAttributeNotRetrieved
 from MSMetaEnhancer.libs.utils.Job import Job
 
 
-@pytest.mark.parametrize('metadata, expected, repeat, mocked', [
-    [{'compound_name': '$NAME'}, {'compound_name': '$NAME', 'inchi': '$InChi'}, False,
-     [({'compound_name': '$NAME', 'inchi': '$InChi'}, None)]],
-    [{'compound_name': '$NAME'}, {'compound_name': '$NAME', 'inchi': '$InChi', 'smiles': '$SMILES'}, True,
-     [({'compound_name': '$NAME', 'inchi': '$InChi'}, None),
-      ({'compound_name': '$NAME', 'inchi': '$InChi', 'smiles': '$SMILES'}, None)]]
-])
+@pytest.mark.parametrize(
+    "metadata, expected, repeat, mocked",
+    [
+        [
+            {"compound_name": "$NAME"},
+            {"compound_name": "$NAME", "inchi": "$InChi"},
+            False,
+            [({"compound_name": "$NAME", "inchi": "$InChi"}, None)],
+        ],
+        [
+            {"compound_name": "$NAME"},
+            {"compound_name": "$NAME", "inchi": "$InChi", "smiles": "$SMILES"},
+            True,
+            [
+                ({"compound_name": "$NAME", "inchi": "$InChi"}, None),
+                (
+                    {"compound_name": "$NAME", "inchi": "$InChi", "smiles": "$SMILES"},
+                    None,
+                ),
+            ],
+        ],
+    ],
+)
 def test_annotate(metadata, expected, repeat, mocked):
-    jobs = [Job(('inchi', 'smiles', 'IDSM')),
-            Job(('name', 'inchi', 'IDSM'))]
+    jobs = [Job(("inchi", "smiles", "IDSM")), Job(("name", "inchi", "IDSM"))]
 
     annotator = Annotator()
     annotator.set_converters(dict())
@@ -34,32 +49,36 @@ def test_execute_job_with_cache():
     curator.filter_invalid_metadata = mock.MagicMock(side_effect=lambda a, b, c: a)
 
     idsm = mock.Mock()
-    idsm.convert = mock.AsyncMock(return_value={'smiles': '$SMILES'})
+    idsm.convert = mock.AsyncMock(return_value={"smiles": "$SMILES"})
 
-    job = Job(('inchi', 'smiles', 'IDSM'))
+    job = Job(("inchi", "smiles", "IDSM"))
     job.validate = mock.Mock(return_value=(idsm, None))
 
     annotator = Annotator()
-    annotator.set_converters({'IDSM': idsm})
+    annotator.set_converters({"IDSM": idsm})
     annotator.curator = curator
-    metadata, cache = asyncio.run(annotator.execute_job_with_cache(job, {'inchi': '$InChi'}, dict(), warning))
-    assert metadata == {'inchi': '$InChi', 'smiles': '$SMILES'}
+    metadata, cache = asyncio.run(
+        annotator.execute_job_with_cache(job, {"inchi": "$InChi"}, dict(), warning)
+    )
+    assert metadata == {"inchi": "$InChi", "smiles": "$SMILES"}
 
     # already cached
 
     cts = mock.Mock()
     cts.convert = mock.AsyncMock(return_value=dict())
 
-    job = Job(('smiles', 'formula', 'CTS'))
+    job = Job(("smiles", "formula", "CTS"))
     job.validate = mock.Mock(return_value=(cts, None))
 
-    cache = {job.converter: {'formula': '$FORMULA'}}
+    cache = {job.converter: {"formula": "$FORMULA"}}
 
     annotator = Annotator()
-    annotator.set_converters({'CTS': cts})
+    annotator.set_converters({"CTS": cts})
     annotator.curator = curator
-    metadata, cache = asyncio.run(annotator.execute_job_with_cache(job, {'smiles': '$SMILES'}, cache, warning))
-    assert metadata == {'smiles': '$SMILES', 'formula': '$FORMULA'}
+    metadata, cache = asyncio.run(
+        annotator.execute_job_with_cache(job, {"smiles": "$SMILES"}, cache, warning)
+    )
+    assert metadata == {"smiles": "$SMILES", "formula": "$FORMULA"}
 
     # no data retrieved
 
@@ -67,22 +86,33 @@ def test_execute_job_with_cache():
     cir.convert = mock.AsyncMock(return_value=dict())
 
     annotator = Annotator()
-    annotator.set_converters({'CIR': cir})
+    annotator.set_converters({"CIR": cir})
     annotator.curator = curator
 
     with pytest.raises(TargetAttributeNotRetrieved):
-        metadata, cache = asyncio.run(annotator.execute_job_with_cache(job, {'smiles': '$SMILES'}, dict(), warning))
+        metadata, cache = asyncio.run(
+            annotator.execute_job_with_cache(
+                job, {"smiles": "$SMILES"}, dict(), warning
+            )
+        )
 
 
 def test_catch_exception():
-    metadata = {'inchi': 'a value', 'compound_name': 'a molecule'}
-    result_metadata = {'inchi': 'a value', 'compound_name': 'a molecule',  'atr1': 'val1',  'atr2': 'val2'}
-    jobs = [mock.Mock(target='a target')] * 3
+    metadata = {"inchi": "a value", "compound_name": "a molecule"}
+    result_metadata = {
+        "inchi": "a value",
+        "compound_name": "a molecule",
+        "atr1": "val1",
+        "atr2": "val2",
+    }
+    jobs = [mock.Mock(target="a target")] * 3
     annotator = Annotator()
     annotator.set_converters(dict())
-    mocked = [({'inchi': 'a value', 'compound_name': 'a molecule', 'atr1': 'val1'}, dict()),
-              Exception(),
-              (result_metadata, dict())]
+    mocked = [
+        ({"inchi": "a value", "compound_name": "a molecule", "atr1": "val1"}, dict()),
+        Exception(),
+        (result_metadata, dict()),
+    ]
     annotator.execute_job_with_cache = mock.AsyncMock()
     annotator.execute_job_with_cache.side_effect = mocked
 

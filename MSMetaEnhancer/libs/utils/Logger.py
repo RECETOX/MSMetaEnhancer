@@ -9,13 +9,13 @@ from MSMetaEnhancer.libs.utils.Job import Job
 
 class Logger:
     def __init__(self):
-        self.logger = logging.getLogger('log')
-        self.logger.setLevel('INFO')
+        self.logger = logging.getLogger("log")
+        self.logger.setLevel("INFO")
 
         # statistical values
         self.metrics = Metrics()
 
-        self.LEVELS = {'error': 1, 'warning': 2, 'info': 3}
+        self.LEVELS = {"error": 1, "warning": 2, "info": 3}
 
         self.log_level = 3
 
@@ -36,12 +36,12 @@ class Logger:
             file_name (str, optional): Log filename. Defaults to None.
         """
         if file_name is None:
-            file_name = datetime.now().strftime('MSMetaEnhancer_%Y%m%d%H%M%S.log')
+            file_name = datetime.now().strftime("MSMetaEnhancer_%Y%m%d%H%M%S.log")
 
-        filehandler_dbg = logging.FileHandler(file_name, mode='w')
-        filehandler_dbg.setLevel('DEBUG')
+        filehandler_dbg = logging.FileHandler(file_name, mode="w")
+        filehandler_dbg.setLevel("DEBUG")
 
-        streamformatter = logging.Formatter(fmt='%(levelname)s: %(message)s')
+        streamformatter = logging.Formatter(fmt="%(levelname)s: %(message)s")
 
         # Apply formatters to handlers
         filehandler_dbg.setFormatter(streamformatter)

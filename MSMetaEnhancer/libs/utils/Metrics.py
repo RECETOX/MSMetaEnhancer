@@ -39,10 +39,16 @@ class Metrics:
                 self.coverage_after_annotation[key] += 1
 
     def __str__(self):
-        table = tabulate([[key,
-                           f'{(self.coverage_before_annotation[key]/self.max_spectra)*100:.2f}%',
-                           f'{(self.coverage_after_annotation[key]/self.max_spectra)*100:.2f}%']
-                          for key in self.coverage_before_annotation],
-                         headers=['Target\nattribute', 'Coverage\nbefore', 'Coverage\nafter'])
+        table = tabulate(
+            [
+                [
+                    key,
+                    f"{(self.coverage_before_annotation[key] / self.max_spectra) * 100:.2f}%",
+                    f"{(self.coverage_after_annotation[key] / self.max_spectra) * 100:.2f}%",
+                ]
+                for key in self.coverage_before_annotation
+            ],
+            headers=["Target\nattribute", "Coverage\nbefore", "Coverage\nafter"],
+        )
 
-        return f'\nAttribute discovery rates:\n\n{table}\n' + '='*50 + '\n'
+        return f"\nAttribute discovery rates:\n\n{table}\n" + "=" * 50 + "\n"

@@ -12,14 +12,18 @@ from MSMetaEnhancer.libs.converters.compute import __all__ as compute_converters
 def generate_options():
     jobs = []
     converters = web_converters + compute_converters
-    built_converters, built_web_converters = ConverterBuilder().build_converters(None, converters)
+    built_converters, built_web_converters = ConverterBuilder().build_converters(
+        None, converters
+    )
 
     for converter in built_converters:
-        jobs += (built_converters[converter].get_conversion_functions())
+        jobs += built_converters[converter].get_conversion_functions()
 
     for job in jobs:
-        print(f'<option value="{job[0]} {job[1]} {job[2]}">{job[2]}: {job[0]} -> {job[1]}</option>')
+        print(
+            f'<option value="{job[0]} {job[1]} {job[2]}">{job[2]}: {job[0]} -> {job[1]}</option>'
+        )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     generate_options()

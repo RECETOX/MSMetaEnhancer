@@ -12,6 +12,7 @@ class UnknownConverter(Exception):
 
 class UnknownFileFormat(Exception):
     """Format not supported."""
+
     pass
 
 
@@ -23,7 +24,7 @@ class ServiceNotAvailable(Exception):
     @staticmethod
     async def raise_circuitbreaker(*args):
         converter_name = args[0].converter_name
-        raise ServiceNotAvailable(f'Service {converter_name} not available.')
+        raise ServiceNotAvailable(f"Service {converter_name} not available.")
 
 
 class UnknownResponse(Exception):

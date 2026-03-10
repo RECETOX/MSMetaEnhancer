@@ -1,0 +1,4 @@
+compound_name	rel.effect	rel.relationship	publication.id	chemical_normalized	heading	canonical_smiles	inchi	inchikey	iupac_name
+(-)-epicatechin	gap junction intercellular communication	no inhibition	18828601	(-)-epicatechin	epicatechin	n/a	InChI=1S/C15H14O6/c16-8-4-11(18)9-6-13(20)15(21-14(9)5-8)7-1-2-10(17)12(19)3-7/h1-5,13,15-20H,6H2/t13-,15-/m1/s1	PFTAWBLQPZVEMU-UKRRQHHQSA-N	(2R,3R)-2-(3,4-dihydroxyphenyl)-3,4-dihydro-2H-chromene-3,5,7-triol
+1-chloroanthracene	gap junction intercellular communication	inhibition	10416268	1-chloroanthracene	1-chloroanthracene	NA	InChI=1S/C14H9Cl/c15-14-7-3-6-12-8-10-4-1-2-5-11(10)9-13(12)14/h1-9H	SRIHSAFSOOUEGL-UHFFFAOYSA-N	1-chloroanthracene
+1-methyl-fluorene	gap junction intercellular communication	inhibition	7835547	1-methyl-fluorene	1-methylfluorene	CC1=C2CC3=CC=CC=C3C2=CC=C1	InChI=1S/C14H12/c1-10-5-4-8-13-12-7-3-2-6-11(12)9-14(10)13/h2-8H,9H2,1H3	GKEUODMJRFDLJY-UHFFFAOYSA-N	1-methyl-9H-fluorene

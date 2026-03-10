@@ -6,6 +6,7 @@ class Data(ABC):
     """
     General class for data.
     """
+
     @abstractmethod
     def get_metadata(self) -> List[Dict]:
         """

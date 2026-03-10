@@ -2,8 +2,13 @@ import traceback
 
 from MSMetaEnhancer.libs.Curator import Curator
 from MSMetaEnhancer.libs.utils import logger
-from MSMetaEnhancer.libs.utils.Errors import TargetAttributeNotRetrieved, SourceAttributeNotAvailable, \
-    ServiceNotAvailable, UnknownResponse, DataAlreadyPresent
+from MSMetaEnhancer.libs.utils.Errors import (
+    TargetAttributeNotRetrieved,
+    SourceAttributeNotAvailable,
+    ServiceNotAvailable,
+    UnknownResponse,
+    DataAlreadyPresent,
+)
 from MSMetaEnhancer.libs.utils.Logger import LogRecord
 
 
@@ -11,6 +16,7 @@ class Annotator:
     """
     Annotator is responsible for annotation process of single spectra.
     """
+
     def __init__(self):
         self.converters = dict()
         self.curator = Curator()
@@ -41,17 +47,28 @@ class Annotator:
             for job in jobs:
                 if job.target not in metadata:
                     try:
-                        metadata, cache = await self.execute_job_with_cache(job, metadata, cache, log)
+                        metadata, cache = await self.execute_job_with_cache(
+                            job, metadata, cache, log
+                        )
                         if repeat:
                             added_metadata = True
-                    except (SourceAttributeNotAvailable, TargetAttributeNotRetrieved) as exc:
+                    except (
+                        SourceAttributeNotAvailable,
+                        TargetAttributeNotRetrieved,
+                    ) as exc:
                         log.update(exc, job, level=3)
                     except (ServiceNotAvailable, UnknownResponse) as exc:
                         log.update(exc, job, level=2)
                     except Exception:
                         log.update(Exception(traceback.format_exc()), job, level=1)
                 else:
-                    log.update(DataAlreadyPresent(f'Requested attribute {job.target} already present.'), job, level=2)
+                    log.update(
+                        DataAlreadyPresent(
+                            f"Requested attribute {job.target} already present."
+                        ),
+                        job,
+                        level=2,
+                    )
 
         logger.add_logs(log)
         logger.add_coverage_after(metadata.keys())
@@ -85,7 +102,7 @@ class Annotator:
                 if job.target in cache[job.converter]:
                     metadata[job.target] = cache[job.converter][job.target]
                 else:
-                    raise TargetAttributeNotRetrieved('No data retrieved.')
+                    raise TargetAttributeNotRetrieved("No data retrieved.")
             else:
-                raise ServiceNotAvailable(f'Service {job.converter} not available.')
+                raise ServiceNotAvailable(f"Service {job.converter} not available.")
         return metadata, cache

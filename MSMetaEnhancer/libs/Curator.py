@@ -1,5 +1,7 @@
 from matchms.filtering.filter_utils.smile_inchi_inchikey_conversions import (
-    is_valid_smiles, is_valid_inchi, is_valid_inchikey
+    is_valid_smiles,
+    is_valid_inchi,
+    is_valid_inchikey,
 )
 from MSMetaEnhancer.libs.utils.Errors import InvalidAttributeFormat
 
@@ -10,7 +12,7 @@ inchi = "InChI=1S/CH4/h1H4"
 inchikey = "VNWKTOKETHGBQD-UHFFFAOYSA-N"
 
 print(is_valid_smiles(smiles))  # True if valid SMILES
-print(is_valid_inchi(inchi))    # True if valid InChI
+print(is_valid_inchi(inchi))  # True if valid InChI
 print(is_valid_inchikey(inchikey))  # True if valid InChIKey
 
 
@@ -21,6 +23,7 @@ class Curator:
 
     Additionally, it supports metadata validation to make sure the produced data are correct.
     """
+
     def curate_metadata(self, metadata_list):
         """
         Iterates over given metadata and curates individual entries.
@@ -40,8 +43,8 @@ class Curator:
         :param metadata: given metadata
         :return: curated metadata
         """
-        if 'casno' in metadata:
-            metadata['casno'] = self.fix_cas_number(metadata['casno'])
+        if "casno" in metadata:
+            metadata["casno"] = self.fix_cas_number(metadata["casno"])
         return metadata
 
     @staticmethod
@@ -54,7 +57,7 @@ class Curator:
         """
         if isinstance(cas_number, str):
             if "-" not in cas_number:
-                return f'{cas_number[:-3]}-{cas_number[-3:-1]}-{cas_number[-1]}'
+                return f"{cas_number[:-3]}-{cas_number[-3:-1]}-{cas_number[-1]}"
         return cas_number
 
     @staticmethod
@@ -68,20 +71,26 @@ class Curator:
         :return: only valid metadata
         """
         filters = {
-            'smiles': is_valid_smiles,
-            'canonical_smiles': is_valid_smiles,
-            'isomeric_smiles': is_valid_smiles,
-            'inchi': is_valid_inchi,
-            'inchikey': is_valid_inchikey
+            "smiles": is_valid_smiles,
+            "canonical_smiles": is_valid_smiles,
+            "isomeric_smiles": is_valid_smiles,
+            "inchi": is_valid_inchi,
+            "inchikey": is_valid_inchikey,
         }
 
         valid_metadata = {}
-        for (attribute, value) in metadata.items():
+        for attribute, value in metadata.items():
             if attribute in filters.keys():
                 if filters[attribute](value):
                     valid_metadata[attribute] = value
                 else:
-                    log.update(InvalidAttributeFormat(f'Obtained {attribute} in invalid format: {value}'), job, level=2)
+                    log.update(
+                        InvalidAttributeFormat(
+                            f"Obtained {attribute} in invalid format: {value}"
+                        ),
+                        job,
+                        level=2,
+                    )
             else:
                 valid_metadata[attribute] = value
         return valid_metadata

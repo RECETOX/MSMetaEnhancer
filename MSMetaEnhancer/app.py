@@ -14,7 +14,7 @@ from MSMetaEnhancer.libs.utils.Monitor import Monitor
 
 
 class Application:
-    def __init__(self, log_level='info', log_file=None):
+    def __init__(self, log_level="info", log_file=None):
         self.data = None
         logger.setup(log_level, log_file)
 
@@ -25,12 +25,12 @@ class Application:
         :param filename: path to source spectra file
         :param file_format: format of spectra
         """
-        if file_format in ['msp', 'mgf', 'json']:
+        if file_format in ["msp", "mgf", "json"]:
             self.data = Spectra()
-        elif file_format in ['csv', 'tsv', 'tabular', 'xlsx']:
+        elif file_format in ["csv", "tsv", "tabular", "xlsx"]:
             self.data = DataFrame()
         else:
-            raise UnknownFileFormat(f'Format {file_format} not supported.')
+            raise UnknownFileFormat(f"Format {file_format} not supported.")
         self.data.load_data(filename, file_format)
 
     def save_data(self, filename, file_format):
@@ -51,12 +51,14 @@ class Application:
         curated_metadata = Curator().curate_metadata(self.data.get_metadata())
         self.data.fuse_metadata(curated_metadata)
 
-    async def annotate_spectra(self,
-                               converters,
-                               jobs=None,
-                               repeat: bool = False,
-                               monitor: Monitor = Monitor(),
-                               annotator: Annotator = Annotator()):
+    async def annotate_spectra(
+        self,
+        converters,
+        jobs=None,
+        repeat: bool = False,
+        monitor: Monitor = Monitor(),
+        annotator: Annotator = Annotator(),
+    ):
         """
         Annotates current Spectra data by specified jobs.
 
@@ -72,9 +74,11 @@ class Application:
         async with aiohttp.ClientSession() as session:
             builder = ConverterBuilder()
             builder.validate_converters(converters)
-            converters, web_converters = builder.build_converters(session, converters)
+            compute_converters, web_converters = builder.build_converters(
+                session, converters
+            )
 
-            annotator.set_converters(converters)
+            annotator.set_converters(compute_converters | web_converters)
             monitor.set_converters(web_converters)
 
             # start converters status checker and wait for first status
@@ -86,7 +90,7 @@ class Application:
                 if not jobs:
                     jobs = []
                     converter: Converter
-                    for converter in converters.values():
+                    for converter in annotator.converters.values():
                         jobs += converter.get_conversion_functions()
                 jobs = convert_to_jobs(jobs)
 
@@ -94,8 +98,12 @@ class Application:
 
                 logger.set_target_attributes(jobs, len(metadata_list))
 
-                results = await asyncio.gather(*[annotator.annotate(metadata, jobs, repeat)
-                                                 for metadata in metadata_list])
+                results = await asyncio.gather(
+                    *[
+                        annotator.annotate(metadata, jobs, repeat)
+                        for metadata in metadata_list
+                    ]
+                )
             finally:
                 monitor.join()
 

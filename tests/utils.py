@@ -13,6 +13,7 @@ class FakeMonitor(Thread):
     """
     Fake Monitor to test basic functionality.
     """
+
     def __init__(self):
         super(FakeMonitor, self).__init__()
         self.converters = None
@@ -35,6 +36,7 @@ class FakeAnnotator:
     """
     Fake Annotator to test basic functionality.
     """
+
     def __init__(self, raise_exception=False):
         self.converters = None
         self.raise_exception = raise_exception
