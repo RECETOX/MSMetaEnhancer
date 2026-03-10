@@ -20,6 +20,11 @@ Troják et al., (2022). MSMetaEnhancer: A Python package for mass spectra metada
 import asyncio
 
 from MSMetaEnhancer import Application
+from MSMetaEnhancer.libs.converters.web import CTS, CIR, IDSM, PubChem, BridgeDb
+from MSMetaEnhancer.libs.converters.compute import RDKit
+from MSMetaEnhancer.libs.utils.ConverterBuilder import ConverterBuilder
+
+ConverterBuilder.register([CTS, CIR, IDSM, PubChem, BridgeDb, RDKit])
 
 app = Application()
 
