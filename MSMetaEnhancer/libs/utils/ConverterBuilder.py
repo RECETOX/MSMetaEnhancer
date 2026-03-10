@@ -1,11 +1,16 @@
-from MSMetaEnhancer.libs.converters.web import __all__ as web_converters
-from MSMetaEnhancer.libs.converters.web import *
-from MSMetaEnhancer.libs.converters.compute import __all__ as compute_converters
-from MSMetaEnhancer.libs.converters.compute import *
+from MSMetaEnhancer.libs.converters.web.WebConverter import WebConverter
+from MSMetaEnhancer.libs.converters.compute.ComputeConverter import ComputeConverter
 from MSMetaEnhancer.libs.utils.Errors import UnknownConverter
 
 
 class ConverterBuilder:
+    converters: dict[str, type] = {}
+
+    @staticmethod
+    def register(converters: list[type]):
+        for converter in converters:
+            ConverterBuilder.converters[converter.__name__] = converter
+
     @staticmethod
     def validate_converters(converters):
         """
@@ -15,14 +20,11 @@ class ConverterBuilder:
         :param converters: given list of converters names
         """
         for converter in converters:
-            try:
-                eval(converter)
-
-            except NameError:
-                raise UnknownConverter(f'Converter {converter} unknown.')
+            if ConverterBuilder.converters.get(converter) is None:
+                raise UnknownConverter(f"Converter {converter} unknown.")
 
     @staticmethod
-    def build_converters(session, converters: list):
+    def build_converters(session, converters: list[str]):
         """
         Create provided converters.
 
@@ -30,11 +32,12 @@ class ConverterBuilder:
         :param converters: list of converters to be built
         :return: built converters
         """
-        built_web_converters, built_converters = {}, {}
+        web_converters, compute_converters = {}, {}
         for converter in converters:
-            if converter in web_converters:
-                built_web_converters[converter] = eval(converter)(session)
-            elif converter in compute_converters:
-                built_converters[converter] = eval(converter)()
-        built_converters.update(built_web_converters)
-        return built_converters, built_web_converters
+            if issubclass(ConverterBuilder.converters[converter], WebConverter):
+                web_converters[converter] = ConverterBuilder.converters[converter](
+                    session
+                )
+            elif issubclass(ConverterBuilder.converters[converter], ComputeConverter):
+                compute_converters[converter] = ConverterBuilder.converters[converter]()
+        return compute_converters, web_converters

@@ -14,31 +14,36 @@ class IDSM(WebConverter):
 
     IDSM service: https://idsm.elixir-czech.cz/
     """
+
     def __init__(self, session):
         super().__init__(session)
         # service URLs
-        self.endpoints = {'IDSM': 'https://idsm.elixir-czech.cz/sparql/endpoint/idsm'}
+        self.endpoints = {"IDSM": "https://idsm.elixir-czech.cz/sparql/endpoint/idsm"}
         self.header = frozendict({"Accept": "application/sparql-results+json"})
 
-        self.attributes = [{'code': 'inchi', 'label': 'CHEMINF_000396'},
-                           {'code': 'iupac_name', 'label': 'CHEMINF_000382'},
-                           {'code': 'inchikey', 'label': 'CHEMINF_000399'},
-                           {'code': 'formula', 'label': 'CHEMINF_000335'},
-                           {'code': 'canonical_smiles', 'label': 'CHEMINF_000376'},
-                           {'code': 'isomeric_smiles', 'label': 'CHEMINF_000379'}]
+        self.attributes = [
+            {"code": "inchi", "label": "CHEMINF_000396"},
+            {"code": "iupac_name", "label": "CHEMINF_000382"},
+            {"code": "inchikey", "label": "CHEMINF_000399"},
+            {"code": "formula", "label": "CHEMINF_000335"},
+            {"code": "canonical_smiles", "label": "CHEMINF_000376"},
+            {"code": "isomeric_smiles", "label": "CHEMINF_000379"},
+        ]
 
         # generate top level methods defining allowed conversions
-        conversions = [('compound_name', 'inchi', 'from_name'),
-                       ('compound_name', 'iupac_name', 'from_name'),
-                       ('compound_name', 'inchikey', 'from_name'),
-                       ('compound_name', 'formula', 'from_name'),
-                       ('compound_name', 'canonical_smiles', 'from_name'),
-                       ('compound_name', 'isomeric_smiles', 'from_name'),
-                       ('inchi', 'iupac_name', 'from_inchi'),
-                       ('inchi', 'inchikey', 'from_inchi'),
-                       ('inchi', 'formula', 'from_inchi'),
-                       ('inchi', 'canonical_smiles', 'from_inchi'),
-                       ('inchi', 'isomeric_smiles', 'from_inchi')]
+        conversions = [
+            ("compound_name", "inchi", "from_name"),
+            ("compound_name", "iupac_name", "from_name"),
+            ("compound_name", "inchikey", "from_name"),
+            ("compound_name", "formula", "from_name"),
+            ("compound_name", "canonical_smiles", "from_name"),
+            ("compound_name", "isomeric_smiles", "from_name"),
+            ("inchi", "iupac_name", "from_inchi"),
+            ("inchi", "inchikey", "from_inchi"),
+            ("inchi", "formula", "from_inchi"),
+            ("inchi", "canonical_smiles", "from_inchi"),
+            ("inchi", "isomeric_smiles", "from_inchi"),
+        ]
         self.create_top_level_conversion_methods(conversions)
 
         # used to limit the maximal number of simultaneous requests being processed
@@ -137,7 +142,9 @@ class IDSM(WebConverter):
         """
         data = frozendict({"query": query})
         async with self.semaphore:
-            response = await self.query_the_service('IDSM', '', method='POST', data=data, headers=self.header)
+            response = await self.query_the_service(
+                "IDSM", "", method="POST", data=data, headers=self.header
+            )
         if response:
             return self.parse_attributes(response)
 
@@ -153,10 +160,10 @@ class IDSM(WebConverter):
         response_json = eval(response)
         result = dict()
 
-        for prop in response_json['results']['bindings']:
-            identifier = prop['type']['value'].rsplit('/', 1)[-1]
-            value = prop['value']['value']
+        for prop in response_json["results"]["bindings"]:
+            identifier = prop["type"]["value"].rsplit("/", 1)[-1]
+            value = prop["value"]["value"]
             for att in self.attributes:
-                if identifier == att['label']:
-                    result[att['code']] = value
+                if identifier == att["label"]:
+                    result[att["code"]] = value
         return result

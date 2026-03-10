@@ -5,6 +5,7 @@ class Converter(ABC):
     """
     General class for conversions.
     """
+
     def __init__(self):
         self.is_available = True
 
@@ -46,13 +47,15 @@ class Converter(ABC):
         :return: a list of available conversion functions
         """
         available_conversions = []
-        methods = [method_name for method_name in dir(self) if '_to_' in method_name]
+        methods = [method_name for method_name in dir(self) if "_to_" in method_name]
         for method in methods:
-            available_conversions.append((*method.split('_to_'), self.converter_name))
+            available_conversions.append((*method.split("_to_"), self.converter_name))
         return available_conversions
 
 
-def create_top_level_method(obj: Converter, source: str, target: str, method: str, asynch: bool = True):
+def create_top_level_method(
+    obj: Converter, source: str, target: str, method: str, asynch: bool = True
+):
     """
     Assign a new method to {obj} called {source}_to_{target} which calls {method}.
 
@@ -62,14 +65,15 @@ def create_top_level_method(obj: Converter, source: str, target: str, method: st
     :param method: method which is called in the object with single argument
     :param asynch: whether to create asynchronous methods
     """
+
     async def async_conversion(key):
         return await getattr(obj, str(method))(key)
 
     def sync_conversion(key):
         return getattr(obj, str(method))(key)
 
-    doc = f'Convert {source} to {target} using {obj.__class__.__name__} converter'
-    name = f'{source}_to_{target}'
+    doc = f"Convert {source} to {target} using {obj.__class__.__name__} converter"
+    name = f"{source}_to_{target}"
 
     if asynch:
         async_conversion.__doc__ = doc

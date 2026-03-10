@@ -18,14 +18,14 @@ class DataFrame(Data):
         :param filename: given file
         :param file_format: format of the input file
         """
-        if file_format == 'csv':
+        if file_format == "csv":
             self.df = pandas.read_csv(filename, dtype=str)
-        elif file_format in ['tsv', 'tabular']:
-            self.df = pandas.read_csv(filename, dtype=str, sep='\t')
-        elif file_format == 'xlsx':
+        elif file_format in ["tsv", "tabular"]:
+            self.df = pandas.read_csv(filename, dtype=str, sep="\t")
+        elif file_format == "xlsx":
             self.df = pandas.read_excel(filename, dtype=str)
         else:
-            raise UnknownFileFormat(f'Format {file_format} not supported.')
+            raise UnknownFileFormat(f"Format {file_format} not supported.")
 
     def save_data(self, filename: str, file_format: str):
         """
@@ -36,18 +36,21 @@ class DataFrame(Data):
         :param filename: target file
         :param file_format: format of the output file
         """
-        if file_format == 'csv':
+        if file_format == "csv":
             self.df.to_csv(filename, index=False)
-        elif file_format in ['tsv', 'tabular']:
-            self.df.to_csv(filename, index=False, sep='\t')
-        elif file_format == 'xlsx':
+        elif file_format in ["tsv", "tabular"]:
+            self.df.to_csv(filename, index=False, sep="\t")
+        elif file_format == "xlsx":
             self.df.to_excel(filename)
         else:
-            raise UnknownFileFormat(f'Format {file_format} not supported.')
+            raise UnknownFileFormat(f"Format {file_format} not supported.")
 
     def get_metadata(self):
-        records = self.df.to_dict('records')
-        return [{k: v for k, v in record.items() if not is_na_value(v)} for record in records]
+        records = self.df.to_dict("records")
+        return [
+            {k: v for k, v in record.items() if not is_na_value(v)}
+            for record in records
+        ]
 
     def fuse_metadata(self, metadata_list):
         self.df = pandas.DataFrame.from_dict(metadata_list)

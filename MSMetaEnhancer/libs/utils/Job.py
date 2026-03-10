@@ -2,8 +2,10 @@ from typing import Any, Tuple
 
 from matchms import Metadata
 from MSMetaEnhancer.libs.Converter import Converter
-from MSMetaEnhancer.libs.utils.Errors import (ConversionNotSupported,
-                                              SourceAttributeNotAvailable)
+from MSMetaEnhancer.libs.utils.Errors import (
+    ConversionNotSupported,
+    SourceAttributeNotAvailable,
+)
 
 
 class Job:
@@ -11,10 +13,10 @@ class Job:
         self.source, self.target, self.converter = data
 
     def __str__(self):
-        return f'{self.converter}: {self.source} -> {self.target}'
+        return f"{self.converter}: {self.source} -> {self.target}"
 
     def __repr__(self):
-        return f'Job(({self.source}, {self.target}, {self.converter}))'
+        return f"Job(({self.source}, {self.target}, {self.converter}))"
 
     def validate(self, converters: dict, metadata: Metadata) -> Tuple[Converter, Any]:
         """
@@ -28,10 +30,14 @@ class Job:
         data = metadata.get(self.source, None)
 
         if converter is None:
-            raise ConversionNotSupported(f'Conversion ({self.converter}) {self.source} -> {self.target}: '
-                                         f'is not supported')
+            raise ConversionNotSupported(
+                f"Conversion ({self.converter}) {self.source} -> {self.target}: "
+                f"is not supported"
+            )
         elif data is None:
-            raise SourceAttributeNotAvailable(f'{self}:\n Attribute {self.source} missing in given metadata.')
+            raise SourceAttributeNotAvailable(
+                f"{self}:\n Attribute {self.source} missing in given metadata."
+            )
         else:
             return converter, data
 

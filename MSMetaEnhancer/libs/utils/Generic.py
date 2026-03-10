@@ -1,7 +1,7 @@
 import math
 
 
-NA_STRING_VALUES = {'na', 'n/a', 'nan', 'none', ''}
+NA_STRING_VALUES = {"na", "n/a", "nan", "none", ""}
 
 
 def is_na_value(value) -> bool:
@@ -18,6 +18,7 @@ def is_na_value(value) -> bool:
 def escape_single_quotes(f):
     async def wrapper(self, arg):
         return await f(self, arg.replace("'", "\\'"))
+
     return wrapper
 
 

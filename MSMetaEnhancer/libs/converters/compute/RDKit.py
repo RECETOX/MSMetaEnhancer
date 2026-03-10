@@ -13,12 +13,15 @@ class RDKit(ComputeConverter):
     """
     RDKit is a collection of chemo-informatics and machine-learning software.
     """
+
     def __init__(self):
         super().__init__()
         # generate top level methods defining allowed conversions
-        conversions = [('smiles', 'mw', 'from_smiles'),
-                       ('canonical_smiles', 'mw', 'from_smiles'),
-                       ('isomeric_smiles', 'mw', 'from_smiles')]
+        conversions = [
+            ("smiles", "mw", "from_smiles"),
+            ("canonical_smiles", "mw", "from_smiles"),
+            ("isomeric_smiles", "mw", "from_smiles"),
+        ]
         self.create_top_level_conversion_methods(conversions, asynch=False)
 
     def from_smiles(self, smiles):
@@ -29,7 +32,7 @@ class RDKit(ComputeConverter):
         :return: computed molecular weight
         """
         weight = ExactMolWt(MolFromSmiles(smiles))
-        return {'mw': weight}
+        return {"mw": weight}
 
     def inchi_to_canonical_smiles(self, inchi):
         """
@@ -39,7 +42,7 @@ class RDKit(ComputeConverter):
         :return: computed canonical SMILES
         """
         smiles = MolToSmiles(MolFromInchi(inchi), isomericSmiles=False)
-        return {'canonical_smiles': smiles}
+        return {"canonical_smiles": smiles}
 
     def inchi_to_isomeric_smiles(self, inchi):
         """
@@ -49,7 +52,7 @@ class RDKit(ComputeConverter):
         :return: computed isomeric SMILES
         """
         smiles = MolToSmiles(MolFromInchi(inchi))
-        return {'isomeric_smiles': smiles}
+        return {"isomeric_smiles": smiles}
 
     def formula_to_mw(self, formula):
         """
@@ -66,9 +69,13 @@ class RDKit(ComputeConverter):
                 continue
 
             atom = Atom(parts[index])
-            multiplier = int(parts[index + 1]) if len(parts) > index + 1 and parts[index + 1].isnumeric() else 1
+            multiplier = (
+                int(parts[index + 1])
+                if len(parts) > index + 1 and parts[index + 1].isnumeric()
+                else 1
+            )
             mass += atom.GetMass() * multiplier
-        return {'mw': mass}
+        return {"mw": mass}
 
     def smiles_to_formula(self, smiles: str) -> dict:
         """
@@ -79,11 +86,11 @@ class RDKit(ComputeConverter):
         """
         mol = MolFromSmiles(smiles)
         if mol is None:
-            return {'formula': ''}
+            return {"formula": ""}
 
         formula = CalcMolFormula(mol)
 
-        return {'formula': formula}
+        return {"formula": formula}
 
     def inchi_to_formula(self, inchi: str) -> dict:
         """
@@ -94,6 +101,6 @@ class RDKit(ComputeConverter):
         """
         mol = MolFromInchi(inchi)
         if mol is None:
-            return {'formula': ''}
+            return {"formula": ""}
         formula = CalcMolFormula(mol)
-        return {'formula': formula}
+        return {"formula": formula}

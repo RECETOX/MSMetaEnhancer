@@ -8,6 +8,7 @@ class Throttler:
     """
     Class to limit number of parallel requests by a rate (number per period of time).
     """
+
     def __init__(self, rate_limit=10, period=1, retry_interval=0.01):
         self.rate = rate_limit
         self.rate_limit = rate_limit
