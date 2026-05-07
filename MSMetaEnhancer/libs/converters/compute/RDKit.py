@@ -21,6 +21,8 @@ class RDKit(ComputeConverter):
             ("smiles", "mw", "from_smiles"),
             ("canonical_smiles", "mw", "from_smiles"),
             ("isomeric_smiles", "mw", "from_smiles"),
+            ("canonical_smiles", "formula", "smiles_to_formula"),
+            ("isomeric_smiles", "formula", "smiles_to_formula"),
         ]
         self.create_top_level_conversion_methods(conversions, asynch=False)
 
