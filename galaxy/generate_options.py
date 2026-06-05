@@ -14,10 +14,10 @@ from MSMetaEnhancer.libs.converters.compute import __all__ as compute_converters
 
 def generate_options():
     ConverterBuilder.register([CTS, CIR, IDSM, PubChem, BridgeDb, RDKit])
-    
+
     jobs = []
     converters = web_converters + compute_converters
- 
+
     builder = ConverterBuilder()
     builder.validate_converters(converters)
     built_compute_converters, built_web_converters = builder.build_converters(

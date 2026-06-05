@@ -30,7 +30,11 @@ CANONICAL_INCHIKEY = "MUMGGOZAMZWBJJ-UHFFFAOYSA-N"
         ["canonical_smiles_to_inchi", CANONICAL_SMILES, {"inchi": CANONICAL_INCHI}],
         ["isomeric_smiles_to_inchi", ISOMERIC_SMILES, {"inchi": INCHI}],
         ["smiles_to_inchikey", CANONICAL_SMILES, {"inchikey": CANONICAL_INCHIKEY}],
-        ["canonical_smiles_to_inchikey", CANONICAL_SMILES, {"inchikey": CANONICAL_INCHIKEY}],
+        [
+            "canonical_smiles_to_inchikey",
+            CANONICAL_SMILES,
+            {"inchikey": CANONICAL_INCHIKEY},
+        ],
         ["isomeric_smiles_to_inchikey", ISOMERIC_SMILES, {"inchikey": INCHIKEY}],
         ["inchi_to_inchikey", INCHI, {"inchikey": INCHIKEY}],
     ],

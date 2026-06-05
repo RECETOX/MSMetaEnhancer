@@ -3,6 +3,7 @@ import json
 import pytest
 
 from MSMetaEnhancer.libs.converters.web import CTS
+from MSMetaEnhancer.libs.utils.Errors import UnknownResponse
 from tests.utils import wrap_with_session
 
 
@@ -10,7 +11,7 @@ from tests.utils import wrap_with_session
 def test_service_available():
     try:
         asyncio.run(wrap_with_session(CTS, "casno_to_inchikey", ["7783-89-3"]))
-    except:
+    except UnknownResponse:
         assert False
 
 
