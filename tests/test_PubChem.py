@@ -5,6 +5,7 @@ import pytest
 from MSMetaEnhancer.libs.converters.web import PubChem
 from frozendict import frozendict
 
+from MSMetaEnhancer.libs.utils.Errors import UnknownResponse
 from tests.utils import wrap_with_session
 
 
@@ -12,6 +13,7 @@ INCHI = "InChI=1S/C11H8FNO3/c1-13-6-9(10(14)16-11(13)15)7-2-4-8(12)5-3-7/h2-6H,1
 
 
 @pytest.mark.dependency()
+@pytest.mark.xfail(raises=UnknownResponse)
 def test_service_available():
     asyncio.run(wrap_with_session(PubChem, "inchi_to_inchikey", [INCHI]))
 
@@ -72,6 +74,7 @@ def test_parse_attributes(response, expected):
     assert actual == expected
 
 
+@pytest.mark.dependency(depends=["test_service_available"])
 def test_convert_inchikey_to_inchi():
     inchikey = "OHCNQFYTLLGNOE-UHFFFAOYSA-N"
     expected = "InChI=1S/C5H13NSi/c1-7(2,3)6-4-5-6/h4-5H2,1-3H3"
