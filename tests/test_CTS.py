@@ -8,7 +8,10 @@ from tests.utils import wrap_with_session
 
 @pytest.mark.dependency()
 def test_service_available():
-    asyncio.run(wrap_with_session(CTS, "casno_to_inchikey", ["7783-89-3"]))
+    try:
+        asyncio.run(wrap_with_session(CTS, "casno_to_inchikey", ["7783-89-3"]))
+    except:
+        assert False
 
 
 @pytest.mark.dependency(depends=["test_service_available"])
