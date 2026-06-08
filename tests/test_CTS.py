@@ -3,12 +3,15 @@ import json
 import pytest
 
 from MSMetaEnhancer.libs.converters.web import CTS
+from MSMetaEnhancer.libs.utils.Errors import UnknownResponse
 from tests.utils import wrap_with_session
 
 
 @pytest.mark.dependency()
+@pytest.mark.xfail(raises=UnknownResponse)
 def test_service_available():
     asyncio.run(wrap_with_session(CTS, "casno_to_inchikey", ["7783-89-3"]))
+
 
 
 @pytest.mark.dependency(depends=["test_service_available"])

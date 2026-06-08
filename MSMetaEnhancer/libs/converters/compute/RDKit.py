@@ -1,7 +1,7 @@
 import re
 from rdkit.Chem.Descriptors import ExactMolWt
 from rdkit.Chem import MolFromSmiles, MolToSmiles
-from rdkit.Chem.inchi import MolFromInchi
+from rdkit.Chem.inchi import MolFromInchi, MolToInchi, InchiToInchiKey
 from rdkit.Chem.rdMolDescriptors import CalcMolFormula
 from rdkit.Chem import Atom
 
@@ -23,6 +23,10 @@ class RDKit(ComputeConverter):
             ("isomeric_smiles", "mw", "from_smiles"),
             ("canonical_smiles", "formula", "smiles_to_formula"),
             ("isomeric_smiles", "formula", "smiles_to_formula"),
+            ("canonical_smiles", "inchi", "smiles_to_inchi"),
+            ("isomeric_smiles", "inchi", "smiles_to_inchi"),
+            ("canonical_smiles", "inchikey", "smiles_to_inchikey"),
+            ("isomeric_smiles", "inchikey", "smiles_to_inchikey"),
         ]
         self.create_top_level_conversion_methods(conversions, asynch=False)
 
@@ -106,3 +110,44 @@ class RDKit(ComputeConverter):
             return {"formula": ""}
         formula = CalcMolFormula(mol)
         return {"formula": formula}
+
+    def smiles_to_inchi(self, smiles: str) -> dict:
+        """
+        Compute InChI from SMILES.
+
+        :param smiles: given SMILES
+        :return: computed InChI
+        """
+        mol = MolFromSmiles(smiles)
+        if mol is None:
+            return {"inchi": ""}
+        inchi = MolToInchi(mol)
+        return {"inchi": inchi}
+
+    def smiles_to_inchikey(self, smiles: str) -> dict:
+        """
+        Compute InChIKey from SMILES.
+
+        :param smiles: given SMILES
+        :return: computed InChIKey
+        """
+        mol = MolFromSmiles(smiles)
+        if mol is None:
+            return {"inchikey": ""}
+        inchi = MolToInchi(mol)
+        if not inchi:
+            return {"inchikey": ""}
+        inchikey = InchiToInchiKey(inchi)
+        return {"inchikey": inchikey}
+
+    def inchi_to_inchikey(self, inchi: str) -> dict:
+        """
+        Compute InChIKey from InChI.
+
+        :param inchi: given InChI
+        :return: computed InChIKey
+        """
+        if not inchi:
+            return {"inchikey": ""}
+        inchikey = InchiToInchiKey(inchi)
+        return {"inchikey": inchikey}
