@@ -1,4 +1,5 @@
 import asyncio
+import json
 import pytest
 
 from MSMetaEnhancer.libs.converters.web import ChEBI
@@ -7,6 +8,7 @@ from tests.utils import wrap_with_session
 
 CHEBI_ID = "CHEBI:60888"
 INCHIKEY = "RYYVLZVUVIJVGH-UHFFFAOYSA-N"
+COMPOUND_NAME = "bapta"
 
 
 @pytest.mark.dependency()
@@ -45,36 +47,41 @@ def test_chebiid_to_formula():
 
 @pytest.mark.dependency(depends=["test_service_available"])
 def test_inchikey_to_chebiid():
-    result = asyncio.run(
-        wrap_with_session(ChEBI, "inchikey_to_chebiid", [INCHIKEY])
-    )
+    result = asyncio.run(wrap_with_session(ChEBI, "inchikey_to_chebiid", [INCHIKEY]))
     assert result is not None
     assert "chebiid" in result
     assert result["chebiid"] == CHEBI_ID
 
 
 @pytest.mark.dependency(depends=["test_service_available"])
+def test_compound_name_to_chebiid():
+    result = asyncio.run(
+        wrap_with_session(ChEBI, "compound_name_to_chebiid", [COMPOUND_NAME])
+    )
+    assert result is not None
+    assert "chebiid" in result
+
+
+@pytest.mark.dependency(depends=["test_service_available"])
 def test_format_search_response():
-    args = f"search?query={INCHIKEY}&searchCategory=INCHI_KEY&maximumResults=10&stars=ALL"
+    args = f"es_search/?term={INCHIKEY}&page=1&size=15"
     response = asyncio.run(
         wrap_with_session(ChEBI, "query_the_service", ["ChEBI", args])
     )
 
     assert isinstance(response, str)
-    import json
     data = json.loads(response)
-    assert "priceSearchList" in data
+    assert "results" in data
 
 
 @pytest.mark.dependency(depends=["test_service_available"])
 def test_format_entity_response():
-    args = f"chemicalentity/{CHEBI_ID}"
+    args = f"compound/{CHEBI_ID}/"
     response = asyncio.run(
         wrap_with_session(ChEBI, "query_the_service", ["ChEBI", args])
     )
 
     assert isinstance(response, str)
-    import json
     data = json.loads(response)
     assert "chebiId" in data
     assert data["chebiId"] == CHEBI_ID
@@ -85,3 +92,4 @@ def test_get_conversions():
     assert ("chebiid", "inchikey", "ChEBI") in jobs
     assert ("inchikey", "chebiid", "ChEBI") in jobs
     assert ("compound_name", "chebiid", "ChEBI") in jobs
+

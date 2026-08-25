@@ -16,7 +16,7 @@ class ChEBI(WebConverter):
         super().__init__(session)
         # service URLs
         self.endpoints = {
-            "ChEBI": "https://www.ebi.ac.uk/chebi/backend/api/",
+            "ChEBI": "https://www.ebi.ac.uk/chebi/backend/api/public/",
         }
 
         self.attributes = [
@@ -65,8 +65,10 @@ class ChEBI(WebConverter):
         :param name: given compound name
         :return: all found data
         """
-        args = f"search?query={name}&searchCategory=CHEBI_NAME&maximumResults=10&stars=ALL"
-        return await self.call_service(args)
+        args = f"es_search/?term={name}&page=1&size=15"
+        response = await self.query_the_service("ChEBI", args)
+        if response:
+            return self.parse_search_results(response)
 
     async def from_inchikey(self, inchikey):
         """
@@ -75,8 +77,10 @@ class ChEBI(WebConverter):
         :param inchikey: given InChIKey
         :return: all found data
         """
-        args = f"search?query={inchikey}&searchCategory=INCHI_KEY&maximumResults=10&stars=ALL"
-        return await self.call_service(args)
+        args = f"es_search/?term={inchikey}&page=1&size=15"
+        response = await self.query_the_service("ChEBI", args)
+        if response:
+            return self.parse_search_results(response)
 
     async def from_inchi(self, inchi):
         """
@@ -85,8 +89,10 @@ class ChEBI(WebConverter):
         :param inchi: given InChI string
         :return: all found data
         """
-        args = f"search?query={inchi}&searchCategory=INCHI&maximumResults=10&stars=ALL"
-        return await self.call_service(args)
+        args = f"es_search/?term={inchi}&page=1&size=15"
+        response = await self.query_the_service("ChEBI", args)
+        if response:
+            return self.parse_search_results(response)
 
     async def from_smiles(self, smiles):
         """
@@ -95,37 +101,28 @@ class ChEBI(WebConverter):
         :param smiles: given SMILES string
         :return: all found data
         """
-        args = f"search?query={smiles}&searchCategory=SMILES&maximumResults=10&stars=ALL"
-        return await self.call_service(args)
+        args = f"es_search/?term={smiles}&page=1&size=15"
+        response = await self.query_the_service("ChEBI", args)
+        if response:
+            return self.parse_search_results(response)
 
     async def from_chebiid(self, chebiid):
         """
         Convert ChEBI ID to all possible attributes using ChEBI service.
 
-        :param chebiid: given ChEBI ID (e.g. 'CHEBI:15422')
+        :param chebiid: given ChEBI ID (e.g. 'CHEBI:60888')
         :return: all found data
         """
-        args = f"chemicalentity/{chebiid}"
+        args = f"compound/{chebiid}/"
         response = await self.query_the_service("ChEBI", args)
         if response:
             return self.parse_entity(response)
-
-    async def call_service(self, args):
-        """
-        General method to call ChEBI search service.
-
-        :param args: URL suffix with query arguments
-        :return: obtained attributes from the first result
-        """
-        response = await self.query_the_service("ChEBI", args)
-        if response:
-            return self.parse_search_results(response)
 
     def parse_entity(self, response):
         """
         Parse attributes from a single ChEBI entity response.
 
-        :param response: JSON string from /chemicalentity/{chebiId} endpoint
+        :param response: JSON string from /compound/{chebiId}/ endpoint
         :return: dict of parsed attributes
         """
         entity = json.loads(response)
@@ -135,11 +132,11 @@ class ChEBI(WebConverter):
         """
         Parse attributes from the first result of a ChEBI search response.
 
-        :param response: JSON string from /search endpoint
+        :param response: JSON string from /es_search/ endpoint
         :return: dict of parsed attributes from the first result
         """
         response_json = json.loads(response)
-        results = response_json.get("priceSearchList", [])
+        results = response_json.get("results", [])
         if not results:
             return None
         return self._extract_attributes(results[0])
@@ -157,3 +154,4 @@ class ChEBI(WebConverter):
             if value:
                 result[att["code"]] = value
         return result if result else None
+
