@@ -173,7 +173,7 @@ class ChEBI(WebConverter):
         result = {}
         for att in self.attributes:
             value = self._get_first_value(entity, att["paths"])
-            if value:
+            if value is not None:
                 result[att["code"]] = value
         return result if result else None
 
@@ -192,6 +192,6 @@ class ChEBI(WebConverter):
                     value = None
                     break
                 value = value.get(key)
-            if value:
+            if value is not None:
                 return value
         return None
