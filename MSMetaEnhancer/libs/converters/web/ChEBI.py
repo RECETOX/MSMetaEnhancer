@@ -1,4 +1,5 @@
 import json
+from urllib.parse import quote
 
 from MSMetaEnhancer.libs.converters.web.WebConverter import WebConverter
 
@@ -82,7 +83,7 @@ class ChEBI(WebConverter):
         :param name: given compound name
         :return: all found data
         """
-        args = f"es_search/?term={name}&page=1&size=15"
+        args = f"es_search/?term={quote(name)}&page=1&size=15"
         response = await self.query_the_service("ChEBI", args)
         if response:
             return self.parse_search_results(response)
@@ -94,7 +95,7 @@ class ChEBI(WebConverter):
         :param inchikey: given InChIKey
         :return: all found data
         """
-        args = f"es_search/?term={inchikey}&page=1&size=15"
+        args = f"es_search/?term={quote(inchikey)}&page=1&size=15"
         response = await self.query_the_service("ChEBI", args)
         if response:
             return self.parse_search_results(response)
@@ -106,7 +107,7 @@ class ChEBI(WebConverter):
         :param inchi: given InChI string
         :return: all found data
         """
-        args = f"es_search/?term={inchi}&page=1&size=15"
+        args = f"es_search/?term={quote(inchi)}&page=1&size=15"
         response = await self.query_the_service("ChEBI", args)
         if response:
             return self.parse_search_results(response)
@@ -118,7 +119,7 @@ class ChEBI(WebConverter):
         :param smiles: given SMILES string
         :return: all found data
         """
-        args = f"es_search/?term={smiles}&page=1&size=15"
+        args = f"es_search/?term={quote(smiles)}&page=1&size=15"
         response = await self.query_the_service("ChEBI", args)
         if response:
             return self.parse_search_results(response)
