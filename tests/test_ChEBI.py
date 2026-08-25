@@ -83,8 +83,8 @@ def test_format_entity_response():
 
     assert isinstance(response, str)
     data = json.loads(response)
-    assert "chebiId" in data
-    assert data["chebiId"] == CHEBI_ID
+    assert "chebi_accession" in data
+    assert data["chebi_accession"] == CHEBI_ID
 
 
 def test_get_conversions():
@@ -92,4 +92,3 @@ def test_get_conversions():
     assert ("chebiid", "inchikey", "ChEBI") in jobs
     assert ("inchikey", "chebiid", "ChEBI") in jobs
     assert ("compound_name", "chebiid", "ChEBI") in jobs
-

@@ -20,7 +20,7 @@ class ChEBI(WebConverter):
         }
 
         self.attributes = [
-            {"code": "chebiid", "label": "chebiId"},
+            {"code": "chebiid", "label": "chebi_accession"},
             {"code": "compound_name", "label": "chebiAsciiName"},
             {"code": "inchikey", "label": "inchiKey"},
             {"code": "inchi", "label": "inchi"},
@@ -154,4 +154,3 @@ class ChEBI(WebConverter):
             if value:
                 result[att["code"]] = value
         return result if result else None
-
