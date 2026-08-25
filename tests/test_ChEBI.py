@@ -7,7 +7,7 @@ from tests.utils import wrap_with_session
 
 
 CHEBI_ID = "CHEBI:60888"
-INCHIKEY = "RYYVLZVUVIJVGH-UHFFFAOYSA-N"
+INCHIKEY = "FTEDXVNDVHYDQW-UHFFFAOYSA-N"
 COMPOUND_NAME = "bapta"
 
 
