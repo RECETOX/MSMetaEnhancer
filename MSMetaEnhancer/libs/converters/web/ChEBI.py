@@ -20,12 +20,29 @@ class ChEBI(WebConverter):
         }
 
         self.attributes = [
-            {"code": "chebiid", "label": "chebi_accession"},
-            {"code": "compound_name", "label": "chebiAsciiName"},
-            {"code": "inchikey", "label": "inchiKey"},
-            {"code": "inchi", "label": "inchi"},
-            {"code": "smiles", "label": "smiles"},
-            {"code": "formula", "label": "formula"},
+            {"code": "chebiid", "paths": [("chebi_accession",), ("chebiId",)]},
+            {
+                "code": "compound_name",
+                "paths": [("ascii_name",), ("name",), ("chebiAsciiName",)],
+            },
+            {
+                "code": "inchikey",
+                "paths": [
+                    ("default_structure", "standard_inchi_key"),
+                    ("inchikey",),
+                    ("standard_inchi_key",),
+                    ("inchiKey",),
+                ],
+            },
+            {
+                "code": "inchi",
+                "paths": [("default_structure", "standard_inchi"), ("inchi",)],
+            },
+            {"code": "smiles", "paths": [("default_structure", "smiles"), ("smiles",)]},
+            {
+                "code": "formula",
+                "paths": [("chemical_data", "formula"), ("formula",)],
+            },
         ]
 
         # generate top level methods defining allowed conversions
@@ -139,7 +156,10 @@ class ChEBI(WebConverter):
         results = response_json.get("results", [])
         if not results:
             return None
-        return self._extract_attributes(results[0])
+        entity = results[0]
+        if isinstance(entity, dict):
+            entity = entity.get("_source", entity)
+        return self._extract_attributes(entity)
 
     def _extract_attributes(self, entity):
         """
@@ -148,9 +168,30 @@ class ChEBI(WebConverter):
         :param entity: dict representing a ChEBI entity
         :return: dict of parsed attributes
         """
+        if not isinstance(entity, dict):
+            return None
         result = {}
         for att in self.attributes:
-            value = entity.get(att["label"])
+            value = self._get_first_value(entity, att["paths"])
             if value:
                 result[att["code"]] = value
         return result if result else None
+
+    def _get_first_value(self, entity, paths):
+        """
+        Return the first non-empty value found in the given candidate paths.
+
+        :param entity: dict representing a ChEBI entity
+        :param paths: candidate key paths to try
+        :return: first non-empty value or None
+        """
+        for path in paths:
+            value = entity
+            for key in path:
+                if not isinstance(value, dict):
+                    value = None
+                    break
+                value = value.get(key)
+            if value:
+                return value
+        return None

@@ -87,6 +87,62 @@ def test_format_entity_response():
     assert data["chebi_accession"] == CHEBI_ID
 
 
+def test_parse_entity_nested_response():
+    response = json.dumps(
+        {
+            "chebi_accession": CHEBI_ID,
+            "name": "bapta",
+            "chemical_data": {"formula": "C22H22N2O10"},
+            "default_structure": {
+                "smiles": "C1=CC=C(C=C1)O",
+                "standard_inchi": "InChI=1S/C6H6O/c7-6-4-2-1-3-5-6/h1-5,7H",
+                "standard_inchi_key": INCHIKEY,
+            },
+        }
+    )
+
+    parsed = ChEBI(None).parse_entity(response)
+
+    assert parsed == {
+        "chebiid": CHEBI_ID,
+        "compound_name": "bapta",
+        "formula": "C22H22N2O10",
+        "smiles": "C1=CC=C(C=C1)O",
+        "inchi": "InChI=1S/C6H6O/c7-6-4-2-1-3-5-6/h1-5,7H",
+        "inchikey": INCHIKEY,
+    }
+
+
+def test_parse_search_response_source():
+    response = json.dumps(
+        {
+            "results": [
+                {
+                    "_source": {
+                        "chebi_accession": CHEBI_ID,
+                        "ascii_name": COMPOUND_NAME,
+                        "formula": "C22H22N2O10",
+                        "smiles": "NCCO",
+                        "inchi": "InChI=1S/C2H7NO/c3-1-2-4/h4H,1-3H2",
+                        "standard_inchi_key": INCHIKEY,
+                    }
+                }
+            ]
+        }
+    )
+
+    parsed = ChEBI(None).parse_search_results(response)
+
+    assert parsed == {
+        "chebiid": CHEBI_ID,
+        "compound_name": COMPOUND_NAME,
+        "formula": "C22H22N2O10",
+        "smiles": "NCCO",
+        "inchi": "InChI=1S/C2H7NO/c3-1-2-4/h4H,1-3H2",
+        "inchikey": INCHIKEY,
+    }
+
+
 def test_get_conversions():
     jobs = ChEBI(None).get_conversion_functions()
     assert ("chebiid", "inchikey", "ChEBI") in jobs
