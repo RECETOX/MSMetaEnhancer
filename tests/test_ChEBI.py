@@ -5,8 +5,8 @@ from MSMetaEnhancer.libs.converters.web import ChEBI
 from tests.utils import wrap_with_session
 
 
-CHEBI_ID = "CHEBI:15422"
-INCHIKEY = "ZKHQWZAMYRWXGA-KQYNXXCUSA-N"
+CHEBI_ID = "CHEBI:60888"
+INCHIKEY = "RYYVLZVUVIJVGH-UHFFFAOYSA-N"
 
 
 @pytest.mark.dependency()
