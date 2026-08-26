@@ -249,6 +249,6 @@ class ChEBI(WebConverter):
                 value = value.get(key)
             if value is not None:
                 if isinstance(value, list):
-                    return value[0] if value else None
+                    return next((v for v in value if v), None)
                 return value
         return None
