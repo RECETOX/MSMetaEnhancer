@@ -28,7 +28,7 @@ class ChEBI(WebConverter):
             },
             {
                 "code": "iupac_name",
-                "paths": [("iupac_names",), ("iupacName",)],
+                "paths": [("iupac_names",), ("iupacNames",), ("iupacName",), ("iupac_name",)],
             },
             {
                 "code": "inchikey",
@@ -156,8 +156,18 @@ class ChEBI(WebConverter):
         """
         args = f"compound/{chebiid}/"
         response = await self.query_the_service("ChEBI", args)
+        result = {}
         if response:
-            return self.parse_entity(response)
+            entity_result = self.parse_entity(response)
+            if entity_result:
+                result.update(entity_result)
+        # Supplement with es_search results for fields not in entity response (e.g. iupac_name)
+        es_result = await self._from_es_search(chebiid)
+        if es_result:
+            for key, val in es_result.items():
+                if key not in result:
+                    result[key] = val
+        return result if result else None
 
     def parse_entity(self, response):
         """
@@ -216,7 +226,7 @@ class ChEBI(WebConverter):
         synonyms = entity.get("synonyms", [])
         if isinstance(synonyms, list):
             for syn in synonyms:
-                if isinstance(syn, dict) and syn.get("type") == "IUPAC NAME":
+                if isinstance(syn, dict) and syn.get("type", "").upper() == "IUPAC NAME":
                     return syn.get("data")
         return None
 
