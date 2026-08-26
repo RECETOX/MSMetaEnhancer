@@ -143,12 +143,12 @@ class ChEBI(WebConverter):
         """
         Convert SMILES to all possible attributes using ChEBI structure search service.
 
-        Uses the similarity search endpoint with a threshold of 1.0 (exact match).
+        Uses the similarity search endpoint with a similarity of 1.0 (exact match).
 
         :param smiles: given SMILES string
         :return: all found data
         """
-        data = frozendict({"structure": smiles, "type": "similarity", "threshold": "1"})
+        data = frozendict({"structure": smiles, "type": "similarity", "similarity": 1.0})
         response = await self.query_the_service(
             "ChEBI", "structure_search/", method="POST", data=data
         )
