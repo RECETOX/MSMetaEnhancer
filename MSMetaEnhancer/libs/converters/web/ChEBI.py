@@ -156,19 +156,8 @@ class ChEBI(WebConverter):
         """
         args = f"compound/{chebiid}/"
         response = await self.query_the_service("ChEBI", args)
-        result = {}
         if response:
-            entity_result = self.parse_entity(response)
-            if entity_result:
-                result.update(entity_result)
-        # Supplement with es_search results for fields not in entity response (e.g. iupac_name)
-        if "iupac_name" not in result:
-            es_result = await self._from_es_search(chebiid)
-            if es_result:
-                for key, val in es_result.items():
-                    if key not in result:
-                        result[key] = val
-        return result if result else None
+            return self.parse_entity(response)
 
     def parse_entity(self, response):
         """
@@ -210,20 +199,31 @@ class ChEBI(WebConverter):
             value = self._get_first_value(entity, att["paths"])
             if value is not None:
                 result[att["code"]] = value
-        # Extract IUPAC name from synonyms list (entity endpoint)
+        # Extract IUPAC name from names dict (entity endpoint) or synonyms list (legacy)
         if "iupac_name" not in result:
-            iupac_name = self._extract_iupac_from_synonyms(entity)
+            iupac_name = self._extract_iupac_from_names(entity)
             if iupac_name is not None:
                 result["iupac_name"] = iupac_name
         return result if result else None
 
-    def _extract_iupac_from_synonyms(self, entity):
+    def _extract_iupac_from_names(self, entity):
         """
-        Extract IUPAC name from the synonyms list in a ChEBI entity response.
+        Extract IUPAC name from the entity response.
+
+        Tries two structures:
+        - ``names["IUPAC NAME"][0]["name"]`` (entity endpoint format)
+        - ``synonyms[].type == "IUPAC NAME"`` → ``.data`` (legacy/es_search format)
 
         :param entity: dict representing a ChEBI entity
         :return: IUPAC name string or None
         """
+        names = entity.get("names", {})
+        if isinstance(names, dict):
+            iupac_entries = names.get("IUPAC NAME", [])
+            if isinstance(iupac_entries, list) and iupac_entries:
+                entry = iupac_entries[0]
+                if isinstance(entry, dict):
+                    return entry.get("name") or entry.get("ascii_name")
         synonyms = entity.get("synonyms", [])
         if isinstance(synonyms, list):
             for syn in synonyms:

@@ -127,10 +127,19 @@ def test_parse_entity_nested_response():
                 "standard_inchi": "InChI=1S/C6H6O/c7-6-4-2-1-3-5-6/h1-5,7H",
                 "standard_inchi_key": INCHIKEY,
             },
-            "synonyms": [
-                {"type": "IUPAC NAME", "data": IUPAC_NAME},
-                {"type": "Synonym", "data": "bapta"},
-            ],
+            "names": {
+                "IUPAC NAME": [
+                    {
+                        "name": IUPAC_NAME,
+                        "type": "IUPAC NAME",
+                        "source": "IUPAC",
+                        "ascii_name": IUPAC_NAME,
+                    }
+                ],
+                "SYNONYM": [
+                    {"name": "bapta", "type": "SYNONYM"},
+                ],
+            },
         }
     )
 
@@ -145,6 +154,25 @@ def test_parse_entity_nested_response():
         "inchi": "InChI=1S/C6H6O/c7-6-4-2-1-3-5-6/h1-5,7H",
         "inchikey": INCHIKEY,
     }
+
+
+def test_parse_entity_synonyms_fallback():
+    """Ensure iupac_name can also be extracted from legacy synonyms list format."""
+    response = json.dumps(
+        {
+            "chebi_accession": CHEBI_ID,
+            "name": "bapta",
+            "synonyms": [
+                {"type": "IUPAC NAME", "data": IUPAC_NAME},
+                {"type": "Synonym", "data": "bapta"},
+            ],
+        }
+    )
+
+    parsed = ChEBI(None).parse_entity(response)
+
+    assert parsed is not None
+    assert parsed["iupac_name"] == IUPAC_NAME
 
 
 def test_parse_search_response_source():
