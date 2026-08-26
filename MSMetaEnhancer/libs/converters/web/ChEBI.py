@@ -162,11 +162,12 @@ class ChEBI(WebConverter):
             if entity_result:
                 result.update(entity_result)
         # Supplement with es_search results for fields not in entity response (e.g. iupac_name)
-        es_result = await self._from_es_search(chebiid)
-        if es_result:
-            for key, val in es_result.items():
-                if key not in result:
-                    result[key] = val
+        if "iupac_name" not in result:
+            es_result = await self._from_es_search(chebiid)
+            if es_result:
+                for key, val in es_result.items():
+                    if key not in result:
+                        result[key] = val
         return result if result else None
 
     def parse_entity(self, response):
