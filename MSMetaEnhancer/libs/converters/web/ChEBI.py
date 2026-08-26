@@ -1,5 +1,6 @@
 import json
 from urllib.parse import quote
+from frozendict import frozendict
 
 from MSMetaEnhancer.libs.converters.web.WebConverter import WebConverter
 
@@ -140,12 +141,19 @@ class ChEBI(WebConverter):
 
     async def from_smiles(self, smiles):
         """
-        Convert SMILES to all possible attributes using ChEBI service.
+        Convert SMILES to all possible attributes using ChEBI structure search service.
+
+        Uses the similarity search endpoint with a threshold of 1.0 (exact match).
 
         :param smiles: given SMILES string
         :return: all found data
         """
-        return await self._from_es_search(smiles)
+        data = frozendict({"structure": smiles, "type": "similarity", "threshold": "1"})
+        response = await self.query_the_service(
+            "ChEBI", "structure_search/", method="POST", data=data
+        )
+        if response:
+            return self.parse_structure_search_results(response)
 
     async def from_chebiid(self, chebiid):
         """
@@ -168,6 +176,20 @@ class ChEBI(WebConverter):
         """
         entity = json.loads(response)
         return self._extract_attributes(entity)
+
+    def parse_structure_search_results(self, response):
+        """
+        Parse attributes from the first result of a ChEBI structure search response.
+
+        The structure_search endpoint returns a list of compound objects.
+
+        :param response: JSON string from /structure_search/ endpoint
+        :return: dict of parsed attributes from the first result
+        """
+        results = json.loads(response)
+        if not isinstance(results, list) or not results:
+            return None
+        return self._extract_attributes(results[0])
 
     def parse_search_results(self, response):
         """

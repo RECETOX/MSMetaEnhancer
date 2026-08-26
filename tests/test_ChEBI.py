@@ -11,6 +11,7 @@ INCHIKEY = "FTEDXVNDVHYDQW-UHFFFAOYSA-N"
 INCHI = "InChI=1S/C22H24N2O10/c25-19(26)11-23(12-20(27)28)15-5-1-3-7-17(15)33-9-10-34-18-8-4-2-6-16(18)24(13-21(29)30)14-22(31)32/h1-8H,9-14H2,(H,25,26)(H,27,28)(H,29,30)(H,31,32)"
 COMPOUND_NAME = "bapta"
 IUPAC_NAME = "2,2',2'',2'''-[ethane-1,2-diylbis(oxy-2,1-phenylenenitrilo)]tetraacetic acid"
+SMILES = "OC(=O)CN(CCOc1ccccc1N(CC(O)=O)CC(O)=O)CC(O)=O"
 
 
 @pytest.mark.dependency()
@@ -31,6 +32,14 @@ def test_chebiid_to_smiles():
     result = asyncio.run(wrap_with_session(ChEBI, "chebiid_to_smiles", [CHEBI_ID]))
     assert result is not None
     assert "smiles" in result
+
+
+@pytest.mark.dependency(depends=["test_service_available"])
+def test_smiles_to_chebiid():
+    result = asyncio.run(wrap_with_session(ChEBI, "smiles_to_chebiid", [SMILES]))
+    assert result is not None
+    assert "chebiid" in result
+    assert result["chebiid"] == CHEBI_ID
 
 
 @pytest.mark.dependency(depends=["test_service_available"])
@@ -215,3 +224,29 @@ def test_get_conversions():
     assert ("chebiid", "iupac_name", "ChEBI") in jobs
     assert ("iupac_name", "chebiid", "ChEBI") in jobs
     assert ("inchi", "chebiid", "ChEBI") in jobs
+    assert ("smiles", "chebiid", "ChEBI") in jobs
+
+
+def test_parse_structure_search_response():
+    response = json.dumps(
+        [
+            {
+                "chebi_accession": CHEBI_ID,
+                "ascii_name": COMPOUND_NAME,
+                "chemical_data": {"formula": "C22H24N2O10"},
+                "default_structure": {
+                    "smiles": SMILES,
+                    "standard_inchi": INCHI,
+                    "standard_inchi_key": INCHIKEY,
+                },
+            }
+        ]
+    )
+
+    parsed = ChEBI(None).parse_structure_search_results(response)
+
+    assert parsed is not None
+    assert parsed["chebiid"] == CHEBI_ID
+    assert parsed["compound_name"] == COMPOUND_NAME
+    assert parsed["smiles"] == SMILES
+    assert parsed["inchikey"] == INCHIKEY
