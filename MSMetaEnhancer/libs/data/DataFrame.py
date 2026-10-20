@@ -27,6 +27,30 @@ class DataFrame(Data):
         else:
             raise UnknownFileFormat(f"Format {file_format} not supported.")
 
+    def load_dataframe(self, df: pandas.DataFrame, column_mapping: dict = None):
+        """
+        Uses given pandas DataFrame directly as data (the input is copied).
+
+        :param df: given DataFrame
+        :param column_mapping: optional dictionary {original name: new name}
+                               used to rename columns
+        """
+        if not isinstance(df, pandas.DataFrame):
+            raise TypeError("Expected a pandas DataFrame.")
+        df = df.copy()
+        if column_mapping:
+            df = df.rename(columns=column_mapping)
+        self.df = df
+
+    def get_dataframe(self, column_mapping: dict = None):
+        """
+        Returns a copy of stored DataFrame, optionally renaming columns.
+
+        :param column_mapping: optional dictionary {current name: new name}
+        """
+        df = self.df.copy()
+        return df.rename(columns=column_mapping) if column_mapping else df
+
     def save_data(self, filename: str, file_format: str):
         """
         Exports DataFrame stored a file given by filename
