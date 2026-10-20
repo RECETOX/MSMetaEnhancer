@@ -81,3 +81,35 @@ def test_convert_inchikey_to_inchi():
 
     actual = asyncio.run(wrap_with_session(PubChem, "inchikey_to_inchi", [inchikey]))
     assert actual["inchi"] == expected
+
+
+@pytest.mark.dependency(depends=["test_service_available"])
+def test_convert_inchikey_to_canonical_smiles():
+    inchikey = "NOOLISFMXDJSKH-KXUCPTDWSA-N"
+    expected = "CC1CCC(C(C1)O)C(C)C"
+
+    actual = asyncio.run(
+        wrap_with_session(PubChem, "inchikey_to_canonical_smiles", [inchikey])
+    )
+    assert actual["canonical_smiles"] == expected
+
+
+@pytest.mark.dependency(depends=["test_service_available"])
+def test_convert_inchikey_to_isomeric_smiles():
+    inchikey = "NOOLISFMXDJSKH-KXUCPTDWSA-N"
+    expected = "C[C@@H]1CC[C@H]([C@@H](C1)O)C(C)C"
+
+    actual = asyncio.run(
+        wrap_with_session(PubChem, "inchikey_to_isomeric_smiles", [inchikey])
+    )
+    print(actual)
+    assert actual["isomeric_smiles"] == expected
+
+
+@pytest.mark.dependency(depends=["test_service_available"])
+def test_convert_casno_to_inchikey():
+    cas_number = "57-27-2"
+    expected = "BQJCRHHNABKAKU-KBQPJGBKSA-N"
+
+    actual = asyncio.run(wrap_with_session(PubChem, "casno_to_inchikey", [cas_number]))
+    assert actual["inchikey"] == expected
