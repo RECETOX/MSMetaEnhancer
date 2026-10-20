@@ -70,6 +70,35 @@ def test_from_name_queries_wikidata_and_parses_attributes():
     }
 
 
+def test_multiple_name_conversions_reuse_cached_service_request():
+    converter = Wikidata(None)
+    converter.loop_request = mock.AsyncMock(
+        return_value=json.dumps(
+            {
+                "results": {
+                    "bindings": [
+                        {
+                            "compound_name": {"value": "Aspirin"},
+                            "casno": {"value": "50-78-2"},
+                        }
+                    ]
+                }
+            }
+        )
+    )
+
+    async def convert_multiple_attributes():
+        name_result = await converter.from_name("aspirin")
+        casno_result = await converter.compound_name_to_casno("aspirin")
+        return name_result, casno_result
+
+    name_result, casno_result = asyncio.run(convert_multiple_attributes())
+
+    converter.loop_request.assert_awaited_once()
+    assert name_result["compound_name"] == "Aspirin"
+    assert casno_result["casno"] == "50-78-2"
+
+
 def test_from_casno_queries_cas_property():
     converter = Wikidata(None)
     converter.query_the_service = mock.AsyncMock(
