@@ -33,6 +33,27 @@ class Application:
             raise UnknownFileFormat(f"Format {file_format} not supported.")
         self.data.load_data(filename, file_format)
 
+    def load_dataframe(self, df, column_mapping=None):
+        """
+        High level method to use a pandas DataFrame as data.
+
+        :param df: pandas DataFrame with metadata (one row per record)
+        :param column_mapping: optional dictionary {original name: new name}
+                               to rename columns to the names used by the library
+        """
+        self.data = DataFrame()
+        self.data.load_dataframe(df, column_mapping)
+
+    def get_dataframe(self, column_mapping=None):
+        """
+        Returns current data as a pandas DataFrame.
+
+        :param column_mapping: optional dictionary {current name: new name}
+        """
+        if not isinstance(self.data, DataFrame):
+            raise TypeError("Current data is not stored as a DataFrame.")
+        return self.data.get_dataframe(column_mapping)
+
     def save_data(self, filename, file_format):
         """
         High level method to save Spectra data to given file.
