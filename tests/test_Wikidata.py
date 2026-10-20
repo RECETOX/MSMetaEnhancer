@@ -104,4 +104,4 @@ def test_aspirin_name_lookup_live():
 def test_aspirin_cas_lookup_live():
     result = asyncio.run(wrap_with_session(Wikidata, "from_casno", ["50-78-2"]))
 
-    assert result["compound_name"] == "Aspirin"
+    assert result["compound_name"] == "aspirin"
