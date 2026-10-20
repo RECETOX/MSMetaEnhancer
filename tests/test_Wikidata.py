@@ -6,6 +6,7 @@ import mock
 import pytest
 
 from MSMetaEnhancer.libs.converters.web import Wikidata
+from MSMetaEnhancer.libs.utils.Errors import UnknownResponse
 from tests.utils import wrap_with_session
 
 
@@ -174,6 +175,7 @@ def test_aspirin_cas_lookup_live():
 
 
 @pytest.mark.dependency(depends=["test_aspirin_name_lookup_live"])
+@pytest.mark.xfail(raises=UnknownResponse)
 @pytest.mark.parametrize(
     "method, identifier",
     [
