@@ -27,12 +27,19 @@ class PubChem(WebConverter):
             {"code": "inchikey", "label": "InChIKey", "extra": None},
             {"code": "iupac_name", "label": "IUPAC Name", "extra": "Preferred"},
             {"code": "formula", "label": "Molecular Formula", "extra": None},
-            {"code": "canonical_smiles", "label": "SMILES", "extra": "Canonical"},
-            {"code": "isomeric_smiles", "label": "SMILES", "extra": "Isomeric"},
+            {"code": "canonical_smiles", "label": "SMILES", "extra": "Connectivity"},
+            {"code": "isomeric_smiles", "label": "SMILES", "extra": "Absolute"},
         ]
 
         # generate top level methods defining allowed conversions
         conversions = [
+            ("casno", "inchi", "from_casno"),
+            ("casno", "inchikey", "from_casno"),
+            ("casno", "iupac_name", "from_casno"),
+            ("casno", "formula", "from_casno"),
+            ("casno", "canonical_smiles", "from_casno"),
+            ("casno", "isomeric_smiles", "from_casno"),
+            ("casno", "pubchemid", "from_casno"),
             ("compound_name", "inchi", "from_name"),
             ("compound_name", "inchikey", "from_name"),
             ("compound_name", "iupac_name", "from_name"),
@@ -102,6 +109,18 @@ class PubChem(WebConverter):
         :return: all found data
         """
         args = f"name/{name}/JSON"
+        return await self.call_service(args, "GET", None)
+
+    async def from_casno(self, cas_number):
+        """
+        Convert CAS number to all possible attributes using PubChem service
+        CAS numbers are resolved by the name search, which includes synonyms.
+        More info: https://pubchemdocs.ncbi.nlm.nih.gov/pug-rest
+
+        :param cas_number: given CAS number
+        :return: all found data
+        """
+        args = f"name/{cas_number}/JSON"
         return await self.call_service(args, "GET", None)
 
     async def from_inchi(self, inchi):

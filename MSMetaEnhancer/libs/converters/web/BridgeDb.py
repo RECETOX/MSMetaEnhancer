@@ -12,7 +12,10 @@ class BridgeDb(WebConverter):
     def __init__(self, session):
         super().__init__(session)
         # service URLs
-        self.endpoints = {"BridgeDb": "https://webservice.bridgedb.org/Human/xrefs/"}
+        self.endpoints = {
+            "BridgeDb": "https://webservice.bridgedb.org/Human/xrefs/",
+            "BridgeDbSearch": "https://webservice.bridgedb.org/Human/search/",
+        }
 
         self.codes = {
             "hmdbid": "Ch",
@@ -21,49 +24,42 @@ class BridgeDb(WebConverter):
             "wikidataid": "Wd",
             "chebiid": "Ce",
             "keggid": "Ck",
+            "casno": "Ca",
+            "inchikey": "Ik",
         }
         self.identifiers = {
             "PubChem-compound": "pubchemid",
+            "Cpc": "pubchemid",
             "Chemspider": "chemspiderid",
+            "Cs": "chemspiderid",
             "ChEBI": "chebiid",
+            "Ce": "chebiid",
             "HMDB": "hmdbid",
+            "Ch": "hmdbid",
             "Wikidata": "wikidataid",
+            "Wd": "wikidataid",
             "KEGG Compound": "keggid",
+            "Ck": "keggid",
+            "CAS": "casno",
+            "Ca": "casno",
+            "InChIKey": "inchikey",
+            "Ik": "inchikey",
         }
 
         # generate top level methods defining allowed conversions
+        conversion_sources = list(self.codes.keys())
         conversions = [
-            ("hmdbid", "pubchemid", "from_hmdbid"),
-            ("hmdbid", "chemspiderid", "from_hmdbid"),
-            ("hmdbid", "wikidataid", "from_hmdbid"),
-            ("hmdbid", "chebiid", "from_hmdbid"),
-            ("hmdbid", "keggid", "from_hmdbid"),
-            ("pubchemid", "hmdbid", "from_pubchemid"),
-            ("pubchemid", "chemspiderid", "from_pubchemid"),
-            ("pubchemid", "wikidataid", "from_pubchemid"),
-            ("pubchemid", "chebiid", "from_pubchemid"),
-            ("pubchemid", "keggid", "from_pubchemid"),
-            ("chemspiderid", "hmdbid", "from_chemspiderid"),
-            ("chemspiderid", "pubchemid", "from_chemspiderid"),
-            ("chemspiderid", "wikidataid", "from_chemspiderid"),
-            ("chemspiderid", "chebiid", "from_chemspiderid"),
-            ("chemspiderid", "keggid", "from_chemspiderid"),
-            ("wikidataid", "hmdbid", "from_wikidataid"),
-            ("wikidataid", "pubchemid", "from_wikidataid"),
-            ("wikidataid", "chemspiderid", "from_wikidataid"),
-            ("wikidataid", "chebiid", "from_wikidataid"),
-            ("wikidataid", "keggid", "from_wikidataid"),
-            ("chebiid", "hmdbid", "from_chebiid"),
-            ("chebiid", "pubchemid", "from_chebiid"),
-            ("chebiid", "chemspiderid", "from_chebiid"),
-            ("chebiid", "wikidataid", "from_chebiid"),
-            ("chebiid", "keggid", "from_chebiid"),
-            ("keggid", "hmdbid", "from_keggid"),
-            ("keggid", "pubchemid", "from_keggid"),
-            ("keggid", "chemspiderid", "from_keggid"),
-            ("keggid", "wikidataid", "from_keggid"),
-            ("keggid", "chebiid", "from_keggid"),
+            (source, target, f"from_{source}")
+            for source in conversion_sources
+            for target in conversion_sources
+            if source != target
         ]
+        conversions.extend(
+            [
+                ("compound_name", target, "from_name")
+                for target in conversion_sources
+            ]
+        )
         self.create_top_level_conversion_methods(conversions)
 
     async def from_hmdbid(self, hmdbid):
@@ -125,6 +121,37 @@ class BridgeDb(WebConverter):
         """
         args = f"{self.codes['keggid']}/{keggid}"
         return await self.call_service(args)
+
+    async def from_casno(self, casno):
+        """
+        Convert CAS number to all possible IDs using BridgeDb web service
+
+        :param casno: given CAS number
+        :return: obtained IDs
+        """
+        args = f"{self.codes['casno']}/{casno}"
+        return await self.call_service(args)
+
+    async def from_inchikey(self, inchikey):
+        """
+        Convert InChIKey to all possible IDs using BridgeDb web service
+
+        :param inchikey: given InChIKey
+        :return: obtained IDs
+        """
+        args = f"{self.codes['inchikey']}/{inchikey}"
+        return await self.call_service(args)
+
+    async def from_name(self, name):
+        """
+        Search identifiers by compound name using BridgeDb web service
+
+        :param name: given compound name
+        :return: obtained IDs
+        """
+        response = await self.query_the_service("BridgeDbSearch", name)
+        if response:
+            return self.parse_attributes(response)
 
     async def call_service(self, args):
         response = await self.query_the_service("BridgeDb", args)
