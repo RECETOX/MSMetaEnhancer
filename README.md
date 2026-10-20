@@ -7,7 +7,7 @@
 [![DOI](https://joss.theoj.org/papers/10.21105/joss.04494/status.svg)](https://doi.org/10.21105/joss.04494)
 
 **MSMetaEnhancer** is a tool used for `.msp` files annotation.
-It adds metadata like SMILES, InChI, and CAS number fetched from the following services: [CIR](https://cactus.nci.nih.gov/chemical/structure_documentation), [CTS](https://cts.fiehnlab.ucdavis.edu/), [PubChem](https://pubchem.ncbi.nlm.nih.gov/), [IDSM](https://idsm.elixir-czech.cz/), and [BridgeDb](https://bridgedb.github.io/).
+It adds metadata like SMILES, InChI, and CAS number fetched from the following services: [CIR](https://cactus.nci.nih.gov/chemical/structure_documentation), [CTS](https://cts.fiehnlab.ucdavis.edu/), [PubChem](https://pubchem.ncbi.nlm.nih.gov/), [IDSM](https://idsm.elixir-czech.cz/), [BridgeDb](https://bridgedb.github.io/), and [Wikidata](https://www.wikidata.org/).
 The app uses asynchronous implementation of annotation process allowing for optimal fetching speed.
 
 If you use MSMetaEnhancer in your work, please cite the following publication:
@@ -20,11 +20,18 @@ Troják et al., (2022). MSMetaEnhancer: A Python package for mass spectra metada
 import asyncio
 
 from MSMetaEnhancer import Application
-from MSMetaEnhancer.libs.converters.web import CTS, CIR, IDSM, PubChem, BridgeDb
+from MSMetaEnhancer.libs.converters.web import (
+    CTS,
+    CIR,
+    IDSM,
+    PubChem,
+    BridgeDb,
+    Wikidata,
+)
 from MSMetaEnhancer.libs.converters.compute import RDKit
 from MSMetaEnhancer.libs.utils.ConverterBuilder import ConverterBuilder
 
-ConverterBuilder.register([CTS, CIR, IDSM, PubChem, BridgeDb, RDKit])
+ConverterBuilder.register([CTS, CIR, IDSM, PubChem, BridgeDb, Wikidata, RDKit])
 
 app = Application()
 
@@ -35,7 +42,7 @@ app.load_data('sample.msp', file_format='msp')
 app.curate_metadata()
 
 # specify requested services (these are supported)
-services = ['CTS', 'CIR', 'IDSM', 'PubChem', 'BridgeDb', 'RDKit']
+services = ['CTS', 'CIR', 'IDSM', 'PubChem', 'BridgeDb', 'Wikidata', 'RDKit']
 
 # specify requested jobs
 jobs = [('name', 'inchi', 'IDSM'), ('inchi', 'formula', 'IDSM'), ('inchi', 'inchikey', 'IDSM'),
