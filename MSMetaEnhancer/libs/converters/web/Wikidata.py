@@ -18,12 +18,24 @@ class Wikidata(WebConverter):
         self.endpoints = {"Wikidata": "https://query.wikidata.org/sparql?"}
         conversions = [
             ("compound_name", target, "from_name")
-            for target in ("casno", "inchi", "inchikey")
+            for target in (
+                "casno",
+                "inchi",
+                "inchikey",
+                "canonical_smiles",
+                "pubchemid",
+            )
         ]
         conversions.extend(
             [
                 ("casno", target, "from_casno")
-                for target in ("compound_name", "inchi", "inchikey")
+                for target in (
+                    "compound_name",
+                    "inchi",
+                    "inchikey",
+                    "canonical_smiles",
+                    "pubchemid",
+                )
             ]
         )
         self.create_top_level_conversion_methods(conversions)
@@ -36,7 +48,8 @@ class Wikidata(WebConverter):
             PREFIX wikibase: <http://wikiba.se/ontology#>
             PREFIX wdt: <http://www.wikidata.org/prop/direct/>
 
-            SELECT ?compound_name ?casno ?inchi ?inchikey WHERE {{
+            SELECT ?compound_name ?casno ?inchi ?inchikey
+                   ?canonical_smiles ?pubchemid WHERE {{
               SERVICE wikibase:mwapi {{
                 bd:serviceParam wikibase:api "EntitySearch" ;
                   wikibase:endpoint "www.wikidata.org" ;
@@ -50,6 +63,8 @@ class Wikidata(WebConverter):
               OPTIONAL {{ ?item wdt:P231 ?casno . }}
               OPTIONAL {{ ?item wdt:P234 ?inchi . }}
               OPTIONAL {{ ?item wdt:P235 ?inchikey . }}
+              OPTIONAL {{ ?item wdt:P233 ?canonical_smiles . }}
+              OPTIONAL {{ ?item wdt:P662 ?pubchemid . }}
             }}
             LIMIT 1
         """
@@ -60,13 +75,16 @@ class Wikidata(WebConverter):
             PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
             PREFIX wdt: <http://www.wikidata.org/prop/direct/>
 
-            SELECT ?compound_name ?casno ?inchi ?inchikey WHERE {{
+            SELECT ?compound_name ?casno ?inchi ?inchikey
+                   ?canonical_smiles ?pubchemid WHERE {{
               ?item wdt:P231 ?casno .
               ?item rdfs:label ?compound_name .
               FILTER(?casno = {self.sparql_literal(casno)})
               FILTER(LANG(?compound_name) = "en")
               OPTIONAL {{ ?item wdt:P234 ?inchi . }}
               OPTIONAL {{ ?item wdt:P235 ?inchikey . }}
+              OPTIONAL {{ ?item wdt:P233 ?canonical_smiles . }}
+              OPTIONAL {{ ?item wdt:P662 ?pubchemid . }}
             }}
             LIMIT 1
         """
@@ -99,7 +117,14 @@ class Wikidata(WebConverter):
         if not bindings:
             return {}
 
-        attributes = ("compound_name", "casno", "inchi", "inchikey")
+        attributes = (
+            "compound_name",
+            "casno",
+            "inchi",
+            "inchikey",
+            "canonical_smiles",
+            "pubchemid",
+        )
         return {
             attribute: bindings[0][attribute]["value"]
             for attribute in attributes
