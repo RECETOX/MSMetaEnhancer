@@ -41,6 +41,14 @@ BridgeDb
    :undoc-members:
    :show-inheritance:
 
+Wikidata
+--------
+
+.. automodule:: MSMetaEnhancer.libs.converters.web.Wikidata
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 General Web Converter
 ---------------------
 
