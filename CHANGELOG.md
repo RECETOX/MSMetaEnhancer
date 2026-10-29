@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+- Added a `ChEBI` web converter querying the ChEBI service (https://www.ebi.ac.uk/chebi/)
+  - Supports `compound_name`, `iupac_name`, `inchikey`, `inchi`, `smiles`, and `chebiid` as source attributes and returns `chebiid`, `compound_name`, `iupac_name`, `inchikey`, `inchi`, `smiles`, and `formula`
+  - Structure search from SMILES uses the ChEBI `structure_search` endpoint with `type=similarity` and a similarity threshold of 1
+
 ## [0.6.1] - 2026-10-22
 
 ### Added

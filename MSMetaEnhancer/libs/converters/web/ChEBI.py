@@ -1,5 +1,6 @@
 import json
 from urllib.parse import quote
+
 from frozendict import frozendict
 
 from MSMetaEnhancer.libs.converters.web.WebConverter import WebConverter
@@ -12,7 +13,21 @@ class ChEBI(WebConverter):
 
     ChEBI service: https://www.ebi.ac.uk/chebi/
     API documentation: https://www.ebi.ac.uk/chebi/backend/api/docs/
+
+    Identifiers and names are resolved by the `es_search` endpoint, structures by the
+    `structure_search` endpoint. Both only return the fields of a compound summary, so the
+    obtained accession is used to retrieve the whole record from the `compound` endpoint,
+    which is the only one reporting the IUPAC name.
     """
+
+    SEARCH_SIZE = 15
+    """Number of search results requested from the ChEBI search endpoints."""
+
+    IDENTIFIER_FIELDS = ("chebi_accession", "inchikey", "inchi", "smiles")
+    """Fields used to positively identify a search result by the searched identifier."""
+
+    NAME_FIELDS = ("ascii_name", "name")
+    """Fields used to positively identify a search result by the searched name."""
 
     def __init__(self, session):
         super().__init__(session)
@@ -21,39 +36,23 @@ class ChEBI(WebConverter):
             "ChEBI": "https://www.ebi.ac.uk/chebi/backend/api/public/",
         }
 
+        # attributes as reported by the compound endpoint
         self.attributes = [
-            {"code": "chebiid", "paths": [("chebi_accession",), ("chebiId",)]},
-            {
-                "code": "compound_name",
-                "paths": [("ascii_name",), ("name",), ("chebiAsciiName",)],
-            },
-            {
-                "code": "iupac_name",
-                "paths": [("iupac_names",), ("iupacNames",), ("iupacName",), ("iupac_name",)],
-            },
+            {"code": "chebiid", "paths": [("chebi_accession",)]},
+            {"code": "compound_name", "paths": [("ascii_name",), ("name",)]},
+            {"code": "formula", "paths": [("chemical_data", "formula")]},
+            {"code": "smiles", "paths": [("default_structure", "smiles")]},
+            {"code": "inchi", "paths": [("default_structure", "standard_inchi")]},
             {
                 "code": "inchikey",
-                "paths": [
-                    ("default_structure", "standard_inchi_key"),
-                    ("inchikey",),
-                    ("standard_inchi_key",),
-                    ("inchiKey",),
-                ],
-            },
-            {
-                "code": "inchi",
-                "paths": [("default_structure", "standard_inchi"), ("inchi",)],
-            },
-            {"code": "smiles", "paths": [("default_structure", "smiles"), ("smiles",)]},
-            {
-                "code": "formula",
-                "paths": [("chemical_data", "formula"), ("formula",)],
+                "paths": [("default_structure", "standard_inchi_key")],
             },
         ]
 
         # generate top level methods defining allowed conversions
         conversions = [
             ("compound_name", "chebiid", "from_name"),
+            ("compound_name", "iupac_name", "from_name"),
             ("compound_name", "inchikey", "from_name"),
             ("compound_name", "inchi", "from_name"),
             ("compound_name", "smiles", "from_name"),
@@ -95,6 +94,9 @@ class ChEBI(WebConverter):
         """
         Convert compound name to all possible attributes using ChEBI service.
 
+        Only compounds reported under the given name by ChEBI are accepted, common names
+        present in ChEBI merely as synonyms are not resolved by the search endpoint.
+
         :param name: given compound name
         :return: all found data
         """
@@ -107,19 +109,7 @@ class ChEBI(WebConverter):
         :param iupac_name: given IUPAC name
         :return: all found data
         """
-        return await self._from_es_search(iupac_name)
-
-    async def _from_es_search(self, term):
-        """
-        Search ChEBI by a given term and return parsed attributes.
-
-        :param term: search term (name, InChIKey, InChI, SMILES, or IUPAC name)
-        :return: all found data
-        """
-        args = f"es_search/?term={quote(term)}&page=1&size=15"
-        response = await self.query_the_service("ChEBI", args)
-        if response:
-            return self.parse_search_results(response)
+        return await self._from_es_search(iupac_name, by_term=False)
 
     async def from_inchikey(self, inchikey):
         """
@@ -134,26 +124,52 @@ class ChEBI(WebConverter):
         """
         Convert InChI to all possible attributes using ChEBI service.
 
+        Only standard InChIs are accepted by the ChEBI search endpoint.
+
         :param inchi: given InChI string
         :return: all found data
         """
         return await self._from_es_search(inchi)
 
+    async def _from_es_search(self, term, by_term=True):
+        """
+        Search ChEBI for the given term and return the attributes of the matching compound.
+
+        :param term: search term (name, IUPAC name, InChIKey or InChI)
+        :param by_term: whether the reported fields of a result are compared to the searched
+            term; IUPAC names are not reported by the search endpoint, so searches by IUPAC
+            name accept a single unambiguous result instead
+        :return: all found data
+        """
+        args = f"es_search/?term={quote(term)}&page=1&size={self.SEARCH_SIZE}"
+        response = await self.query_the_service("ChEBI", args)
+        if not response:
+            return None
+        chebiid = self.extract_chebiid(response, term if by_term else None)
+        if chebiid is None:
+            return None
+        return await self.from_chebiid(chebiid)
+
     async def from_smiles(self, smiles):
         """
         Convert SMILES to all possible attributes using ChEBI structure search service.
 
-        Uses the similarity search endpoint with a similarity of 1.0 (exact match).
+        ChEBI scores the submitted structure without re-canonicalising it, so the similarity
+        threshold of 1 accepts structures that ChEBI reports in the submitted form.
 
         :param smiles: given SMILES string
         :return: all found data
         """
-        data = frozendict({"structure": smiles, "type": "similarity", "similarity": 1.0})
+        data = frozendict({"structure": smiles, "type": "similarity", "similarity": 1})
         response = await self.query_the_service(
             "ChEBI", "structure_search/", method="POST", data=data
         )
-        if response:
-            return self.parse_structure_search_results(response)
+        if not response:
+            return None
+        chebiid = self.extract_chebiid(response)
+        if chebiid is None:
+            return None
+        return await self.from_chebiid(chebiid)
 
     async def from_chebiid(self, chebiid):
         """
@@ -169,49 +185,51 @@ class ChEBI(WebConverter):
 
     def parse_entity(self, response):
         """
-        Parse attributes from a single ChEBI entity response.
+        Parse attributes from a single ChEBI compound response.
 
         :param response: JSON string from /compound/{chebiId}/ endpoint
         :return: dict of parsed attributes
         """
-        entity = json.loads(response)
-        return self._extract_attributes(entity)
+        return self._extract_attributes(json.loads(response))
 
-    def parse_structure_search_results(self, response):
+    def extract_chebiid(self, response, term=None):
         """
-        Parse attributes from the first result of a ChEBI structure search response.
+        Obtain the ChEBI accession of the search result corresponding to the searched term.
 
-        The structure_search endpoint returns a list of compound objects.
+        ChEBI searches are ranked by relevance and report related compounds first (searching
+        for 'bapta' ranks '5,5'-dibromo-BAPTA above 'BAPTA'), so a result is accepted only
+        when it can be positively identified - either its reported accession, identifier or
+        name equals the searched term, or, when no term is given, the search returned a
+        single compound.
 
-        :param response: JSON string from /structure_search/ endpoint
-        :return: dict of parsed attributes from the first result
+        :param response: JSON string from a ChEBI search endpoint
+        :param term: term that was used for the search, None to require a single result
+        :return: ChEBI accession of the matching compound or None
         """
-        results = json.loads(response)
-        if not isinstance(results, list) or not results:
+        entities = [
+            result.get("_source", result)
+            for result in json.loads(response).get("results", [])
+            if isinstance(result, dict)
+        ]
+        entities = [entity for entity in entities if isinstance(entity, dict)]
+        if not entities:
             return None
-        return self._extract_attributes(results[0])
-
-    def parse_search_results(self, response):
-        """
-        Parse attributes from the first result of a ChEBI search response.
-
-        :param response: JSON string from /es_search/ endpoint
-        :return: dict of parsed attributes from the first result
-        """
-        response_json = json.loads(response)
-        results = response_json.get("results", [])
-        if not results:
-            return None
-        entity = results[0]
-        if isinstance(entity, dict):
-            entity = entity.get("_source", entity)
-        return self._extract_attributes(entity)
+        if term is None:
+            # structure searches are not ranked by a term, a single hit is required
+            return entities[0].get("chebi_accession") if len(entities) == 1 else None
+        searched = term.strip().casefold()
+        for field in self.IDENTIFIER_FIELDS + self.NAME_FIELDS:
+            for entity in entities:
+                value = entity.get(field)
+                if isinstance(value, str) and value.strip().casefold() == searched:
+                    return entity.get("chebi_accession")
+        return None
 
     def _extract_attributes(self, entity):
         """
-        Extract known attributes from a ChEBI entity dict.
+        Extract known attributes from a ChEBI compound dict.
 
-        :param entity: dict representing a ChEBI entity
+        :param entity: dict representing a ChEBI compound
         :return: dict of parsed attributes
         """
         if not isinstance(entity, dict):
@@ -221,44 +239,35 @@ class ChEBI(WebConverter):
             value = self._get_first_value(entity, att["paths"])
             if value is not None:
                 result[att["code"]] = value
-        # Extract IUPAC name from names dict (entity endpoint) or synonyms list (legacy)
-        if "iupac_name" not in result:
-            iupac_name = self._extract_iupac_from_names(entity)
-            if iupac_name is not None:
-                result["iupac_name"] = iupac_name
+        iupac_name = self._extract_iupac_name(entity)
+        if iupac_name is not None:
+            result["iupac_name"] = iupac_name
         return result if result else None
 
-    def _extract_iupac_from_names(self, entity):
+    @staticmethod
+    def _extract_iupac_name(entity):
         """
-        Extract IUPAC name from the entity response.
+        Extract the IUPAC name from the names of a ChEBI compound.
 
-        Tries two structures:
-        - ``names["IUPAC NAME"][0]["name"]`` (entity endpoint format)
-        - ``synonyms[].type == "IUPAC NAME"`` → ``.data`` (legacy/es_search format)
-
-        :param entity: dict representing a ChEBI entity
+        :param entity: dict representing a ChEBI compound
         :return: IUPAC name string or None
         """
-        names = entity.get("names", {})
-        if isinstance(names, dict):
-            iupac_entries = names.get("IUPAC NAME", [])
-            if isinstance(iupac_entries, list) and iupac_entries:
-                entry = iupac_entries[0]
-                if isinstance(entry, dict):
-                    return entry.get("name") or entry.get("ascii_name")
-        synonyms = entity.get("synonyms", [])
-        if isinstance(synonyms, list):
-            for syn in synonyms:
-                if isinstance(syn, dict) and syn.get("type", "").upper() == "IUPAC NAME":
-                    return syn.get("data")
+        names = entity.get("names")
+        if not isinstance(names, dict):
+            return None
+        for entry in names.get("IUPAC NAME", []):
+            if isinstance(entry, dict):
+                value = entry.get("ascii_name") or entry.get("name")
+                if value:
+                    return value
         return None
 
     def _get_first_value(self, entity, paths):
         """
         Return the first non-empty value found in the given candidate paths.
-        If the resolved value is a list, the first element is returned.
+        Paths that yield no value are skipped and the following ones are tried.
 
-        :param entity: dict representing a ChEBI entity
+        :param entity: dict representing a ChEBI compound
         :param paths: candidate key paths to try
         :return: first non-empty value or None
         """
@@ -269,8 +278,6 @@ class ChEBI(WebConverter):
                     value = None
                     break
                 value = value.get(key)
-            if value is not None:
-                if isinstance(value, list):
-                    return next((v for v in value if v), None)
+            if value:
                 return value
         return None

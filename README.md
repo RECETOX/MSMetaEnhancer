@@ -7,7 +7,7 @@
 [![DOI](https://joss.theoj.org/papers/10.21105/joss.04494/status.svg)](https://doi.org/10.21105/joss.04494)
 
 **MSMetaEnhancer** is a tool used for `.msp` files annotation.
-It adds metadata like SMILES, InChI, and CAS number fetched from the following services: [CIR](https://cactus.nci.nih.gov/chemical/structure_documentation), [CTS](https://cts.fiehnlab.ucdavis.edu/), [PubChem](https://pubchem.ncbi.nlm.nih.gov/), [IDSM](https://idsm.elixir-czech.cz/), [BridgeDb](https://bridgedb.github.io/), and [Wikidata](https://www.wikidata.org/).
+It adds metadata like SMILES, InChI, and CAS number fetched from the following services: [CIR](https://cactus.nci.nih.gov/chemical/structure_documentation), [CTS](https://cts.fiehnlab.ucdavis.edu/), [PubChem](https://pubchem.ncbi.nlm.nih.gov/), [IDSM](https://idsm.elixir-czech.cz/), [BridgeDb](https://bridgedb.github.io/), [Wikidata](https://www.wikidata.org/), and [ChEBI](https://www.ebi.ac.uk/chebi/).
 The app uses asynchronous implementation of annotation process allowing for optimal fetching speed.
 
 If you use MSMetaEnhancer in your work, please cite the following publication:
@@ -27,11 +27,12 @@ from MSMetaEnhancer.libs.converters.web import (
     PubChem,
     BridgeDb,
     Wikidata,
+    ChEBI,
 )
 from MSMetaEnhancer.libs.converters.compute import RDKit
 from MSMetaEnhancer.libs.utils.ConverterBuilder import ConverterBuilder
 
-ConverterBuilder.register([CTS, CIR, IDSM, PubChem, BridgeDb, Wikidata, RDKit])
+ConverterBuilder.register([CTS, CIR, IDSM, PubChem, BridgeDb, Wikidata, ChEBI, RDKit])
 
 app = Application()
 
@@ -42,7 +43,7 @@ app.load_data('sample.msp', file_format='msp')
 app.curate_metadata()
 
 # specify requested services (these are supported)
-services = ['CTS', 'CIR', 'IDSM', 'PubChem', 'BridgeDb', 'Wikidata', 'RDKit']
+services = ['CTS', 'CIR', 'IDSM', 'PubChem', 'BridgeDb', 'Wikidata', 'ChEBI', 'RDKit']
 
 # specify requested jobs
 jobs = [('name', 'inchi', 'IDSM'), ('inchi', 'formula', 'IDSM'), ('inchi', 'inchikey', 'IDSM'),
