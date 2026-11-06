@@ -10,16 +10,21 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-import os
 import sys
-
-sys.path.insert(0, os.path.abspath("../../"))
-
+from pathlib import Path
 from shutil import copyfile
 
-copyfile("../../README.md", "readme.md")
-copyfile("../../CHANGELOG.md", "CHANGELOG.md")
-copyfile("../../CONTRIBUTING.md", "CONTRIBUTING.md")
+# Anchor every path to this file rather than to the working directory, so that
+# the documentation builds from any invocation directory (repository root, docs/,
+# or the directory Sphinx was started in by a hosting service).
+docs_dir = Path(__file__).resolve().parent
+repo_dir = docs_dir.parent.parent
+
+sys.path.insert(0, str(repo_dir))
+
+copyfile(repo_dir / "README.md", docs_dir / "readme.md")
+copyfile(repo_dir / "CHANGELOG.md", docs_dir / "CHANGELOG.md")
+copyfile(repo_dir / "CONTRIBUTING.md", docs_dir / "CONTRIBUTING.md")
 
 # -- Project information -----------------------------------------------------
 

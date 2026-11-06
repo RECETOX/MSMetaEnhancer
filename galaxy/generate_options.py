@@ -11,6 +11,7 @@ from MSMetaEnhancer.libs.converters.web import (
     PubChem,
     BridgeDb,
     Wikidata,
+    ChEBI,
 )
 from MSMetaEnhancer.libs.converters.compute import RDKit
 from MSMetaEnhancer.libs.utils.ConverterBuilder import ConverterBuilder
@@ -20,7 +21,7 @@ from MSMetaEnhancer.libs.converters.compute import __all__ as compute_converters
 
 
 def generate_options():
-    ConverterBuilder.register([CTS, CIR, IDSM, PubChem, BridgeDb, Wikidata, RDKit])
+    ConverterBuilder.register([CTS, CIR, IDSM, PubChem, BridgeDb, Wikidata, ChEBI, RDKit])
 
     jobs = []
     converters = web_converters + compute_converters

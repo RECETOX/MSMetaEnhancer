@@ -49,6 +49,14 @@ Wikidata
    :undoc-members:
    :show-inheritance:
 
+ChEBI
+-----
+
+.. automodule:: MSMetaEnhancer.libs.converters.web.ChEBI
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 General Web Converter
 ---------------------
 

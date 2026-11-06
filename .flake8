@@ -1,0 +1,7 @@
+[flake8]
+# uv creates the virtual environment inside the repository, so a bare `flake8 .`
+# would otherwise descend into the installed dependencies and report their issues.
+extend-exclude =
+    .venv
+    build
+    dist

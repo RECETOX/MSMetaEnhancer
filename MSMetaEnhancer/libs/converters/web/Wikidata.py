@@ -4,6 +4,7 @@ from urllib.parse import urlencode
 from frozendict import frozendict
 
 from MSMetaEnhancer.libs.converters.web.WebConverter import WebConverter
+from MSMetaEnhancer.libs.utils.Generic import fix_cas_number
 
 
 class Wikidata(WebConverter):
@@ -91,6 +92,9 @@ class Wikidata(WebConverter):
         return await self.call_service(query)
 
     async def from_casno(self, casno):
+        # Wikidata stores CAS numbers (P231) in the hyphenated form only, so an
+        # exact match on an unhyphenated input such as '50782' returns nothing.
+        casno = fix_cas_number(casno)
         query = f"""
             PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
             PREFIX wdt: <http://www.wikidata.org/prop/direct/>

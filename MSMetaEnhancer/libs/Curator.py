@@ -4,6 +4,7 @@ from matchms.filtering.filter_utils.smile_inchi_inchikey_conversions import (
     is_valid_inchikey,
 )
 from MSMetaEnhancer.libs.utils.Errors import InvalidAttributeFormat
+from MSMetaEnhancer.libs.utils.Generic import fix_cas_number as add_cas_dashes
 
 
 # Example usage
@@ -55,10 +56,7 @@ class Curator:
         :param cas_number: given CAS number
         :return: CAS number enriched by dashes (if needed)
         """
-        if isinstance(cas_number, str):
-            if "-" not in cas_number:
-                return f"{cas_number[:-3]}-{cas_number[-3:-1]}-{cas_number[-1]}"
-        return cas_number
+        return add_cas_dashes(cas_number)
 
     @staticmethod
     def filter_invalid_metadata(metadata, log, job):
