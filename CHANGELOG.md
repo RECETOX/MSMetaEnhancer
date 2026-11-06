@@ -11,6 +11,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added a `ChEBI` web converter querying the ChEBI service (https://www.ebi.ac.uk/chebi/)
   - Supports `compound_name`, `iupac_name`, `inchikey`, `inchi`, `smiles`, and `chebiid` as source attributes and returns `chebiid`, `compound_name`, `iupac_name`, `inchikey`, `inchi`, `smiles`, and `formula`
   - Structure search from SMILES uses the ChEBI `structure_search` endpoint with `type=similarity` and a similarity threshold of 1
+- Declared `pytest-asyncio` explicitly instead of relying on it arriving transitively, and moved `myst-parser` from the `dev` to the `docs` group so the documentation dependencies are self-contained
+
+### Changed
+- Project management moved from Poetry to [uv](https://docs.astral.sh/uv/): metadata converted to PEP 621, `uv_build` is the build backend, and `uv` now handles virtual environments, tests, linting, the docs build, and the package build
+- `uv.lock` is committed and used as the source of truth; CI installs with `uv sync --frozen`, so a dependency change without a refreshed lock now fails instead of silently re-resolving
+- Read the Docs installs with uv natively, which removes the `pip install poetry` step and its `VIRTUAL_ENV` workaround
+- PyPI publishing builds with `uv build` and uploads with `pypa/gh-action-pypi-publish` in place of `JRubics/poetry-publish`
+- `docs/source/conf.py` resolves its paths relative to itself rather than to the working directory, so the documentation also builds from the repository root
+
+### Fixed
+- Normalize unhyphenated CAS numbers in the `Wikidata` converter before querying: Wikidata stores `P231` hyphenated only, so a source `casno` such as `50782` previously matched nothing. `fix_cas_number` moved to `libs.utils.Generic` and now leaves values that cannot be CAS numbers untouched instead of inserting dashes into them
 
 ## [0.6.1] - 2026-10-22
 

@@ -60,23 +60,52 @@ app.save_data('sample_out.msp', file_format='msp')
 
 Prerequisites:
 
-- Python 3.9+
-- Anaconda
+- Python 3.10 - 3.13
 
 Install `MSMetaEnhancer` from Bioconda with:
 
 ```
 # install MSMetaEnhancer in a new virtual environment to avoid dependency clashes
-conda create --name MSMetaEnhancer python=3.9
+conda create --name MSMetaEnhancer python=3.12
 conda activate MSMetaEnhancer
 conda install --channel bioconda --channel conda-forge MSMetaEnhancer
+```
+
+Alternatively, install it from PyPI into any environment of your choice:
+
+```
+pip install msmetaenhancer
 ```
 
 ### Developer Documentation
 
 #### Setup
 
-Create your development environment using the provided [script](conda/environment-dev.yml) via conda to install all required dependencies.
+Development dependencies, the virtual environment and the package itself are all managed
+by [uv](https://docs.astral.sh/uv/). Install uv once (e.g. `pip install uv`, or
+`conda install --channel conda-forge uv`), clone the repository and run:
+
+```
+uv sync
+```
+
+This creates `.venv` in the repository root, installs the locked dependencies together with
+the `dev` group, and installs `MSMetaEnhancer` in editable mode. A conda environment can
+still be created from the provided [script](conda/environment-dev.yml) if you prefer conda;
+it provides `uv` and Python, and `uv sync` then fills in the rest.
+
+Run everything through `uv run` so that it uses this environment:
+
+```
+uv run pytest                                          # tests
+uv run ruff check .                                    # lint
+uv run pre-commit install                              # git hooks
+uv run --group docs sphinx-build -b html docs/source docs/build/html   # documentation
+```
+
+Dependencies are pinned in the committed `uv.lock`. After changing the dependencies in
+`pyproject.toml`, refresh the lock with `uv lock` and reinstall with `uv sync` — CI installs
+with `uv sync --frozen` and therefore fails if the two are out of sync.
 
 #### Contributing
 
@@ -87,3 +116,4 @@ For more information see [here](CONTRIBUTING.md).
 #### Testing
 
 All functionality is tested with the [pytest](https://docs.pytest.org/en/6.2.x/contents.html) framework.
+Run the test suite with `uv run pytest`.
