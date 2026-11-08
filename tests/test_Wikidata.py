@@ -7,6 +7,7 @@ import pytest
 
 from MSMetaEnhancer.libs.converters.web import Wikidata
 from MSMetaEnhancer.libs.utils.Errors import UnknownResponse
+from MSMetaEnhancer.libs.utils.Monitor import Monitor
 from tests.utils import wrap_with_session
 
 
@@ -226,6 +227,11 @@ def test_from_wikidataid_rejects_invalid_ids():
 
 
 @pytest.mark.dependency()
+def test_service_available():
+    assert Monitor.check_service(Monitor.get_base_url(Wikidata(None)))
+
+
+@pytest.mark.dependency(depends=["test_service_available"])
 def test_aspirin_name_lookup_live():
     result = asyncio.run(wrap_with_session(Wikidata, "from_name", ["aspirin"]))
 

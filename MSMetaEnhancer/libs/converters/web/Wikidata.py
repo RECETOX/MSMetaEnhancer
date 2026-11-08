@@ -4,7 +4,7 @@ from urllib.parse import urlencode
 from frozendict import frozendict
 
 from MSMetaEnhancer.libs.converters.web.WebConverter import WebConverter
-from MSMetaEnhancer.libs.utils.Generic import fix_cas_number
+from MSMetaEnhancer.libs.utils.Generic import fix_cas_number, USER_AGENT
 
 
 class Wikidata(WebConverter):
@@ -154,13 +154,7 @@ class Wikidata(WebConverter):
         response = await self.query_the_service(
             "Wikidata",
             args,
-            headers=frozendict(
-                {
-                    "User-Agent": (
-                        "MSMetaEnhancer (https://github.com/RECETOX/MSMetaEnhancer)"
-                    )
-                }
-            ),
+            headers=frozendict({"User-Agent": USER_AGENT}),
         )
         if response:
             return self.parse_attributes(response)

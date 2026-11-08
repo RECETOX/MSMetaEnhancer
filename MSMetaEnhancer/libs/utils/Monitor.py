@@ -2,7 +2,7 @@ from threading import Thread, Event
 from urllib.parse import urlparse
 import time
 import requests
-
+from MSMetaEnhancer.libs.utils.Generic import USER_AGENT
 
 class Monitor(Thread):
     """
@@ -32,13 +32,15 @@ class Monitor(Thread):
     @staticmethod
     def check_service(url):
         """
-        Send a GET request to given URL with 5 sec timeout.
+        Send a GET request to given URL with 5 sec timeout and a User-Agent
+        identifying MSMetaEnhancer (some services, e.g. Wikidata, reject
+        requests with generic user agents).
 
         :param url: given URL
         :return: True if request is successful with status code 200
         """
         try:
-            result = requests.get(url, timeout=5)
+            result = requests.get(url, timeout=5, headers={"User-Agent": USER_AGENT})
             return result.status_code == 200
         except (
             requests.exceptions.ConnectionError,

@@ -2,7 +2,7 @@ import math
 
 
 NA_STRING_VALUES = {"na", "n/a", "nan", "none", ""}
-
+USER_AGENT = "MSMetaEnhancer (https://github.com/RECETOX/MSMetaEnhancer)"
 
 def is_na_value(value) -> bool:
     """Check if a value should be treated as NA/missing (e.g. empty, None, NaN, 'NA')."""
