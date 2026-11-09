@@ -17,6 +17,14 @@ DataFrame
    :undoc-members:
    :show-inheritance:
 
+mzTab-M
+-------
+
+.. automodule:: MSMetaEnhancer.libs.data.MzTabM
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 General Data class
 ------------------
 

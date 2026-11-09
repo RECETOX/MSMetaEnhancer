@@ -5,7 +5,7 @@ import aiohttp
 from MSMetaEnhancer.libs.Annotator import Annotator
 from MSMetaEnhancer.libs.Converter import Converter
 from MSMetaEnhancer.libs.Curator import Curator
-from MSMetaEnhancer.libs.data import Spectra, DataFrame
+from MSMetaEnhancer.libs.data import Spectra, DataFrame, MzTabM
 from MSMetaEnhancer.libs.utils import logger
 from MSMetaEnhancer.libs.utils.ConverterBuilder import ConverterBuilder
 from MSMetaEnhancer.libs.utils.Errors import UnknownFileFormat
@@ -27,6 +27,8 @@ class Application:
         """
         if file_format in ["msp", "mgf", "json"]:
             self.data = Spectra()
+        elif file_format in ["mztab-m", "mztab_m", "mztabm"]:
+            self.data = MzTabM()
         elif file_format in ["csv", "tsv", "tabular", "xlsx"]:
             self.data = DataFrame()
         else:
