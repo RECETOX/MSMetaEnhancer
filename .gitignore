@@ -5,4 +5,9 @@ MSMetaEnhancer_*.log
 dist
 MSMetaEnhancer.egg-info
 .vscode
-poetry.lock
+.venv
+# copied into the docs source tree by docs/source/conf.py at build time
+docs/source/readme.md
+docs/source/CHANGELOG.md
+docs/source/CONTRIBUTING.md
+docs/build

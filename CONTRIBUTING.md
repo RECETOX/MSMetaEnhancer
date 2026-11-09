@@ -29,7 +29,7 @@ In case you feel like you've made a valuable contribution, but you don't know ho
 1. (**important**) announce your plan to the rest of the community *before you start working*. This announcement should be in the form of a (new) issue;
 1. (**important**) wait until some kind of consensus is reached about your idea being a good idea;
 1. if needed, fork the repository to your own Github profile and create your own feature branch off of the latest master commit. While working on your feature branch, make sure to stay up to date with the main branch by pulling in changes, possibly from the 'upstream' repository (follow the instructions [here](https://help.github.com/articles/configuring-a-remote-for-a-fork/) and [here](https://help.github.com/articles/syncing-a-fork/));
-1. make sure the existing tests still work by running ``pytest``;
+1. make sure the existing tests still work by running ``uv run pytest`` (see the [setup instructions](README.md#developer-documentation));
 1. add your own tests (if necessary);
 1. update or expand the documentation;
 1. update the [CHANGELOG](CHANGELOG.md) file with change;
@@ -259,12 +259,12 @@ After implementing your converter:
 
 1. Run the existing tests to ensure you haven't broken anything:
    ```bash
-   pytest tests/
+   uv run pytest tests/
    ```
 
 2. Run your specific tests:
    ```bash
-   pytest tests/test_YourService.py -v
+   uv run pytest tests/test_YourService.py -v
    ```
 
 3. Test the integration by using the converter in a real scenario

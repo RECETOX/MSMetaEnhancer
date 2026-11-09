@@ -6,7 +6,7 @@ import mock
 import pytest
 
 from MSMetaEnhancer.libs.converters.web import Wikidata
-from MSMetaEnhancer.libs.utils.Errors import UnknownResponse
+from MSMetaEnhancer.libs.utils.Monitor import Monitor
 from tests.utils import wrap_with_session
 
 
@@ -125,6 +125,44 @@ def test_from_casno_queries_cas_property():
     assert result == {"compound_name": "Aspirin", "casno": "50-78-2"}
 
 
+def test_from_casno_queries_hyphenated_form_of_unhyphenated_input():
+    converter = Wikidata(None)
+    converter.query_the_service = mock.AsyncMock(
+        return_value=json.dumps(
+            {
+                "results": {
+                    "bindings": [
+                        {
+                            "compound_name": {"value": "aspirin"},
+                            "casno": {"value": "50-78-2"},
+                        }
+                    ]
+                }
+            }
+        )
+    )
+
+    result = asyncio.run(converter.from_casno("50782"))
+
+    _, args = converter.query_the_service.call_args.args[:2]
+    query = parse_qs(args)["query"][0]
+    assert 'FILTER(?casno = "50-78-2")' in query
+    assert result == {"compound_name": "aspirin", "casno": "50-78-2"}
+
+
+def test_from_casno_keeps_unparsable_input_unchanged():
+    converter = Wikidata(None)
+    converter.query_the_service = mock.AsyncMock(
+        return_value='{"results": {"bindings": []}}'
+    )
+
+    asyncio.run(converter.from_casno("not-a-cas-number"))
+
+    _, args = converter.query_the_service.call_args.args[:2]
+    query = parse_qs(args)["query"][0]
+    assert 'FILTER(?casno = "not-a-cas-number")' in query
+
+
 @pytest.mark.parametrize(
     "method, identifier, query_fragment",
     [
@@ -188,6 +226,11 @@ def test_from_wikidataid_rejects_invalid_ids():
 
 
 @pytest.mark.dependency()
+def test_service_available():
+    assert Monitor.check_service(Monitor.get_base_url(Wikidata(None)))
+
+
+@pytest.mark.dependency(depends=["test_service_available"])
 def test_aspirin_name_lookup_live():
     result = asyncio.run(wrap_with_session(Wikidata, "from_name", ["aspirin"]))
 
@@ -204,7 +247,6 @@ def test_aspirin_cas_lookup_live():
 
 
 @pytest.mark.dependency(depends=["test_aspirin_name_lookup_live"])
-@pytest.mark.xfail(raises=UnknownResponse)
 @pytest.mark.parametrize(
     "method, identifier",
     [
@@ -222,3 +264,17 @@ def test_aspirin_identifier_lookup_live(method, identifier):
 
     assert result["casno"] == "50-78-2"
     assert result["canonical_smiles"] == "CC(=O)OC1=CC=CC=C1C(=O)O"
+    assert result["wikidataid"] == "Q18216"
+
+
+@pytest.mark.dependency(depends=["test_aspirin_name_lookup_live"])
+def test_aspirin_unhyphenated_cas_lookup_live():
+    """
+    Wikidata stores CAS numbers hyphenated only, so the unhyphenated form has to
+    be normalised before querying - without it this lookup returns no item.
+    """
+    result = asyncio.run(wrap_with_session(Wikidata, "from_casno", ["50782"]))
+
+    assert result["wikidataid"] == "Q18216"
+    assert result["casno"] == "50-78-2"
+    assert result["compound_name"].casefold() == "aspirin"
