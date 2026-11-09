@@ -2,7 +2,15 @@ import mock
 import pytest
 import requests
 
-from MSMetaEnhancer.libs.converters.web import Wikidata
+from MSMetaEnhancer.libs.converters.web import (
+    BridgeDb,
+    ChEBI,
+    CIR,
+    CTS,
+    IDSM,
+    PubChem,
+    Wikidata,
+)
 from MSMetaEnhancer.libs.utils.Generic import USER_AGENT
 from MSMetaEnhancer.libs.utils.Monitor import Monitor
 
@@ -45,4 +53,19 @@ def test_check_service_handles_request_failures(exception):
 def test_get_base_url():
     assert Monitor.get_base_url(Wikidata(None)) == "https://query.wikidata.org"
 
-#TODO: add test for run method of Monitor class
+@pytest.mark.parametrize(
+    "converter_class",
+    [BridgeDb, CIR, CTS, ChEBI, IDSM, PubChem, Wikidata],
+)
+def test_run(converter_class):
+    converter = converter_class(None)
+    monitor = Monitor()
+    monitor.set_converters({converter_class.__name__: converter})
+
+    try:
+        monitor.start()
+        assert monitor.first_check.wait(timeout=10)
+        assert converter.is_available is True
+    finally:
+        monitor.join()
+    assert monitor.stop_request.is_set()
