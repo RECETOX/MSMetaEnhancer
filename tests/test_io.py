@@ -1,7 +1,8 @@
 import pytest
 import mock
 
-from MSMetaEnhancer.libs.data import Spectra, DataFrame
+from MSMetaEnhancer import Application
+from MSMetaEnhancer.libs.data import Spectra, DataFrame, MzTabM
 
 
 DATA = [
@@ -120,6 +121,57 @@ def test_tabular_data():
                 assert meta_item[key] == data_item[key], (
                     f"Value mismatch for key '{key}' at index {i}: {meta_item[key]} != {data_item[key]}"
                 )
+
+
+def test_mztab_m_metadata_roundtrip(tmp_path):
+    filename = tmp_path / "sample.mztab"
+    filename.write_text(
+        "MTD\tmzTab-version\t2.0.0-M\n"
+        "SMH\tidentifier\tchemical_formula\tsmiles\tinchi\tinchi_key\tchemical_name\n"
+        "SML\tHMDB:HMDB0000001\tCH4\tC\tInChI=1S/CH4/h1H4\tVNWKTOKETHGBQD-UHFFFAOYSA-N\tMethane\n"
+        "SML\tnull\tC2H6\tnull\tnull\tnull\tEthane\n",
+        encoding="utf-8",
+    )
+
+    backend = MzTabM()
+    backend.load_data(filename, "mztab-m")
+    metadata = backend.get_metadata()
+
+    assert metadata == [
+        {
+            "identifier": "HMDB:HMDB0000001",
+            "formula": "CH4",
+            "smiles": "C",
+            "inchi": "InChI=1S/CH4/h1H4",
+            "inchikey": "VNWKTOKETHGBQD-UHFFFAOYSA-N",
+            "compound_name": "Methane",
+        },
+        {"formula": "C2H6", "compound_name": "Ethane"},
+    ]
+
+    metadata[0]["casno"] = "74-82-8"
+    backend.fuse_metadata(metadata)
+    backend.save_data(filename)
+
+    reloaded = MzTabM()
+    reloaded.load_data(filename)
+    assert reloaded.get_metadata()[0]["casno"] == "74-82-8"
+    assert "opt_casno" in reloaded.header
+    assert len(reloaded.get_metadata()) == 2
+
+
+def test_application_loads_mztab_m(tmp_path):
+    filename = tmp_path / "sample.mztab"
+    filename.write_text(
+        "SMH\tchemical_name\nSML\tMethane\n",
+        encoding="utf-8",
+    )
+
+    app = Application()
+    app.load_data(filename, file_format="mztab-m")
+
+    assert isinstance(app.data, MzTabM)
+    assert app.data.get_metadata() == [{"compound_name": "Methane"}]
 
 
 @pytest.mark.parametrize(
