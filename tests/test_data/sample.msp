@@ -1,4 +1,4 @@
-NAME: Hydrogen
+NAME: Dihydrogen
 FORMULA: H2
 MW: 2
 CASNO: 1333740
@@ -7,7 +7,7 @@ NUM PEAKS: 2
 1.0	20.98
 2.0	999.0
 
-NAME: Deuterium
+NAME: Dideuterium
 FORMULA: D2
 MW: 4
 CASNO: 7782390

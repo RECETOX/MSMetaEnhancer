@@ -11,7 +11,7 @@ DATA = [
         "casno": "1333740",
         "id": "1",
         "num_peaks": "2",
-        "compound_name": "Hydrogen",
+        "compound_name": "Dihydrogen",
     },
     {
         "formula": "D2",
@@ -19,7 +19,7 @@ DATA = [
         "casno": "7782390",
         "id": "2",
         "num_peaks": "2",
-        "compound_name": "Deuterium",
+        "compound_name": "Dideuterium",
     },
     {
         "formula": "CH4",
