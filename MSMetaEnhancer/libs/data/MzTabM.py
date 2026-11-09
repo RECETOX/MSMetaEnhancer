@@ -87,6 +87,8 @@ class MzTabM(Data):
                     if column_index is None:
                         self.header.append(column)
                         self.file_rows[self.header_index].append(column)
+                        for data_index in self.data_indices:
+                            self.file_rows[data_index].append("")
                         header_lookup[column] = len(self.header)
                         column_index = header_lookup[column]
                 while len(row) <= column_index:
