@@ -248,7 +248,6 @@ def test_aspirin_cas_lookup_live():
 
 
 @pytest.mark.dependency(depends=["test_aspirin_name_lookup_live"])
-@pytest.mark.xfail(raises=UnknownResponse)
 @pytest.mark.parametrize(
     "method, identifier",
     [
