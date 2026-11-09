@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## [0.7.0] - 2026-11-09
+
 ### Added
 - Added a `ChEBI` web converter querying the ChEBI service (https://www.ebi.ac.uk/chebi/)
   - Supports `compound_name`, `iupac_name`, `inchikey`, `inchi`, `smiles`, and `chebiid` as source attributes and returns `chebiid`, `compound_name`, `iupac_name`, `inchikey`, `inchi`, `smiles`, and `formula`

@@ -1,6 +1,6 @@
 [project]
 name = "msmetaenhancer"
-version = "0.6.1"
+version = "0.7.0"
 description = "Repository for tool that adds more annotations (e.g. SMILES, InChI, CAS number) to MSP files (Python version)."
 readme = "README.md"
 license = "MIT"
