@@ -6,7 +6,6 @@ import mock
 import pytest
 
 from MSMetaEnhancer.libs.converters.web import Wikidata
-from MSMetaEnhancer.libs.utils.Errors import UnknownResponse
 from MSMetaEnhancer.libs.utils.Monitor import Monitor
 from tests.utils import wrap_with_session
 
